@@ -4,8 +4,6 @@ NeuralPi is a guitar pedal using neural networks to emulate real amps and pedals
 
 ![app](https://github.com/GuitarML/NeuralPi/blob/main/resources/rpi_pic.jpg)
 
-![app](https://github.com/GuitarML/NeuralPi/blob/main/resources/neuralpi_pic.jpg)
-
 NeuralPi can shapeshift it's sound into any amplifier or distortion/overdrive pedal using neural networks. Machine learning models trained from recordings of real amps and pedals can be loaded into the plugin for endless possiblities on your guitar. Create your own models or use custom tones from GuitarML.
 
 There are four main components to the guitar pedal:
@@ -16,6 +14,8 @@ There are four main components to the guitar pedal:
 4. Proteus VST3 plugin
 
 The bare bones pedal can be built for around $120. For a complete guide to building the NeuralPi pedal yourself, see this article.
+
+![app](https://github.com/GuitarML/NeuralPi/blob/main/resources/neuralpi_pic.jpg)
 
 ## Installing the plugin
 
