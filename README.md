@@ -4,7 +4,7 @@ NeuralPi is a guitar pedal using neural networks to emulate real amps and pedals
 
 ![app](https://github.com/GuitarML/NeuralPi/blob/main/resources/rpi_pic.jpg)
 
-NeuralPi can shapeshift it's sound into any amplifier or distortion/overdrive pedal using neural networks. Machine learning models trained from recordings of real amps and pedals can be loaded into the plugin for endless possiblities on your guitar. Create your own models or use custom tones from GuitarML.
+NeuralPi can sound like an amplifier or distortion/overdrive pedal using the power of neural networks. Machine learning models trained from recordings of real amps and pedals can be loaded into the plugin for endless possiblities on your guitar. Create your own models or use custom tones from GuitarML.
 
 There are four main components to the guitar pedal:
 
@@ -24,6 +24,8 @@ For the cross-compiled Raspberry Pi / Elk Audio OS compatible VST3 plugin, downl
 For the NeuralPi plugin for use in a normal DAW:
 1. Download the appropriate plugin installer (Windows 10, Mac, Ubuntu Linux)
 2. Run the installer and follow the instructions. May need to reboot to allow your DAW to recognize the new plugin.
+
+WARNING: The audio output of the NeuralPi is at line level. Guitar amplifiers expect a low level electric guitar signal (instrument level). When using the NeuralPi with a guitar amp, start with the master volume at 0 and SLOWLY increase from there. 
 
 ## Info
 The neural network is a re-creation of the LSTM inference model from [Real-Time Guitar Amplifier Emulation with Deep Learning](https://www.mdpi.com/2076-3417/10/3/766/htm)
