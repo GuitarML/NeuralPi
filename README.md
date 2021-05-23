@@ -1,6 +1,6 @@
 # NeuralPi
 
-NeuralPi is a guitar pedal using neural networks to emulate real amps and pedals on a Raspberry Pi 4. The NeuralPi software is a VST3 plugin built with JUCE, which can be run as a normal audio plugin or cross-compiled to run on the Raspberry Pi 4 with [Elk Audio OS](https://elk.audio/). Simple gain and level knobs are included, but have not yet been implemented as controls while running on the Pi, only with normal plugin operation. NeuralPi is intended as a bare-bones plugin to build on.  
+NeuralPi is a guitar pedal using neural networks to emulate real amps and pedals on a Raspberry Pi 4. The NeuralPi software is a VST3 plugin built with JUCE, which can be run as a normal audio plugin or cross-compiled to run on the Raspberry Pi 4 with [Elk Audio OS](https://elk.audio/). NeuralPi is intended as a bare-bones plugin to build on.  
 
 ![app](https://github.com/GuitarML/NeuralPi/blob/main/resources/rpi_pic.jpg)
 
@@ -13,17 +13,13 @@ There are four main components to the guitar pedal:
 3. Elk Audio OS
 4. Proteus VST3 plugin
 
-The bare bones pedal can be built for around $120. For a complete guide to building the NeuralPi pedal yourself, see this article.
+The bare bones pedal can be built for around $120.
 
 ![app](https://github.com/GuitarML/NeuralPi/blob/main/resources/neuralpi_pic.jpg)
 
 ## Installing the plugin
 
-For the cross-compiled Raspberry Pi / Elk Audio OS compatible VST3 plugin, download here.
-
-For the NeuralPi plugin for use in a normal DAW:
-1. Download the appropriate plugin installer (Windows 10, Mac, Ubuntu Linux)
-2. Run the installer and follow the instructions. May need to reboot to allow your DAW to recognize the new plugin.
+For the cross-compiled Raspberry Pi / Elk Audio OS compatible VST3 plugin, download [here](https://github.com/GuitarML/NeuralPi/releases/tag/v1.0).
 
 WARNING: The audio output of the NeuralPi is at line level. Guitar amplifiers expect a low level electric guitar signal (instrument level). When using the NeuralPi with a guitar amp, start with the master volume at 0 and SLOWLY increase from there. 
 
