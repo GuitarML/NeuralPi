@@ -1,6 +1,6 @@
 # NeuralPi
 
-NeuralPi is a guitar pedal using neural networks to emulate real amps and pedals on a Raspberry Pi 4. The NeuralPi software is a VST3 plugin built with JUCE, which can be run as a normal audio plugin or cross-compiled to run on the Raspberry Pi 4 with [Elk Audio OS](https://elk.audio/). NeuralPi is intended as a bare-bones plugin to build on. The NeuralPi pedal runs high quality amp/pedal models on an economical DIY setup, costing around $120 for hardware to build yourself.
+NeuralPi is a guitar pedal using neural networks to emulate real amps and pedals on a Raspberry Pi 4. The NeuralPi software is a VST3 plugin built with JUCE, which can be run as a normal audio plugin or cross-compiled to run on the Raspberry Pi 4 with [Elk Audio OS](https://elk.audio/). NeuralPi is intended as a bare-bones plugin to build on. The NeuralPi pedal runs high quality amp/pedal models on an economical DIY setup, costing around $120 for hardware to build yourself. Check out a video demo on [YouTube](https://www.youtube.com/watch?v=_3zFD6h6Wrc)
 
 ![app](https://github.com/GuitarML/NeuralPi/blob/main/resources/rpi_pic.jpg)
 
