@@ -11,7 +11,7 @@ There are four main components to the guitar pedal:
 1. Raspberry Pi 4b
 2. HiFiBerry DAC + ADC
 3. Elk Audio OS
-4. Proteus VST3 plugin
+4. NeuralPi VST3 plugin
 
 ![app](https://github.com/GuitarML/NeuralPi/blob/main/resources/neuralpi_pic.jpg)
 <br>This is the normal VST3 plugin, which can be compiled for Windows/Mac/Linux using JUCE. It includes a model import feature, dropdown menu, and gain/level controls. The plugin compiled for Elk Audio OS is headless, meaning there is no GUI.
