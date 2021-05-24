@@ -24,7 +24,7 @@ WARNING: The audio output of the NeuralPi is at line level. Guitar amplifiers ex
 
 ## Changing Models
 
-The NeuralPi running on Elk will load one model per instance of the plugin. By default this is the "bj_model_best.json" file. Model select controls will be added in the future, but for now you must copy over this file to load different models. On Elk Audio OS, the models will be installed here after running the plugin for the first time:
+The NeuralPi running on Elk will load one model per instance of the plugin. By default this is the "bj_model_best.json" file. Model select controls will be added in the future, but for now you must overwrite this file to load different models. On Elk Audio OS, the models will be installed here after running the plugin for the first time:
 
 ```/home/mind/.config/JUCE/NeuralPi/tones```
 
