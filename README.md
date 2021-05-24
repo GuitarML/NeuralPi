@@ -24,6 +24,22 @@ For the cross-compiled Raspberry Pi / Elk Audio OS compatible VST3 plugin, downl
 
 WARNING: The audio output of the NeuralPi is at line level. Guitar amplifiers expect a low level electric guitar signal (instrument level). When using the NeuralPi with a guitar amp, start with the master volume at 0 and SLOWLY increase from there. 
 
+## Changing Models
+
+The NeuralPi running on Elk will load one model per instance of the plugin. By default this is the "bj_model_best.json" file. Model select controls will be added in the future, but for now you must copy over this file to load different models. On Elk Audio OS, the models will be installed here after running the plugin for the first time:
+
+```/home/mind/.config/JUCE/NeuralPi/tones```
+
+Backup the Blues Junior amp model with this:
+
+```cp bj_model_best.json bj_backup.json```
+
+And overwrite the original model to try a new one:
+
+```cp ts9_model_best.json bj_model_best.json```
+
+If you need to revert back to the original state, remove the ```/tones``` folder and restart the plugin. The "bj_model_best.json" is a Fender Blues Jr. amplifier at full gain, and the "ts9_model_best.json" is the Ibanez TS9 overdrive pedal at full drive.
+
 ## To Do
 
 Currently, the NeuralPi plugin has no user controls. It runs a single model that can be swapped out before running the plugin. The next step is to add user controls via OSC messages, so that a remote instance of the plugin can control the NeuralPi over Wifi. These controls will include Gain/Volume, EQ, and model selection. 
@@ -38,3 +54,26 @@ The [Automated-GuitarAmpModelling](https://github.com/Alec-Wright/Automated-Guit
 The plugin uses [RTNeural](https://github.com/jatinchowdhury18/RTNeural), which is a highly optimized neural net inference engine intended for audio applications. 
 
 ## Build Instructions
+
+To build the plugin for use on the Raspberry Pi with Elk Audio OS, see the official [Elk Audio Documentation](https://elk-audio.github.io/elk-docs/html/documents/building_plugins_for_elk.html#vst-plugins-using-juce)
+
+To build for Windows/Mac/Linux:
+
+1. Clone or download this repository.
+2. Download and install [JUCE](https://juce.com/) This project uses the "Projucer" application from the JUCE website. 
+3. Download the RTNeural submodule (cd into the NeuralPi repo first):
+   
+   ```git submodule update --remote --recursive```
+   
+4. Download and extract: [json](https://github.com/nlohmann/json) Json for c++.
+5. Open the Chameleon.jucer file and in the appropriate Exporter Header Search Path field, enter the appropriate include paths.
+   For example:
+
+```
+  <full-path-to>/json-develop/include
+	<full-path-to>/NeuralPi/modules/RTNeural
+  <full-path-to>/NeuralPi/modules/RTNeural/modules/xsimd/include
+```
+6. Build Chameleon from the Juce Projucer application. 
+
+Note: Make sure to build in Release mode unless actually debugging. Debug mode will not keep up with real time playing.
