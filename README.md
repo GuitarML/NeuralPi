@@ -1,10 +1,10 @@
 # NeuralPi
 
-NeuralPi is a guitar pedal using neural networks to emulate real amps and pedals on a Raspberry Pi 4. The NeuralPi software is a VST3 plugin built with JUCE, which can be run as a normal audio plugin or cross-compiled to run on the Raspberry Pi 4 with [Elk Audio OS](https://elk.audio/). NeuralPi is intended as a bare-bones plugin to build on. The NeuralPi pedal runs high quality amp/pedal models on an economical DIY setup, costing around $120 for hardware to build yourself. Check out a video demo on [YouTube](https://www.youtube.com/watch?v=_3zFD6h6Wrc)
+NeuralPi is a guitar pedal using neural networks to emulate real amps and pedals on a Raspberry Pi 4. The NeuralPi software is a VST3 plugin built with JUCE, which can be run as a normal audio plugin or cross-compiled to run on the Raspberry Pi 4 with [Elk Audio OS](https://elk.audio/). NeuralPi is intended as a bare-bones plugin to build on. The pedal runs high quality amp/pedal models on an economical DIY setup, costing around $120 for hardware to build yourself. Check out a video demo on [YouTube](https://www.youtube.com/watch?v=_3zFD6h6Wrc)
 
 ![app](https://github.com/GuitarML/NeuralPi/blob/main/resources/rpi_pic.jpg)
 
-NeuralPi can sound like an amplifier or distortion/overdrive pedal using the power of neural networks. Machine learning models trained from recordings of real amps and pedals can be loaded into the plugin for endless possiblities on your guitar. Create your own models or use custom tones from GuitarML.
+NeuralPi can sound like an amplifier or distortion/overdrive pedal using the power of neural networks. Models trained from recordings of real amps and pedals can be loaded into the plugin for endless possiblities on your guitar. Create your own models or use custom tones from GuitarML.
 
 There are four main components to the guitar pedal:
 
@@ -47,7 +47,8 @@ Elk Audio OS also supports physical controls through [Sensei](https://github.com
 ## Info
 The neural network is a re-creation of the LSTM inference model from [Real-Time Guitar Amplifier Emulation with Deep Learning](https://www.mdpi.com/2076-3417/10/3/766/htm)
 
-The [Automated-GuitarAmpModelling](https://github.com/Alec-Wright/Automated-GuitarAmpModelling) project was used to train the .json models. 
+The [Automated-GuitarAmpModelling](https://github.com/Alec-Wright/Automated-GuitarAmpModelling) project was used to train the .json models.
+IMPORTANT: When training models for NeuralPi, ensure that a LSTM size of 20 is used. NeuralPi is optimized to run models of this size, and other sizes are not currently compatible.
 
 The plugin uses [RTNeural](https://github.com/jatinchowdhury18/RTNeural), which is a highly optimized neural net inference engine intended for audio applications. 
 
