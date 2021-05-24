@@ -69,9 +69,9 @@ To build for Windows/Mac/Linux:
 
 ```
   <full-path-to>/json-develop/include
-	<full-path-to>/NeuralPi/modules/RTNeural
+  <full-path-to>/NeuralPi/modules/RTNeural
   <full-path-to>/NeuralPi/modules/RTNeural/modules/xsimd/include
 ```
-6. Build Chameleon from the Juce Projucer application. 
+6. Build Chameleon from the Juce Projucer application for the intended build target. 
 
 Note: Make sure to build in Release mode unless actually debugging. Debug mode will not keep up with real time playing.
