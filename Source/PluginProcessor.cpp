@@ -310,7 +310,7 @@ void NeuralPiAudioProcessor::set_ampDrive(float db_ampDrive)
 void NeuralPiAudioProcessor::set_ampMaster(float db_ampMaster)
 {
     ampMasterKnobState = db_ampMaster;
-    if (db_ampMaster == -36.0) {
+    if (db_ampMaster == -48.0) {
         ampMaster = decibelToLinear(-100.0);
     } else {
         ampMaster = decibelToLinear(db_ampMaster);
