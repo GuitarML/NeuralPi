@@ -54,6 +54,8 @@ IMPORTANT: When training models for NeuralPi, ensure that a LSTM size of 20 is u
 
 The plugin uses [RTNeural](https://github.com/jatinchowdhury18/RTNeural), which is a highly optimized neural net inference engine intended for audio applications. 
 
+The HiFiBerry DAC+ADC card used for this project provides 192kHz/24bit Analog-to-Digital and Digital to Analog, which is industry standard for high quality audio devices. The plugin processes at 44.1kHz (specified in config file) for the neural net DSP. 
+
 ## Build Instructions
 
 To build the plugin for use on the Raspberry Pi with Elk Audio OS, see the official [Elk Audio Documentation](https://elk-audio.github.io/elk-docs/html/documents/building_plugins_for_elk.html#vst-plugins-using-juce)
