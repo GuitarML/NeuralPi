@@ -10,9 +10,9 @@ NeuralPi can sound like an amplifier or distortion/overdrive pedal using the pow
 
 There are four main components to the guitar pedal:
 
-1. Raspberry Pi 4b
-2. HiFiBerry DAC + ADC
-3. Elk Audio OS
+1. [Raspberry Pi 4b](https://www.raspberrypi.org/products/raspberry-pi-4-model-b/)
+2. [HiFiBerry DAC + ADC](https://www.hifiberry.com/shop/boards/hifiberry-dac-adc/)
+3. [Elk Audio OS](https://elk.audio/)
 4. NeuralPi VST3 plugin
 
 ![app](https://github.com/GuitarML/NeuralPi/blob/main/resources/neuralpi_pic.jpg)
