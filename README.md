@@ -46,6 +46,8 @@ Currently, the NeuralPi plugin running on Elk OS has no user controls. It runs a
 
 Elk Audio OS also supports physical controls through [Sensei](https://github.com/elk-audio/sensei). Gain/Volume and EQ knobs can be added, as well as a LCD screen for selecting different models. One could build an actual guitar pedal with NeuralPi and any number of other digital effects and controls.
 
+While running PyTorch locally on the Raspberry Pi might be a stretch, it is fully capable of recording high quality audio with the HiFiBerry hat. Implement a capture feature by automating the recording of input/output samples, pushing to remote computer for training, then updating the Pi with the newly trained model.
+
 ## Info
 The neural network is a re-creation of the LSTM inference model from [Real-Time Guitar Amplifier Emulation with Deep Learning](https://www.mdpi.com/2076-3417/10/3/766/htm)
 
