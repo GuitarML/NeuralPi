@@ -19,6 +19,11 @@
                 }
             ],
             "plugins" : [
+				{
+				    "uid"  : "sushi.testing.mono_summing",
+					"name" : "mono_summing",
+					"type" : "internal"
+				},
                 {
                     "uid"  : "NeuralPi",
                     "path" : "/home/mind/plugins/NeuralPi.vst3",
