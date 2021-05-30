@@ -22,6 +22,20 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to
 
+    modelSliderAttach = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.treeState, MODEL_ID, modelKnob);
+    addAndMakeVisible(modelKnob);
+    //ampGainKnob.setLookAndFeel(&ampSilverKnobLAF);
+    modelKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
+    modelKnob.setNumDecimalPlacesToDisplay(1);
+    modelKnob.addListener(this);
+    //modelKnob.setRange(-12.0, 12.0);
+    modelKnob.setValue(processor.current_model_index);
+    modelKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
+    modelKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
+    modelKnob.setNumDecimalPlacesToDisplay(1);
+    modelKnob.setDoubleClickReturnValue(true, 0.0);
+    
+    
     addAndMakeVisible(modelSelect);
     modelSelect.setColour(juce::Label::textColourId, juce::Colours::black);
     int c = 1;
@@ -38,6 +52,7 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     loadButton.setColour(juce::Label::textColourId, juce::Colours::black);
     loadButton.addListener(this);
 
+    gainSliderAttach = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.treeState, GAIN_ID, ampGainKnob);
     addAndMakeVisible(ampGainKnob);
     //ampGainKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampGainKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
@@ -50,6 +65,7 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     ampGainKnob.setNumDecimalPlacesToDisplay(1);
     ampGainKnob.setDoubleClickReturnValue(true, 0.0);
 
+    masterSliderAttach = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.treeState, MASTER_ID, ampMasterKnob);
     addAndMakeVisible(ampMasterKnob);
     //ampMasterKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampMasterKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
@@ -101,10 +117,11 @@ void NeuralPiAudioProcessorEditor::resized()
     // subcomponents in your editor..
     modelSelect.setBounds(15, 10, 210, 25);
     loadButton.setBounds(15, 42, 100, 25);
+    modelKnob.setBounds(140, 40, 75, 95);
 
     // Amp Widgets
     ampGainKnob.setBounds(30, 85, 75, 95);
-    ampMasterKnob.setBounds(140, 85, 75, 95);
+    ampMasterKnob.setBounds(140, 105, 75, 95);
     GainLabel.setBounds(28, 163, 80, 10);
     LevelLabel.setBounds(138, 163, 80, 10);
 }
@@ -116,6 +133,7 @@ void NeuralPiAudioProcessorEditor::modelSelectChanged()
         processor.loadConfig(processor.jsonFiles[selectedFileIndex]);
         processor.current_model_index = modelSelect.getSelectedItemIndex();
     }
+    modelKnob.setValue(processor.current_model_index);
 }
 
 void NeuralPiAudioProcessorEditor::loadButtonClicked()
@@ -166,4 +184,10 @@ void NeuralPiAudioProcessorEditor::sliderValueChanged(Slider* slider)
         processor.set_ampDrive(slider->getValue());
     else if (slider == &ampMasterKnob)
         processor.set_ampMaster(slider->getValue());
+    else if (slider == &modelKnob)
+        if (slider->getValue() >= 0 && slider->getValue() < processor.jsonFiles.size()) {
+            processor.loadConfig(processor.jsonFiles[slider->getValue()]);
+            processor.current_model_index = modelSelect.getSelectedItemIndex();
+        }
+        modelSelect.setSelectedItemIndex(slider->getValue(), juce::NotificationType::dontSendNotification);
 }

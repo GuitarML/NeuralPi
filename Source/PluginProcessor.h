@@ -14,7 +14,13 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
-// USE_RTNEURAL 1
+
+#define GAIN_ID "gain"
+#define GAIN_NAME "Gain"
+#define MODEL_ID "model"
+#define MODEL_NAME "Model"
+#define MASTER_ID "master"
+#define MASTER_NAME "Master"
 
 //==============================================================================
 /**
@@ -93,6 +99,9 @@ public:
     float ampMasterKnobState = -24.0;
 
     RT_LSTM LSTM;
+
+
+    AudioProcessorValueTreeState treeState;
 
 
 private:

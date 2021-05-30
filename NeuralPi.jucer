@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT name="NeuralPi" companyName="GuitarML" version="1.0.0" companyWebsite="http://juce.com"
+<JUCERPROJECT name="NeuralPi" companyName="GuitarML" version="1.0.0" companyWebsite="https://guitarml.com"
               defines="PIP_JUCE_EXAMPLES_DIRECTORY=L2hvbWUvaWxpYXMvd29ya3NwYWNlcy9KVUNFL2V4YW1wbGVz"
-              projectType="audioplug" pluginManufacturer="JUCE" pluginAUIsSandboxSafe="1"
+              projectType="audioplug" pluginManufacturer="GuitarML" pluginAUIsSandboxSafe="1"
               pluginFormats="buildStandalone,buildVST3" id="vXK47v" jucerFormatVersion="1"
               displaySplashScreen="1">
   <MAINGROUP id="zI9r2C" name="NeuralPi">

@@ -23,7 +23,10 @@ NeuralPiAudioProcessor::NeuralPiAudioProcessor()
 #endif
         .withOutput("Output", AudioChannelSet::stereo(), true)
 #endif
-    )
+    ),
+    treeState(*this, nullptr, "PARAMETER", { std::make_unique<AudioParameterFloat>(GAIN_ID, GAIN_NAME, NormalisableRange<float>(-10.0f, 10.0f, 0.01f), 0.0f),
+                    //std::make_unique<AudioParameterFloat>(MODEL_ID, MODEL_NAME, NormalisableRange<float>(0, 1, 1), 0),
+                    std::make_unique<AudioParameterFloat>(MASTER_ID, MASTER_NAME, NormalisableRange<float>(-36.0f, 0.0f, 0.01f), 0.0f) })
 
 #endif
 {
@@ -33,7 +36,10 @@ NeuralPiAudioProcessor::NeuralPiAudioProcessor()
     if (jsonFiles.size() > 0) {
         loadConfig(jsonFiles[current_model_index]);
     }
+    treeState.createAndAddParameter(std::make_unique<AudioParameterFloat>(MODEL_ID, MODEL_NAME, NormalisableRange<float>(0, jsonFiles.size() - 1, 1), 0));
+
 }
+
 
 NeuralPiAudioProcessor::~NeuralPiAudioProcessor()
 {
@@ -316,7 +322,6 @@ void NeuralPiAudioProcessor::set_ampMaster(float db_ampMaster)
         ampMaster = decibelToLinear(db_ampMaster);
     }
 }
-
 
 float NeuralPiAudioProcessor::decibelToLinear(float dbValue)
 {

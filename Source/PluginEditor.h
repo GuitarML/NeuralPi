@@ -40,6 +40,7 @@ private:
     // Amp Widgets
     Slider ampGainKnob;
     Slider ampMasterKnob;
+    Slider modelKnob;
     //ImageButton ampOnButton;
     //ImageButton ampLED;
     ComboBox modelSelect;
@@ -55,6 +56,11 @@ private:
     void modelSelectChanged();
     void loadButtonClicked();
     virtual void sliderValueChanged(Slider* slider) override;
+
+public:
+    std::unique_ptr <AudioProcessorValueTreeState::SliderAttachment> gainSliderAttach;
+    std::unique_ptr <AudioProcessorValueTreeState::SliderAttachment> modelSliderAttach;
+    std::unique_ptr <AudioProcessorValueTreeState::SliderAttachment> masterSliderAttach;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NeuralPiAudioProcessorEditor)
 };
