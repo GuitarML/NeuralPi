@@ -161,8 +161,10 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
 
     // Amp =============================================================================
     if (amp_state == 1) {
-        buffer.applyGain(ampDrive);
-        //buffer.applyGain(gainParam->get());
+        auto gain = static_cast<float> (gainParam->get());
+        auto master = static_cast<float> (masterParam->get());
+        //buffer.applyGain(ampDrive);
+        buffer.applyGain(gain);
 
 		// Apply LSTM model
         if (model_loaded == 1) {
@@ -170,8 +172,8 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
         }
 
         //    Master Volume 
-        buffer.applyGain(ampMaster);
-        //buffer.applyGain(masterParam->get());
+        //buffer.applyGain(ampMaster);
+        buffer.applyGain(master);
     }
     
     for (int ch = 1; ch < buffer.getNumChannels(); ++ch)
@@ -318,9 +320,10 @@ float NeuralPiAudioProcessor::convertLogScale(float in_value, float x_min, float
     return converted_value;
 }
 
+/*
 void NeuralPiAudioProcessor::set_ampDrive(float db_ampDrive)
 {
-    ampDrive = decibelToLinear(db_ampDrive);
+    gainParam = decibelToLinear(db_ampDrive);
     ampGainKnobState = db_ampDrive;
 }
 
@@ -333,6 +336,7 @@ void NeuralPiAudioProcessor::set_ampMaster(float db_ampMaster)
         ampMaster = decibelToLinear(db_ampMaster);
     }
 }
+*/
 
 float NeuralPiAudioProcessor::decibelToLinear(float dbValue)
 {

@@ -96,8 +96,8 @@ public:
     int current_model_index = 0;
 
     // Amp knob states
-    float ampGainKnobState = 0.0;
-    float ampMasterKnobState = -24.0;
+    //float ampGainKnobState = 0.0;
+    //float ampMasterKnobState = -24.0;
 
     RT_LSTM LSTM;
 
@@ -106,8 +106,8 @@ public:
 
 private:
     // Amp
-    float ampDrive = 1.0;
-    float ampMaster = 1.0;
+    //float ampDrive = 1.0;
+    //float ampMaster = 1.0;
 
     var dummyVar;
 

@@ -87,7 +87,7 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     ampGainKnob.setNumDecimalPlacesToDisplay(1);
     ampGainKnob.addListener(this);
     ampGainKnob.setRange(-12.0, 12.0);
-    ampGainKnob.setValue(processor.ampGainKnobState);
+    ampGainKnob.setValue(1.0);
     ampGainKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     ampGainKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
     ampGainKnob.setNumDecimalPlacesToDisplay(1);
@@ -127,7 +127,7 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     ampMasterKnob.setNumDecimalPlacesToDisplay(1);
     ampMasterKnob.addListener(this);
     ampMasterKnob.setRange(-48.0, 0.0);
-    ampMasterKnob.setValue(processor.ampMasterKnobState);
+    ampMasterKnob.setValue(1.0);
     ampMasterKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     ampMasterKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20 );
     ampMasterKnob.setNumDecimalPlacesToDisplay(1);
@@ -316,16 +316,20 @@ void NeuralPiAudioProcessorEditor::buttonClicked(juce::Button* button)
 void NeuralPiAudioProcessorEditor::sliderValueChanged(Slider* slider)
 {
     // Amp
+    /*
     if (slider == &ampGainKnob)
         processor.set_ampDrive(slider->getValue());
     else if (slider == &ampMasterKnob)
         processor.set_ampMaster(slider->getValue());
-    else if (slider == &modelKnob)
+        */
+    //else 
+    if (slider == &modelKnob)
         if (slider->getValue() >= 0 && slider->getValue() < processor.jsonFiles.size()) {
             processor.loadConfig(processor.jsonFiles[slider->getValue()]);
             processor.current_model_index = modelSelect.getSelectedItemIndex();
             modelSelect.setSelectedItemIndex(slider->getValue(), juce::NotificationType::dontSendNotification);
         }
+
         
 }
 
