@@ -74,9 +74,10 @@ public:
     float convertLogScale(float in_value, float x_min, float x_max, float y_min, float y_max);
 
     // Amp
+    /*
     void set_ampDrive(float db_ampCleanDrive);
     void set_ampMaster(float db_ampMaster);
-
+    */
     float decibelToLinear(float dbValue);
 
     void addDirectory(const File& file);

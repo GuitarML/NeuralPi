@@ -86,12 +86,12 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     ampGainKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
     ampGainKnob.setNumDecimalPlacesToDisplay(1);
     ampGainKnob.addListener(this);
-    ampGainKnob.setRange(-12.0, 12.0);
-    ampGainKnob.setValue(1.0);
+    ampGainKnob.setRange(0.0, 1.0);
+    ampGainKnob.setValue(0.5);
     ampGainKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     ampGainKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
     ampGainKnob.setNumDecimalPlacesToDisplay(1);
-    ampGainKnob.setDoubleClickReturnValue(true, 0.0);
+    ampGainKnob.setDoubleClickReturnValue(true, 0.5);
 
     auto gainValue = getParameterValue(gainName);
     Slider& gainSlider = getGainSlider();
@@ -126,12 +126,12 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     ampMasterKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
     ampMasterKnob.setNumDecimalPlacesToDisplay(1);
     ampMasterKnob.addListener(this);
-    ampMasterKnob.setRange(-48.0, 0.0);
-    ampMasterKnob.setValue(1.0);
+    ampMasterKnob.setRange(0.0, 1.0);
+    ampMasterKnob.setValue(0.5);
     ampMasterKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     ampMasterKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20 );
     ampMasterKnob.setNumDecimalPlacesToDisplay(1);
-    ampMasterKnob.setDoubleClickReturnValue(true, -24.0);
+    ampMasterKnob.setDoubleClickReturnValue(true, 0.5);
 
     auto masterValue = getParameterValue(masterName);
     Slider& masterSlider = getMasterSlider();
@@ -325,8 +325,8 @@ void NeuralPiAudioProcessorEditor::sliderValueChanged(Slider* slider)
     //else 
     if (slider == &modelKnob)
         if (slider->getValue() >= 0 && slider->getValue() < processor.jsonFiles.size()) {
-            processor.loadConfig(processor.jsonFiles[slider->getValue()]);
-            processor.current_model_index = modelSelect.getSelectedItemIndex();
+            //processor.loadConfig(processor.jsonFiles[slider->getValue()]);
+            //processor.current_model_index = modelSelect.getSelectedItemIndex();
             modelSelect.setSelectedItemIndex(slider->getValue(), juce::NotificationType::dontSendNotification);
         }
 

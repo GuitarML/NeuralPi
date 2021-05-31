@@ -37,8 +37,8 @@ NeuralPiAudioProcessor::NeuralPiAudioProcessor()
         loadConfig(jsonFiles[current_model_index]);
     }
     // initialize parameters:
-    addParameter(gainParam = new AudioParameterFloat(GAIN_ID, GAIN_NAME, NormalisableRange<float>(-12.0f, 12.0f, 0.01f), 0.0f));
-    addParameter(masterParam = new AudioParameterFloat(MASTER_ID, MASTER_NAME, NormalisableRange<float>(-48.0f, 0.0f, 0.01f), 0.0f));
+    addParameter(gainParam = new AudioParameterFloat(GAIN_ID, GAIN_NAME, NormalisableRange<float>(-0.0f, 1.0f, 0.01f), 0.5f));
+    addParameter(masterParam = new AudioParameterFloat(MASTER_ID, MASTER_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.5f));
     addParameter(modelParam = new AudioParameterFloat(MODEL_ID, MODEL_NAME, NormalisableRange<float>(0, jsonFiles.size()-1, 1), 0));
 
     //treeState.createAndAddParameter(std::make_unique<AudioParameterFloat>(MODEL_ID, MODEL_NAME, NormalisableRange<float>(0, jsonFiles.size() - 1, 1), 0));
@@ -163,17 +163,27 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
     if (amp_state == 1) {
         auto gain = static_cast<float> (gainParam->get());
         auto master = static_cast<float> (masterParam->get());
+        auto model = static_cast<float> (modelParam->get());
+        int model_index = static_cast<int>(model);
         //buffer.applyGain(ampDrive);
+        //buffer.applyGain(decibelToLinear(gain));
         buffer.applyGain(gain);
 
 		// Apply LSTM model
         if (model_loaded == 1) {
+            if (current_model_index != model_index) {
+                loadConfig(jsonFiles[model_index]);
+                current_model_index = model_index;
+                //current_model_index = modelSelect.getSelectedItemIndex();
+                //setSelectedItemIndex(slider->getValue(), juce::NotificationType::dontSendNotification);
+            }
             LSTM.process(buffer.getReadPointer(0), buffer.getWritePointer(0), numSamples);
         }
 
         //    Master Volume 
         //buffer.applyGain(ampMaster);
         buffer.applyGain(master);
+        //buffer.applyGain(decibelToLinear(master));
     }
     
     for (int ch = 1; ch < buffer.getNumChannels(); ++ch)
