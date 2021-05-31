@@ -13,6 +13,8 @@
             file="models/ts9_model_best.json"/>
     </GROUP>
     <GROUP id="{70CE292C-E9C5-C029-B95A-F7DF41E5F74C}" name="Source">
+      <FILE id="VgCJPH" name="AmpOSCReceiver.h" compile="0" resource="0"
+            file="Source/AmpOSCReceiver.h"/>
       <FILE id="hNjQV9" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
       <FILE id="BweFTe" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>

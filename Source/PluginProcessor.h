@@ -10,6 +10,7 @@
 
 #include <nlohmann/json.hpp>
 #include "RTNeuralLSTM.h"
+#include "AmpOSCReceiver.h"
 
 #pragma once
 
@@ -101,7 +102,7 @@ public:
     RT_LSTM LSTM;
 
 
-    AudioProcessorValueTreeState treeState;
+    //AudioProcessorValueTreeState treeState;
 
 
 private:
@@ -110,6 +111,11 @@ private:
     float ampMaster = 1.0;
 
     var dummyVar;
+
+    AudioParameterFloat* gainParam;
+    AudioParameterFloat* masterParam;
+
+    AudioParameterFloat* modelParam;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NeuralPiAudioProcessor)
