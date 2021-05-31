@@ -161,8 +161,8 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
 
     // Amp =============================================================================
     if (amp_state == 1) {
-
         buffer.applyGain(ampDrive);
+        //buffer.applyGain(gainParam->get());
 
 		// Apply LSTM model
         if (model_loaded == 1) {
@@ -171,6 +171,7 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
 
         //    Master Volume 
         buffer.applyGain(ampMaster);
+        //buffer.applyGain(masterParam->get());
     }
     
     for (int ch = 1; ch < buffer.getNumChannels(); ++ch)
@@ -189,17 +190,22 @@ AudioProcessorEditor* NeuralPiAudioProcessor::createEditor()
 }
 
 //==============================================================================
-void NeuralPiAudioProcessor::getStateInformation (MemoryBlock& destData)
+void NeuralPiAudioProcessor::getStateInformation(MemoryBlock& destData)
 {
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
+    MemoryOutputStream stream(destData, true);
+
+    stream.writeFloat(*gainParam);
+    stream.writeFloat(*masterParam);
+    stream.writeFloat(*modelParam);
 }
 
-void NeuralPiAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
+void NeuralPiAudioProcessor::setStateInformation(const void* data, int sizeInBytes)
 {
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
+    MemoryInputStream stream(data, static_cast<size_t> (sizeInBytes), false);
+
+    gainParam->setValueNotifyingHost(stream.readFloat());
+    masterParam->setValueNotifyingHost(stream.readFloat());
+    modelParam->setValueNotifyingHost(stream.readFloat());
 }
 
 void NeuralPiAudioProcessor::loadConfig(File configFile)
@@ -332,6 +338,7 @@ float NeuralPiAudioProcessor::decibelToLinear(float dbValue)
 {
     return powf(10.0, dbValue/20.0);
 }
+
 
 //==============================================================================
 // This creates new instances of the plugin..

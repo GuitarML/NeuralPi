@@ -104,7 +104,6 @@ public:
 
     //AudioProcessorValueTreeState treeState;
 
-
 private:
     // Amp
     float ampDrive = 1.0;
