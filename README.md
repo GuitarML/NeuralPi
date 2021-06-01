@@ -71,7 +71,7 @@ To build for Windows/Mac/Linux:
    ```git submodule update --remote --recursive```
    
 4. Download and extract: [json](https://github.com/nlohmann/json) Json for c++.
-5. Open the Chameleon.jucer file and in the appropriate Exporter Header Search Path field, enter the appropriate include paths.
+5. Open the NeuralPi.jucer file and in the appropriate Exporter Header Search Path field, enter the appropriate include paths.
    For example:
 
 ```
@@ -79,6 +79,6 @@ To build for Windows/Mac/Linux:
   <full-path-to>/NeuralPi/modules/RTNeural
   <full-path-to>/NeuralPi/modules/RTNeural/modules/xsimd/include
 ```
-6. Build Chameleon from the Juce Projucer application for the intended build target. 
+6. Build NeuralPi from the Juce Projucer application for the intended build target. 
 
 Note: Make sure to build in Release mode unless actually debugging. Debug mode will not keep up with real time playing.
