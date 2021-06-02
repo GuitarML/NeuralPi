@@ -96,26 +96,15 @@ public:
     int model_loaded = 0;
     int current_model_index = 0;
 
-    // Amp knob states
-    //float ampGainKnobState = 0.0;
-    //float ampMasterKnobState = -24.0;
-
     RT_LSTM LSTM;
 
-
-    //AudioProcessorValueTreeState treeState;
-
 private:
-    // Amp
-    //float ampDrive = 1.0;
-    //float ampMaster = 1.0;
-
     var dummyVar;
 
     AudioParameterFloat* gainParam;
     AudioParameterFloat* masterParam;
 
-    AudioParameterFloat* modelParam;
+    AudioParameterInt* modelParam;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NeuralPiAudioProcessor)

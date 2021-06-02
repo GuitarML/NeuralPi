@@ -23,10 +23,7 @@ NeuralPiAudioProcessor::NeuralPiAudioProcessor()
 #endif
         .withOutput("Output", AudioChannelSet::stereo(), true)
 #endif
-    )//,
-    //treeState(*this, nullptr, "PARAMETER", { std::make_unique<AudioParameterFloat>(GAIN_ID, GAIN_NAME, NormalisableRange<float>(-10.0f, 10.0f, 0.01f), 0.0f),
-    //                std::make_unique<AudioParameterFloat>(MODEL_ID, MODEL_NAME, NormalisableRange<float>(0, 1, 1), 0),
-    //                std::make_unique<AudioParameterFloat>(MASTER_ID, MASTER_NAME, NormalisableRange<float>(-36.0f, 0.0f, 0.01f), 0.0f) })
+    )
 
 #endif
 {
@@ -39,10 +36,7 @@ NeuralPiAudioProcessor::NeuralPiAudioProcessor()
     // initialize parameters:
     addParameter(gainParam = new AudioParameterFloat(GAIN_ID, GAIN_NAME, NormalisableRange<float>(-0.0f, 1.0f, 0.01f), 0.5f));
     addParameter(masterParam = new AudioParameterFloat(MASTER_ID, MASTER_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.5f));
-    addParameter(modelParam = new AudioParameterFloat(MODEL_ID, MODEL_NAME, NormalisableRange<float>(0, jsonFiles.size()-1, 1), 0));
-
-    //treeState.createAndAddParameter(std::make_unique<AudioParameterFloat>(MODEL_ID, MODEL_NAME, NormalisableRange<float>(0, jsonFiles.size() - 1, 1), 0));
-
+    addParameter(modelParam = new AudioParameterInt(MODEL_ID, MODEL_NAME, 0, jsonFiles.size()-1, 0));
 }
 
 
@@ -163,10 +157,8 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
     if (amp_state == 1) {
         auto gain = static_cast<float> (gainParam->get());
         auto master = static_cast<float> (masterParam->get());
-        auto model = static_cast<float> (modelParam->get());
-        int model_index = static_cast<int>(model);
-        //buffer.applyGain(ampDrive);
-        //buffer.applyGain(decibelToLinear(gain));
+        auto model_index = static_cast<int> (modelParam->get());
+
         buffer.applyGain(gain);
 
 		// Apply LSTM model
@@ -174,16 +166,12 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
             if (current_model_index != model_index) {
                 loadConfig(jsonFiles[model_index]);
                 current_model_index = model_index;
-                //current_model_index = modelSelect.getSelectedItemIndex();
-                //setSelectedItemIndex(slider->getValue(), juce::NotificationType::dontSendNotification);
             }
             LSTM.process(buffer.getReadPointer(0), buffer.getWritePointer(0), numSamples);
         }
 
         //    Master Volume 
-        //buffer.applyGain(ampMaster);
         buffer.applyGain(master);
-        //buffer.applyGain(decibelToLinear(master));
     }
     
     for (int ch = 1; ch < buffer.getNumChannels(); ++ch)
@@ -208,7 +196,7 @@ void NeuralPiAudioProcessor::getStateInformation(MemoryBlock& destData)
 
     stream.writeFloat(*gainParam);
     stream.writeFloat(*masterParam);
-    stream.writeFloat(*modelParam);
+    stream.writeInt(*modelParam);
 }
 
 void NeuralPiAudioProcessor::setStateInformation(const void* data, int sizeInBytes)
@@ -217,7 +205,7 @@ void NeuralPiAudioProcessor::setStateInformation(const void* data, int sizeInByt
 
     gainParam->setValueNotifyingHost(stream.readFloat());
     masterParam->setValueNotifyingHost(stream.readFloat());
-    modelParam->setValueNotifyingHost(stream.readFloat());
+    modelParam->setValueNotifyingHost(stream.readInt());
 }
 
 void NeuralPiAudioProcessor::loadConfig(File configFile)
@@ -292,11 +280,9 @@ void NeuralPiAudioProcessor::installTones()
 //
 //====================================================================
 {
-
     // Default tones
     File ts9_tone = userAppDataDirectory_tones.getFullPathName() + "/ts9_model_best.json";
     File bjdirty_tone = userAppDataDirectory_tones.getFullPathName() + "/bj_model_best.json";
-
 
     if (ts9_tone.existsAsFile() == false) {
         std::string string_command = ts9_tone.getFullPathName().toStdString();
@@ -330,23 +316,6 @@ float NeuralPiAudioProcessor::convertLogScale(float in_value, float x_min, float
     return converted_value;
 }
 
-/*
-void NeuralPiAudioProcessor::set_ampDrive(float db_ampDrive)
-{
-    gainParam = decibelToLinear(db_ampDrive);
-    ampGainKnobState = db_ampDrive;
-}
-
-void NeuralPiAudioProcessor::set_ampMaster(float db_ampMaster)
-{
-    ampMasterKnobState = db_ampMaster;
-    if (db_ampMaster == -48.0) {
-        ampMaster = decibelToLinear(-100.0);
-    } else {
-        ampMaster = decibelToLinear(db_ampMaster);
-    }
-}
-*/
 
 float NeuralPiAudioProcessor::decibelToLinear(float dbValue)
 {

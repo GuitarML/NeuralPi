@@ -62,25 +62,32 @@ private:
         modelAddressPattern = "/parameter/" + ampName + "/Model";
     }
 
-    void oscMessageReceived (const OSCMessage& message) override
+    void oscMessageReceived(const OSCMessage& message) override
     {
-        DBG ("Message Received: ");
+        DBG("Message Received: ");
 
         if (message.size() == 1 && message[0].isFloat32())
         {
-            DBG ("    value " + String (message[0].getFloat32()) + " to AP " + message.getAddressPattern().toString());
+            DBG("    value " + String(message[0].getFloat32()) + " to AP " + message.getAddressPattern().toString());
 
             if (message.getAddressPattern().matches(gainAddressPattern))
             {
-                gainValue.setValue (jlimit (-12.0f, 12.0f, message[0].getFloat32()));
+                gainValue.setValue(jlimit(0.0f, 1.0f, message[0].getFloat32()));
             }
-            else if (message.getAddressPattern().matches (masterAddressPattern))
+            else if (message.getAddressPattern().matches(masterAddressPattern))
             {
-                masterValue.setValue (jlimit (-48.0f, 0.0f, message[0].getFloat32()));
+                masterValue.setValue(jlimit(0.0f, 1.0f, message[0].getFloat32()));
             }
-            else if (message.getAddressPattern().matches (modelAddressPattern))
+
+        }
+        else if (message.size() == 1 && message[0].isInt32())
+        {
+            DBG("    value " + String(message[0].getInt32()) + " to AP " + message.getAddressPattern().toString());
+
+            if (message.getAddressPattern().matches(modelAddressPattern))
             {
-                modelValue.setValue (jlimit (0.0f, 1.0f, message[0].getFloat32()));
+                //modelValue.setValue(jlimit(0.0f, 1.0f, message[0].getFloat32()));
+                modelValue.setValue(message[0].getInt32());
             }
         }
     }

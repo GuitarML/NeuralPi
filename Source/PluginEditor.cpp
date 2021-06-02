@@ -23,7 +23,6 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to
 
-    //modelSliderAttach = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.treeState, MODEL_ID, modelKnob);
     addAndMakeVisible(modelKnob);
     //ampGainKnob.setLookAndFeel(&ampSilverKnobLAF);
     modelKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
@@ -34,7 +33,7 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     modelKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     modelKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
     modelKnob.setNumDecimalPlacesToDisplay(1);
-    modelKnob.setDoubleClickReturnValue(true, 0.0);
+    modelKnob.setDoubleClickReturnValue(true, 0);
 
     auto modelValue = getParameterValue(modelName);
     Slider& modelSlider = getModelSlider();
@@ -42,15 +41,15 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
 
     modelKnob.onValueChange = [this]
     {
-        const float sliderValue = static_cast<float> (getModelSlider().getValue());
-        const float modelValue = getParameterValue(modelName);
+        const int sliderValue = static_cast<int> (getModelSlider().getValue());
+        const int modelValue = getParameterValue(modelName);
 
         if (!approximatelyEqual(modelValue, sliderValue))
         {
             setParameterValue(modelName, sliderValue);
 
             // create and send an OSC message with an address and a float value:
-            float value = static_cast<float> (getModelSlider().getValue());
+            int value = static_cast<int> (getModelSlider().getValue());
 
             if (!oscSender.send(modelAddressPattern, value))
             {
@@ -120,7 +119,6 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
         }
     };
 
-    //masterSliderAttach = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.treeState, MASTER_ID, ampMasterKnob);
     addAndMakeVisible(ampMasterKnob);
     //ampMasterKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampMasterKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
@@ -211,7 +209,6 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
 
     connectSender();
 
-
     // Size of plugin GUI
     setSize(250, 350);
 
@@ -224,13 +221,8 @@ NeuralPiAudioProcessorEditor::~NeuralPiAudioProcessorEditor()
 //==============================================================================
 void NeuralPiAudioProcessorEditor::paint (Graphics& g)
 {
-    //background = ImageCache::getFromMemory(BinaryData::pedal_blank_png, BinaryData::pedal_blank_pngSize);
-   
-    //g.drawImageAt(background, 0, 0);
-
     g.setColour (Colours::white);
     g.setFont (15.0f);
-
 }
 
 void NeuralPiAudioProcessorEditor::resized()
@@ -315,26 +307,15 @@ void NeuralPiAudioProcessorEditor::buttonClicked(juce::Button* button)
 
 void NeuralPiAudioProcessorEditor::sliderValueChanged(Slider* slider)
 {
-    // Amp
-    /*
-    if (slider == &ampGainKnob)
-        processor.set_ampDrive(slider->getValue());
-    else if (slider == &ampMasterKnob)
-        processor.set_ampMaster(slider->getValue());
-        */
-    //else 
     if (slider == &modelKnob)
         if (slider->getValue() >= 0 && slider->getValue() < processor.jsonFiles.size()) {
             //processor.loadConfig(processor.jsonFiles[slider->getValue()]);
             //processor.current_model_index = modelSelect.getSelectedItemIndex();
             modelSelect.setSelectedItemIndex(slider->getValue(), juce::NotificationType::dontSendNotification);
-        }
-
-        
+        }      
 }
 
 // OSC Messages
-
 Slider& NeuralPiAudioProcessorEditor::getGainSlider()
 {
     return ampGainKnob;
@@ -431,12 +412,14 @@ void NeuralPiAudioProcessorEditor::labelTextChanged(Label* labelThatHasChanged)
         const String newIP = getIPField().getTextValue().toString();
         updateOutgoingIP(newIP);
     }
-    //else if (labelThatHasChanged == getAmpNameField())
-    //{
-    //    ampName = getAmpNameField().getTextValue().toString();
-    //    buildAddressPatterns();
-    //    oscReceiver.updateAmpName(getAmpNameField().getTextValue().toString());
-    //}
+    /*
+    else if (labelThatHasChanged == getAmpNameField())
+    {
+        ampName = getAmpNameField().getTextValue().toString();
+        buildAddressPatterns();
+        oscReceiver.updateAmpName(getAmpNameField().getTextValue().toString());
+    }
+    */
 }
 
 void NeuralPiAudioProcessorEditor::updateInConnectedLabel()

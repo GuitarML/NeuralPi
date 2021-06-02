@@ -100,7 +100,6 @@ private:
     Label outConnectedLabel{ "(connected)" };
 
     // OSC Messages
-
     Slider& getGainSlider();
     Slider& getMasterSlider();
     Slider& getModelSlider();
@@ -125,11 +124,6 @@ private:
 
     float getParameterValue(const String& paramId);
     void setParameterValue(const String& paramId, float value);
-/*
-public:
-    std::unique_ptr <AudioProcessorValueTreeState::SliderAttachment> gainSliderAttach;
-    std::unique_ptr <AudioProcessorValueTreeState::SliderAttachment> modelSliderAttach;
-    std::unique_ptr <AudioProcessorValueTreeState::SliderAttachment> masterSliderAttach;
-*/
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NeuralPiAudioProcessorEditor)
 };
