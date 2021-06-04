@@ -25,9 +25,8 @@ rpi_ip_address=127.0.0.1  # Update this field with the Raspberry Pi's IP address
 rpi_model_path=/home/mind/.config/GuitarML/NeuralPi/tones # Rpi with Elk OS Path (shouldn't need to change)
 
 #############################################################################
-
-# Copy all models from local computer to Rpi
+echo "Copying all models from local computer to Rpi.."
 scp $host_model_path/*.json  root@$rpi_ip_address:$rpi_model_path/
 
-# Copy all models from Rpi to local computer
+echo "Copying all models from Rpi to local computer.."
 scp root@$rpi_ip_address:$rpi_model_path/*.json  $host_model_path/
