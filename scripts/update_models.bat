@@ -22,7 +22,7 @@ set "host_model_path=C:/Users/<YOUR_USERNAME>/AppData/Roaming/GuitarML/NeuralPi/
 :: Rpi with Elk OS Path (shouldn't need to change)
 set "rpi_model_path=/home/mind/.config/GuitarML/NeuralPi/tones"
 
-#############################################################################
+:: ############################################################################
 
 :: Copy all models from local computer to Rpi
 scp %host_model_path%/*.json  root@%rpi_ip_address%:%rpi_model_path%/
