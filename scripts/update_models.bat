@@ -11,20 +11,21 @@
 
 :: USER INPUTS 
 
-set "rpi_ip_address=127.0.0.1"  # Update this field with the Raspberry Pi's IP address
+:: Update this field with the Raspberry Pi's IP address
+set "rpi_ip_address=127.0.0.1"
 
 
-:: Edit <YOUR_USERNAME> with your Windows Username
+:: Typical Windows 10 Path, edit <YOUR_USERNAME> with your Windows Username
+set "host_model_path=C:/Users/<YOUR_USERNAME>/AppData/Roaming/GuitarML/NeuralPi/tones"
 
-set "host_model_path=C:/Users/<YOUR_USERNAME>/AppData/Roaming/GuitarML/NeuralPi/tones"   ::Typical Windows 10 Path
 
-
-set "rpi_model_path=/home/mind/.config/GuitarML/NeuralPi/tones" :: Rpi with Elk OS Path (shouldn't need to change)
+:: Rpi with Elk OS Path (shouldn't need to change)
+set "rpi_model_path=/home/mind/.config/GuitarML/NeuralPi/tones"
 
 #############################################################################
 
-# Copy all models from local computer to Rpi
+:: Copy all models from local computer to Rpi
 scp %host_model_path%/*.json  root@$rpi_ip_address:%rpi_model_path%/
 
-# Copy all models from Rpi to local computer
+:: Copy all models from Rpi to local computer
 scp root@%rpi_ip_address%:%rpi_model_path%/*.json  %host_model_path%/
