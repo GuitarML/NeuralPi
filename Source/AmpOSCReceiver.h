@@ -78,17 +78,11 @@ private:
             {
                 masterValue.setValue(jlimit(0.0f, 1.0f, message[0].getFloat32()));
             }
-
-        }
-        else if (message.size() == 1 && message[0].isInt32())
-        {
-            DBG("    value " + String(message[0].getInt32()) + " to AP " + message.getAddressPattern().toString());
-
-            if (message.getAddressPattern().matches(modelAddressPattern))
+            else if (message.getAddressPattern().matches(modelAddressPattern))
             {
-                //modelValue.setValue(jlimit(0.0f, 1.0f, message[0].getFloat32()));
-                modelValue.setValue(message[0].getInt32());
+                modelValue.setValue(jlimit(0.0f, 1.0f, message[0].getFloat32()));
             }
+
         }
     }
 

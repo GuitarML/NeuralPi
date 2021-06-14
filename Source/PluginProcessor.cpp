@@ -33,10 +33,14 @@ NeuralPiAudioProcessor::NeuralPiAudioProcessor()
     if (jsonFiles.size() > 0) {
         loadConfig(jsonFiles[current_model_index]);
     }
+
+    // Sort jsonFiles alphabetically
+    std::sort(jsonFiles.begin(), jsonFiles.end());
+
     // initialize parameters:
-    addParameter(gainParam = new AudioParameterFloat(GAIN_ID, GAIN_NAME, NormalisableRange<float>(-0.0f, 1.0f, 0.01f), 0.5f));
+    addParameter(gainParam = new AudioParameterFloat(GAIN_ID, GAIN_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.5f));
     addParameter(masterParam = new AudioParameterFloat(MASTER_ID, MASTER_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.5f));
-    addParameter(modelParam = new AudioParameterInt(MODEL_ID, MODEL_NAME, 0, jsonFiles.size()-1, 0));
+    addParameter(modelParam = new AudioParameterFloat(MODEL_ID, MODEL_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.0f));
 }
 
 
@@ -157,7 +161,8 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
     if (amp_state == 1) {
         auto gain = static_cast<float> (gainParam->get());
         auto master = static_cast<float> (masterParam->get());
-        auto model_index = static_cast<int> (modelParam->get());
+        auto model = static_cast<float> (modelParam->get());
+        model_index = getModelIndex(model);
 
         buffer.applyGain(gain);
 
@@ -196,7 +201,7 @@ void NeuralPiAudioProcessor::getStateInformation(MemoryBlock& destData)
 
     stream.writeFloat(*gainParam);
     stream.writeFloat(*masterParam);
-    stream.writeInt(*modelParam);
+    stream.writeFloat(*modelParam);
 }
 
 void NeuralPiAudioProcessor::setStateInformation(const void* data, int sizeInBytes)
@@ -205,7 +210,13 @@ void NeuralPiAudioProcessor::setStateInformation(const void* data, int sizeInByt
 
     gainParam->setValueNotifyingHost(stream.readFloat());
     masterParam->setValueNotifyingHost(stream.readFloat());
-    modelParam->setValueNotifyingHost(stream.readInt());
+    modelParam->setValueNotifyingHost(stream.readFloat());
+}
+
+int NeuralPiAudioProcessor::getModelIndex(float model_param)
+{
+    //return static_cast<int>(model_param * (jsonFiles.size() - 1.0));
+    return static_cast<int>(model_param * (num_models - 1.0));
 }
 
 void NeuralPiAudioProcessor::loadConfig(File configFile)
@@ -239,7 +250,10 @@ void NeuralPiAudioProcessor::addDirectory(const File& file)
         juce::Array<juce::File> results;
         file.findChildFiles(results, juce::File::findFiles, false, "*.json");
         for (int i = results.size(); --i >= 0;)
+        {
             jsonFiles.push_back(File(results.getReference(i).getFullPathName()));
+            num_models = num_models + 1.0;
+        }
     }
 }
 

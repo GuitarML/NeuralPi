@@ -66,6 +66,8 @@ public:
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    bool compareFunction(juce::File a, juce::File b);
+    int getModelIndex(float model_param);
     void loadConfig(File configFile);
     void setupDataDirectories();
     void installTones();
@@ -95,6 +97,8 @@ public:
     const char* char_filename = "";
     int model_loaded = 0;
     int current_model_index = 0;
+    float num_models = 0.0;
+    int model_index = 0; // Used in processBlock when converting slider param to model index
 
     RT_LSTM LSTM;
 
@@ -103,8 +107,7 @@ private:
 
     AudioParameterFloat* gainParam;
     AudioParameterFloat* masterParam;
-
-    AudioParameterInt* modelParam;
+    AudioParameterFloat* modelParam;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NeuralPiAudioProcessor)
