@@ -46,9 +46,17 @@ public:
     String gainAddressPattern{ "/parameter/NeuralPi/Gain" };
     String masterAddressPattern{ "/parameter/NeuralPi/Master" };
     String modelAddressPattern{ "/parameter/NeuralPi/Model" };
+    String bassAddressPattern{ "/parameter/NeuralPi/Bass" };
+    String midAddressPattern{ "/parameter/NeuralPi/Mid" };
+    String trebleAddressPattern{ "/parameter/NeuralPi/Treble" };
+    String presenceAddressPattern{ "/parameter/NeuralPi/Presence" };
 
     const String gainName{ "gain" };
     const String masterName{ "master" };
+    const String bassName{ "bass" };
+    const String midName{ "mid" };
+    const String trebleName{ "treble" };
+    const String presenceName{ "presence" };
 
     const String modelName{ "model" };
 
@@ -65,8 +73,17 @@ private:
     //ImageButton ampOnButton;
     //ImageButton ampLED;
     ComboBox modelSelect;
+    Slider ampBassKnob;
+    Slider ampMidKnob;
+    Slider ampTrebleKnob;
+    Slider ampPresenceKnob;
+
     Label GainLabel;
     Label LevelLabel;
+    Label BassLabel;
+    Label MidLabel;
+    Label TrebleLabel;
+    Label PresenceLabel;
 
     File test_file;
     File model_folder;
@@ -103,6 +120,11 @@ private:
     Slider& getGainSlider();
     Slider& getMasterSlider();
     Slider& getModelSlider();
+    Slider& getBassSlider();
+    Slider& getMidSlider();
+    Slider& getTrebleSlider();
+    Slider& getPresenceSlider();
+
     Label& getOutPortNumberField();
     Label& getInPortNumberField();
     Label& getIPField();

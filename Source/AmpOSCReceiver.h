@@ -24,6 +24,26 @@ public:
         return masterValue;
     }
 
+    Value& getBassValue()
+    {
+        return bassValue;
+    }
+
+    Value& getMidValue()
+    {
+        return midValue;
+    }
+
+    Value& getTrebleValue()
+    {
+        return trebleValue;
+    }
+
+    Value& getPresenceValue()
+    {
+        return presenceValue;
+    }
+
     Value& getModelValue()
     {
         return modelValue;
@@ -59,6 +79,10 @@ private:
     {
         gainAddressPattern = "/parameter/" + ampName + "/Gain";
         masterAddressPattern = "/parameter/" + ampName + "/Master";
+        bassAddressPattern = "/parameter/" + ampName + "/Bass";
+        midAddressPattern = "/parameter/" + ampName + "/Mid";
+        trebleAddressPattern = "/parameter/" + ampName + "/Treble";
+        presenceAddressPattern = "/parameter/" + ampName + "/Presence";
         modelAddressPattern = "/parameter/" + ampName + "/Model";
     }
 
@@ -78,6 +102,24 @@ private:
             {
                 masterValue.setValue(jlimit(0.0f, 1.0f, message[0].getFloat32()));
             }
+
+            if (message.getAddressPattern().matches(bassAddressPattern))
+            {
+                bassValue.setValue(jlimit(0.0f, 1.0f, message[0].getFloat32()));
+            }
+            else if (message.getAddressPattern().matches(midAddressPattern))
+            {
+                midValue.setValue(jlimit(0.0f, 1.0f, message[0].getFloat32()));
+            }
+
+            if (message.getAddressPattern().matches(trebleAddressPattern))
+            {
+                trebleValue.setValue(jlimit(0.0f, 1.0f, message[0].getFloat32()));
+            }
+            else if (message.getAddressPattern().matches(presenceAddressPattern))
+            {
+                presenceValue.setValue(jlimit(0.0f, 1.0f, message[0].getFloat32()));
+            }
             else if (message.getAddressPattern().matches(modelAddressPattern))
             {
                 modelValue.setValue(jlimit(0.0f, 1.0f, message[0].getFloat32()));
@@ -91,10 +133,18 @@ private:
     String ampName {"NeuralPi"};
     String gainAddressPattern {"/parameter/elk_juce_example/Gain"};
     String masterAddressPattern {"/parameter/elk_juce_example/Master"};
+    String bassAddressPattern {"/parameter/elk_juce_example/Bass"};
+    String midAddressPattern {"/parameter/elk_juce_example/Mid"};
+    String trebleAddressPattern {"/parameter/elk_juce_example/Treble"};
+    String presenceAddressPattern {"/parameter/elk_juce_example/Presence"};
     String modelAddressPattern {"/parameter/elk_juce_example/Model"};
 
-    Value gainValue {0.0f};
-    Value masterValue {0.0f};
+    Value gainValue {0.5f};
+    Value masterValue {0.5f};
+    Value bassValue {0.5f};
+    Value midValue {0.5f};
+    Value trebleValue {0.5f};
+    Value presenceValue {0.5f};
 
     Value modelValue {0.0f};
 

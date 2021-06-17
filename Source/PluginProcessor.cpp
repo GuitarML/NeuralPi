@@ -40,6 +40,10 @@ NeuralPiAudioProcessor::NeuralPiAudioProcessor()
     // initialize parameters:
     addParameter(gainParam = new AudioParameterFloat(GAIN_ID, GAIN_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.5f));
     addParameter(masterParam = new AudioParameterFloat(MASTER_ID, MASTER_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.5f));
+    addParameter(bassParam = new AudioParameterFloat(BASS_ID, BASS_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.5f));
+    addParameter(midParam = new AudioParameterFloat(MID_ID, MID_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.5f));
+    addParameter(trebleParam = new AudioParameterFloat(TREBLE_ID, TREBLE_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.5f));
+    addParameter(presenceParam = new AudioParameterFloat(PRESENCE_ID, PRESENCE_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.5f));
     addParameter(modelParam = new AudioParameterFloat(MODEL_ID, MODEL_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.0f));
 }
 
@@ -156,17 +160,26 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
     // Setup Audio Data
     const int numSamples = buffer.getNumSamples();
     const int numInputChannels = getTotalNumInputChannels();
+    const int sampleRate = getSampleRate();
 
     // Amp =============================================================================
     if (amp_state == 1) {
         auto gain = static_cast<float> (gainParam->get());
         auto master = static_cast<float> (masterParam->get());
+        // Note: Default 0.0 -> 1.0 param range is converted to +-8.0 here
+        auto bass = (static_cast<float> (bassParam->get() - 0.5) * 8.0);
+        auto mid = (static_cast<float> (midParam->get() - 0.5) * 8.0);
+        auto treble = (static_cast<float> (trebleParam->get() - 0.5) * 8.0);
+        auto presence = (static_cast<float> (presenceParam->get() - 0.5) * 8.0);
+
         auto model = static_cast<float> (modelParam->get());
         model_index = getModelIndex(model);
 
         buffer.applyGain(gain);
+        eq4band.setParameters(bass, mid, treble, presence);// Better to move this somewhere else? Only need to set when value changes
+        eq4band.process(buffer.getReadPointer(0), buffer.getWritePointer(0), midiMessages, numSamples, numInputChannels, sampleRate);
 
-		// Apply LSTM model
+        // Apply LSTM model
         if (model_loaded == 1) {
             if (current_model_index != model_index) {
                 loadConfig(jsonFiles[model_index]);
@@ -201,6 +214,10 @@ void NeuralPiAudioProcessor::getStateInformation(MemoryBlock& destData)
 
     stream.writeFloat(*gainParam);
     stream.writeFloat(*masterParam);
+    stream.writeFloat(*bassParam);
+    stream.writeFloat(*midParam);
+    stream.writeFloat(*trebleParam);
+    stream.writeFloat(*presenceParam);
     stream.writeFloat(*modelParam);
 }
 
@@ -210,6 +227,10 @@ void NeuralPiAudioProcessor::setStateInformation(const void* data, int sizeInByt
 
     gainParam->setValueNotifyingHost(stream.readFloat());
     masterParam->setValueNotifyingHost(stream.readFloat());
+    bassParam->setValueNotifyingHost(stream.readFloat());
+    midParam->setValueNotifyingHost(stream.readFloat());
+    trebleParam->setValueNotifyingHost(stream.readFloat());
+    presenceParam->setValueNotifyingHost(stream.readFloat());
     modelParam->setValueNotifyingHost(stream.readFloat());
 }
 
@@ -225,6 +246,7 @@ void NeuralPiAudioProcessor::loadConfig(File configFile)
     model_loaded = 1;
     String path = configFile.getFullPathName();
     char_filename = path.toUTF8();
+    // TODO Add check here for invalid files
 
     LSTM.load_json(char_filename);
 
@@ -320,6 +342,11 @@ void NeuralPiAudioProcessor::installTones()
         myfile.close();
     }
     
+}
+
+void NeuralPiAudioProcessor::set_ampEQ(float bass_slider, float mid_slider, float treble_slider, float presence_slider)
+{
+    eq4band.setParameters(bass_slider, mid_slider, treble_slider, presence_slider);
 }
 
 float NeuralPiAudioProcessor::convertLogScale(float in_value, float x_min, float x_max, float y_min, float y_max)

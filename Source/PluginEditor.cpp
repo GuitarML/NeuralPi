@@ -159,18 +159,188 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
         }
     };
 
+
+    addAndMakeVisible(ampBassKnob);
+    ampBassKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
+    ampBassKnob.setNumDecimalPlacesToDisplay(1);
+    ampBassKnob.addListener(this);
+    ampBassKnob.setRange(0.0, 1.0);
+    ampBassKnob.setValue(0.5);
+    ampBassKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
+    ampBassKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
+    ampBassKnob.setNumDecimalPlacesToDisplay(1);
+    ampBassKnob.setDoubleClickReturnValue(true, 0.5);
+
+    auto bassValue = getParameterValue(bassName);
+    Slider& bassSlider = getBassSlider();
+    bassSlider.setValue(bassValue, NotificationType::dontSendNotification);
+
+    ampBassKnob.onValueChange = [this]
+    {
+        const float sliderValue = static_cast<float> (getBassSlider().getValue());
+        const float bassValue = getParameterValue(bassName);
+
+        if (!approximatelyEqual(bassValue, sliderValue))
+        {
+            setParameterValue(bassName, sliderValue);
+
+            // create and send an OSC message with an address and a float value:
+            float value = static_cast<float> (getBassSlider().getValue());
+
+            if (!oscSender.send(bassAddressPattern, value))
+            {
+                updateOutConnectedLabel(false);
+            }
+            else
+            {
+                DBG("Sent value " + String(value) + " to AP " + bassAddressPattern);
+            }
+        }
+    };
+
+    addAndMakeVisible(ampMidKnob);
+    ampMidKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
+    ampMidKnob.setNumDecimalPlacesToDisplay(1);
+    ampMidKnob.addListener(this);
+    ampMidKnob.setRange(0.0, 1.0);
+    ampMidKnob.setValue(0.5);
+    ampMidKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
+    ampMidKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
+    ampMidKnob.setNumDecimalPlacesToDisplay(1);
+    ampMidKnob.setDoubleClickReturnValue(true, 0.5);
+
+    auto midValue = getParameterValue(midName);
+    Slider& midSlider = getMidSlider();
+    midSlider.setValue(midValue, NotificationType::dontSendNotification);
+
+    ampMidKnob.onValueChange = [this]
+    {
+        const float sliderValue = static_cast<float> (getMidSlider().getValue());
+        const float midValue = getParameterValue(midName);
+
+        if (!approximatelyEqual(midValue, sliderValue))
+        {
+            setParameterValue(midName, sliderValue);
+
+            // create and send an OSC message with an address and a float value:
+            float value = static_cast<float> (getMidSlider().getValue());
+
+            if (!oscSender.send(midAddressPattern, value))
+            {
+                updateOutConnectedLabel(false);
+            }
+            else
+            {
+                DBG("Sent value " + String(value) + " to AP " + midAddressPattern);
+            }
+        }
+    };
+
+    addAndMakeVisible(ampTrebleKnob);
+    ampTrebleKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
+    ampTrebleKnob.setNumDecimalPlacesToDisplay(1);
+    ampTrebleKnob.addListener(this);
+    ampTrebleKnob.setRange(0.0, 1.0);
+    ampTrebleKnob.setValue(0.5);
+    ampTrebleKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
+    ampTrebleKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
+    ampTrebleKnob.setNumDecimalPlacesToDisplay(1);
+    ampTrebleKnob.setDoubleClickReturnValue(true, 0.5);
+
+    auto trebleValue = getParameterValue(trebleName);
+    Slider& trebleSlider = getTrebleSlider();
+    trebleSlider.setValue(trebleValue, NotificationType::dontSendNotification);
+
+    ampTrebleKnob.onValueChange = [this]
+    {
+        const float sliderValue = static_cast<float> (getTrebleSlider().getValue());
+        const float trebleValue = getParameterValue(trebleName);
+
+        if (!approximatelyEqual(trebleValue, sliderValue))
+        {
+            setParameterValue(trebleName, sliderValue);
+
+            // create and send an OSC message with an address and a float value:
+            float value = static_cast<float> (getTrebleSlider().getValue());
+
+            if (!oscSender.send(trebleAddressPattern, value))
+            {
+                updateOutConnectedLabel(false);
+            }
+            else
+            {
+                DBG("Sent value " + String(value) + " to AP " + trebleAddressPattern);
+            }
+        }
+    };
+
+    addAndMakeVisible(ampPresenceKnob);
+    ampPresenceKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
+    ampPresenceKnob.setNumDecimalPlacesToDisplay(1);
+    ampPresenceKnob.addListener(this);
+    ampPresenceKnob.setRange(0.0, 1.0);
+    ampPresenceKnob.setValue(0.5);
+    ampPresenceKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
+    ampPresenceKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
+    ampPresenceKnob.setNumDecimalPlacesToDisplay(1);
+    ampPresenceKnob.setDoubleClickReturnValue(true, 0.5);
+
+    auto presenceValue = getParameterValue(trebleName);
+    Slider& presenceSlider = getPresenceSlider();
+    trebleSlider.setValue(presenceValue, NotificationType::dontSendNotification);
+
+    ampPresenceKnob.onValueChange = [this]
+    {
+        const float sliderValue = static_cast<float> (getPresenceSlider().getValue());
+        const float presenceValue = getParameterValue(presenceName);
+
+        if (!approximatelyEqual(presenceValue, sliderValue))
+        {
+            setParameterValue(presenceName, sliderValue);
+
+            // create and send an OSC message with an address and a float value:
+            float value = static_cast<float> (getPresenceSlider().getValue());
+
+            if (!oscSender.send(presenceAddressPattern, value))
+            {
+                updateOutConnectedLabel(false);
+            }
+            else
+            {
+                DBG("Sent value " + String(value) + " to AP " + presenceAddressPattern);
+            }
+        }
+    };
+
     addAndMakeVisible(GainLabel);
     GainLabel.setText("Gain", juce::NotificationType::dontSendNotification);
     GainLabel.setJustificationType(juce::Justification::centred);
     addAndMakeVisible(LevelLabel);
     LevelLabel.setText("Level", juce::NotificationType::dontSendNotification);
     LevelLabel.setJustificationType(juce::Justification::centred);
+
+    addAndMakeVisible(BassLabel);
+    BassLabel.setText("Bass", juce::NotificationType::dontSendNotification);
+    BassLabel.setJustificationType(juce::Justification::centred);
+    addAndMakeVisible(MidLabel);
+    MidLabel.setText("Mid", juce::NotificationType::dontSendNotification);
+    MidLabel.setJustificationType(juce::Justification::centred);
+    addAndMakeVisible(TrebleLabel);
+    TrebleLabel.setText("Treble", juce::NotificationType::dontSendNotification);
+    TrebleLabel.setJustificationType(juce::Justification::centred);
+    addAndMakeVisible(PresenceLabel);
+    PresenceLabel.setText("Presence", juce::NotificationType::dontSendNotification);
+    PresenceLabel.setJustificationType(juce::Justification::centred);
+
     auto font = GainLabel.getFont();
     float height = font.getHeight();
     font.setHeight(height); // 0.75);
     GainLabel.setFont(font);
     LevelLabel.setFont(font);
-
+    BassLabel.setFont(font);
+    MidLabel.setFont(font);
+    TrebleLabel.setFont(font);
+    PresenceLabel.setFont(font);
 
     // Name controls:
     addAndMakeVisible(ampNameLabel);
@@ -204,6 +374,11 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     oscReceiver.getGainValue().addListener(this);
     oscReceiver.getMasterValue().addListener(this);
 
+    oscReceiver.getBassValue().addListener(this);
+    oscReceiver.getMidValue().addListener(this);
+    oscReceiver.getTrebleValue().addListener(this);
+    oscReceiver.getPresenceValue().addListener(this);
+
     oscReceiver.getModelValue().addListener(this);
 
     updateInConnectedLabel();
@@ -211,7 +386,7 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     connectSender();
 
     // Size of plugin GUI
-    setSize(250, 350);
+    setSize(250, 430);
 
 }
 
@@ -235,24 +410,33 @@ void NeuralPiAudioProcessorEditor::resized()
     modelKnob.setBounds(140, 40, 75, 95);
 
     // Amp Widgets
-    ampGainKnob.setBounds(30, 85, 75, 95);
-    ampMasterKnob.setBounds(140, 85, 75, 95);
-    GainLabel.setBounds(28, 163, 80, 10);
-    LevelLabel.setBounds(138, 163, 80, 10);
+    ampGainKnob.setBounds(30, 72, 75, 95);
+    ampMasterKnob.setBounds(140, 72, 75, 95);
+    ampBassKnob.setBounds(30, 155, 75, 95);
+    ampMidKnob.setBounds(140, 155, 75, 95);
+    ampTrebleKnob.setBounds(30, 235, 75, 95);
+    ampPresenceKnob.setBounds(140, 235, 75, 95);
+
+    GainLabel.setBounds(28, 150, 80, 10);
+    LevelLabel.setBounds(138, 150, 80, 10);
+    BassLabel.setBounds(28, 233, 80, 10);
+    MidLabel.setBounds(138, 233, 80, 10);
+    TrebleLabel.setBounds(28, 313, 80, 10);
+    PresenceLabel.setBounds(138, 313, 80, 10);
 
     addAndMakeVisible(ampNameLabel);
     ampNameField.setEditable(true, true, true);
     addAndMakeVisible(ampNameField);
 
     // IP controls:
-    ipField.setBounds(150, 220, 100, 25);
-    ipLabel.setBounds(15, 220, 150, 25);
+    ipField.setBounds(150, 330, 100, 25);
+    ipLabel.setBounds(15, 330, 150, 25);
 
     // Port controls:
-    outPortNumberLabel.setBounds(15, 260, 150, 25);
-    outPortNumberField.setBounds(160, 260, 75, 25);
-    inPortNumberLabel.setBounds(15, 300, 150, 25);
-    inPortNumberField.setBounds(160, 300, 75, 25);
+    outPortNumberLabel.setBounds(15, 365, 150, 25);
+    outPortNumberField.setBounds(160, 365, 75, 25);
+    inPortNumberLabel.setBounds(15, 400, 150, 25);
+    inPortNumberField.setBounds(160, 400, 75, 25);
 }
 
 void NeuralPiAudioProcessorEditor::modelSelectChanged()
@@ -316,8 +500,22 @@ void NeuralPiAudioProcessorEditor::sliderValueChanged(Slider* slider)
     if (slider == &modelKnob)
         if (slider->getValue() >= 0 && slider->getValue() < processor.jsonFiles.size()) {
             modelSelect.setSelectedItemIndex(processor.getModelIndex(slider->getValue()), juce::NotificationType::dontSendNotification);
-        }      
+        }
 }
+/*
+    else if (slider == &ampBassKnob || slider == &ampMidKnob || slider == &ampTrebleKnob) {
+        processor.set_ampEQ(ampBassKnob.getValue(), ampMidKnob.getValue(), ampTrebleKnob.getValue(), ampPresenceKnob.getValue());
+        // Set knob states for saving positions when closing/reopening GUI
+        processor.ampBassKnobState = ampBassKnob.getValue();
+        processor.ampMidKnobState = ampMidKnob.getValue();
+        processor.ampTrebleKnobState = ampTrebleKnob.getValue();
+    }
+    else if (slider == &ampPresenceKnob) {
+        processor.set_ampEQ(ampBassKnob.getValue(), ampMidKnob.getValue(), ampTrebleKnob.getValue(), ampPresenceKnob.getValue());
+    }
+}
+*/
+
 
 // OSC Messages
 Slider& NeuralPiAudioProcessorEditor::getGainSlider()
@@ -328,6 +526,26 @@ Slider& NeuralPiAudioProcessorEditor::getGainSlider()
 Slider& NeuralPiAudioProcessorEditor::getMasterSlider()
 {
     return ampMasterKnob;
+}
+
+Slider& NeuralPiAudioProcessorEditor::getBassSlider()
+{
+    return ampBassKnob;
+}
+
+Slider& NeuralPiAudioProcessorEditor::getMidSlider()
+{
+    return ampMidKnob;
+}
+
+Slider& NeuralPiAudioProcessorEditor::getTrebleSlider()
+{
+    return ampTrebleKnob;
+}
+
+Slider& NeuralPiAudioProcessorEditor::getPresenceSlider()
+{
+    return ampPresenceKnob;
 }
 
 Slider& NeuralPiAudioProcessorEditor::getModelSlider()
@@ -370,6 +588,10 @@ void NeuralPiAudioProcessorEditor::buildAddressPatterns()
 {
     gainAddressPattern = "/parameter/" + ampName + "/Gain";
     masterAddressPattern = "/parameter/" + ampName + "/Master";
+    bassAddressPattern = "/parameter/" + ampName + "/Bass";
+    midAddressPattern = "/parameter/" + ampName + "/Mid";
+    trebleAddressPattern = "/parameter/" + ampName + "/Treble";
+    presenceAddressPattern = "/parameter/" + ampName + "/Presence";
     modelAddressPattern = "/parameter/" + ampName + "/Model";
 }
 
@@ -470,6 +692,38 @@ void NeuralPiAudioProcessorEditor::valueChanged(Value& value)
                 NotificationType::sendNotification);
         }
     }
+    if (value.refersToSameSourceAs(oscReceiver.getBassValue()))
+    {
+        if (!approximatelyEqual(static_cast<double> (value.getValue()), getBassSlider().getValue()))
+        {
+            getBassSlider().setValue(static_cast<double> (value.getValue()),
+                NotificationType::sendNotification);
+        }
+    }
+    else if (value.refersToSameSourceAs(oscReceiver.getMidValue()))
+    {
+        if (!approximatelyEqual(static_cast<double> (value.getValue()), getMidSlider().getValue()))
+        {
+            getMidSlider().setValue(static_cast<double> (value.getValue()),
+                NotificationType::sendNotification);
+        }
+    }
+    if (value.refersToSameSourceAs(oscReceiver.getTrebleValue()))
+    {
+        if (!approximatelyEqual(static_cast<double> (value.getValue()), getTrebleSlider().getValue()))
+        {
+            getTrebleSlider().setValue(static_cast<double> (value.getValue()),
+                NotificationType::sendNotification);
+        }
+    }
+    else if (value.refersToSameSourceAs(oscReceiver.getPresenceValue()))
+    {
+        if (!approximatelyEqual(static_cast<double> (value.getValue()), getPresenceSlider().getValue()))
+        {
+            getPresenceSlider().setValue(static_cast<double> (value.getValue()),
+                NotificationType::sendNotification);
+        }
+    }
     else if (value.refersToSameSourceAs(oscReceiver.getModelValue()))
     {
         if (!approximatelyEqual(static_cast<double> (value.getValue()), getModelSlider().getValue()))
@@ -484,6 +738,10 @@ void NeuralPiAudioProcessorEditor::timerCallback()
 {
     getGainSlider().setValue(getParameterValue(gainName), NotificationType::dontSendNotification);
     getMasterSlider().setValue(getParameterValue(masterName), NotificationType::dontSendNotification);
+    getBassSlider().setValue(getParameterValue(bassName), NotificationType::dontSendNotification);
+    getMidSlider().setValue(getParameterValue(midName), NotificationType::dontSendNotification);
+    getTrebleSlider().setValue(getParameterValue(trebleName), NotificationType::dontSendNotification);
+    getPresenceSlider().setValue(getParameterValue(presenceName), NotificationType::dontSendNotification);
     getModelSlider().setValue(getParameterValue(modelName), NotificationType::dontSendNotification);
 }
 

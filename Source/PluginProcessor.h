@@ -11,6 +11,7 @@
 #include <nlohmann/json.hpp>
 #include "RTNeuralLSTM.h"
 #include "AmpOSCReceiver.h"
+#include "Eq4Band.h"
 
 #pragma once
 
@@ -22,6 +23,14 @@
 #define MODEL_NAME "Model"
 #define MASTER_ID "master"
 #define MASTER_NAME "Master"
+#define BASS_ID "bass"
+#define BASS_NAME "Bass"
+#define MID_ID "mid"
+#define MID_NAME "Mid"
+#define TREBLE_ID "treble"
+#define TREBLE_NAME "Treble"
+#define PRESENCE_ID "presence"
+#define PRESENCE_NAME "Presence"
 
 //==============================================================================
 /**
@@ -71,6 +80,8 @@ public:
     void loadConfig(File configFile);
     void setupDataDirectories();
     void installTones();
+
+    void set_ampEQ(float bass_slider, float mid_slider, float treble_slider, float presence_slider);
     
     // Overdrive Pedal
     float convertLogScale(float in_value, float x_min, float x_max, float y_min, float y_max);
@@ -79,6 +90,7 @@ public:
     /*
     void set_ampDrive(float db_ampCleanDrive);
     void set_ampMaster(float db_ampMaster);
+    void set_ampEQ(float bass_slider, float mid_slider, float treble_slider, float presence_slider);
     */
     float decibelToLinear(float dbValue);
 
@@ -104,9 +116,14 @@ public:
 
 private:
     var dummyVar;
+    Eq4Band eq4band; // Amp EQ
 
     AudioParameterFloat* gainParam;
     AudioParameterFloat* masterParam;
+    AudioParameterFloat* bassParam;
+    AudioParameterFloat* midParam;
+    AudioParameterFloat* trebleParam;
+    AudioParameterFloat* presenceParam;
     AudioParameterFloat* modelParam;
 
     //==============================================================================
