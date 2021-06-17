@@ -167,15 +167,15 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
         auto gain = static_cast<float> (gainParam->get());
         auto master = static_cast<float> (masterParam->get());
         // Note: Default 0.0 -> 1.0 param range is converted to +-8.0 here
-        auto bass = (static_cast<float> (bassParam->get() - 0.5) * 8.0);
-        auto mid = (static_cast<float> (midParam->get() - 0.5) * 8.0);
-        auto treble = (static_cast<float> (trebleParam->get() - 0.5) * 8.0);
-        auto presence = (static_cast<float> (presenceParam->get() - 0.5) * 8.0);
+        auto bass = (static_cast<float> (bassParam->get() - 0.5) * 16.0);
+        auto mid = (static_cast<float> (midParam->get() - 0.5) * 16.0);
+        auto treble = (static_cast<float> (trebleParam->get() - 0.5) * 16.0);
+        auto presence = (static_cast<float> (presenceParam->get() - 0.5) * 16.0);
 
         auto model = static_cast<float> (modelParam->get());
         model_index = getModelIndex(model);
 
-        buffer.applyGain(gain);
+        buffer.applyGain(gain * 2.0);
         eq4band.setParameters(bass, mid, treble, presence);// Better to move this somewhere else? Only need to set when value changes
         eq4band.process(buffer.getReadPointer(0), buffer.getWritePointer(0), midiMessages, numSamples, numInputChannels, sampleRate);
 
@@ -189,7 +189,7 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
         }
 
         //    Master Volume 
-        buffer.applyGain(master);
+        buffer.applyGain(master * 2.0);
     }
     
     for (int ch = 1; ch < buffer.getNumChannels(); ++ch)
