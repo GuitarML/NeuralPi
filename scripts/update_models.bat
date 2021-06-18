@@ -16,7 +16,7 @@ set "rpi_ip_address=127.0.0.1"
 
 
 :: Typical Windows 10 Path, edit <YOUR_USERNAME> with your Windows Username
-set "host_model_path=C:/Users/<YOUR_USERNAME>/AppData/Roaming/GuitarML/NeuralPi/tones"
+set "host_model_path=C:/Users/<YOUR_USERNAME>/Documents/GuitarML/NeuralPi/tones"
 
 
 :: Rpi with Elk OS Path (shouldn't need to change)
