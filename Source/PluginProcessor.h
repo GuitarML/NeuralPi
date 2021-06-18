@@ -98,7 +98,7 @@ public:
     void resetDirectory(const File& file);
     std::vector<File> jsonFiles;
     File currentDirectory = File::getCurrentWorkingDirectory().getFullPathName();
-    File userAppDataDirectory = File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile(JucePlugin_Manufacturer).getChildFile(JucePlugin_Name);
+    File userAppDataDirectory = File::getSpecialLocation(File::userDocumentsDirectory).getChildFile(JucePlugin_Manufacturer).getChildFile(JucePlugin_Name);
     File userAppDataDirectory_tones = userAppDataDirectory.getFullPathName() + "/tones";
 
     // Pedal/amp states
