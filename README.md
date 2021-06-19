@@ -16,11 +16,11 @@ There are four main components to the guitar pedal:
 4. NeuralPi VST3 plugin
 
 ![app](https://github.com/GuitarML/NeuralPi/blob/main/resources/neuralpi_pic.jpg)
-<br>This is the normal VST3 plugin, which can be compiled for Windows/Mac/Linux using JUCE. It includes a model import feature, dropdown menu, and gain/level controls. The plugin compiled for Elk Audio OS is headless, meaning there is no GUI.
+<br>This is the normal plugin, available for Windows (Standalone, VST3) and Mac (Standalone, AU, VST3)
 
 ## Installing the plugin
 
-For the cross-compiled Raspberry Pi / Elk Audio OS compatible VST3 plugin, download [here](https://github.com/GuitarML/NeuralPi/releases/tag/v1.0).
+See the Release page for the cross-compiled Raspberry Pi / Elk Audio OS compatible VST3 plugin and Win/Mac installers.
 
 WARNING: The audio output of the NeuralPi is at line level. Guitar amplifiers expect a low level electric guitar signal (instrument level). When using the NeuralPi with a guitar amp, start with the master volume at 0 and SLOWLY increase from there. 
 
@@ -57,7 +57,23 @@ The HiFiBerry DAC+ADC card used for this project provides 192kHz/24bit Analog-to
 
 To build the plugin for use on the Raspberry Pi with Elk Audio OS, see the official [Elk Audio Documentation](https://elk-audio.github.io/elk-docs/html/documents/building_plugins_for_elk.html#vst-plugins-using-juce)
 
-To build for Windows/Mac/Linux:
+### Build with Cmake
+
+```bash
+# Clone the repository
+$ git clone https://github.com/GuitarML/NeuralPi.git
+$ cd NeuralPi
+
+# initialize and set up submodules
+$ git submodule update --init --recursive
+
+# build with CMake
+$ cmake -Bbuild
+$ cmake --build build --config Release
+```
+The binaries will be located in `NeuralPi/build/NeuralPi_artefacts/`
+
+### Build with Projucer
 
 1. Clone or download this repository.
 2. Download and install [JUCE](https://juce.com/) This project uses the "Projucer" application from the JUCE website. 
