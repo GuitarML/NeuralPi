@@ -1,6 +1,6 @@
 # NeuralPi
 
-NeuralPi is a guitar pedal using neural networks to emulate real amps and pedals on a Raspberry Pi 4. The NeuralPi software is a VST3 plugin built with JUCE, which can be run as a normal audio plugin or cross-compiled to run on the Raspberry Pi 4 with [Elk Audio OS](https://elk.audio/). NeuralPi is intended as a bare-bones plugin to build on. The pedal runs high quality amp/pedal models on an economical DIY setup, costing around $120 for hardware to build yourself. <br>
+NeuralPi is a guitar pedal using neural networks to emulate real amps and pedals on a Raspberry Pi 4. The NeuralPi software is a VST3 plugin built with JUCE, which can be run as a normal audio plugin or cross-compiled to run on the Raspberry Pi 4 with [Elk Audio OS](https://elk.audio/). The NeuralPi includes model selection, EQ, and gain/volume controls from a remote instance of the plugin over WiFi. The pedal runs high quality amp/pedal models on an economical DIY setup, costing around $120 for hardware to build yourself. <br>
 Check out a video demo on [YouTube](https://www.youtube.com/watch?v=_3zFD6h6Wrc)<br>
 Check out the step by step build guide published on [Towards Data Science](https://towardsdatascience.com/neural-networks-for-real-time-audio-raspberry-pi-guitar-pedal-bded4b6b7f31)
 
@@ -24,25 +24,20 @@ For the cross-compiled Raspberry Pi / Elk Audio OS compatible VST3 plugin, downl
 
 WARNING: The audio output of the NeuralPi is at line level. Guitar amplifiers expect a low level electric guitar signal (instrument level). When using the NeuralPi with a guitar amp, start with the master volume at 0 and SLOWLY increase from there. 
 
-## Changing Models
+## Adding New Models
 
-The NeuralPi running on Elk will load one model per instance of the plugin. By default this is the "bj_model_best.json" file. Model select controls will be added in the future, but for now you must overwrite this file to load different models. On Elk Audio OS, the models will be installed here after running the plugin for the first time:
+Once your NeuralPi is set up, you can add new models from a remote computer using the following steps:
 
-```/home/mind/.config/JUCE/NeuralPi/tones```
-
-Backup the Blues Junior amp model with this:
-
-```cp bj_model_best.json bj_backup.json```
-
-And overwrite the original model to try a new one:
-
-```cp ts9_model_best.json bj_model_best.json```
-
-If you need to revert back to the original state, remove the ```/tones``` folder and restart the plugin. The "bj_model_best.json" is a Fender Blues Jr. amplifier at full gain, and the "ts9_model_best.json" is the Ibanez TS9 overdrive pedal at full drive.
+1. From the remote computer, run the plugin and add new models using the "Import Tone" button. Optionally, you can manually add new json files to the ```Documents/GuitarML/Chameleon/tones``` directory.
+   Note: The "tones" directory is created the first time you run NeuralPi.
+2. Turn on your WiFi enabled NeuralPi (see [Elk documentation](https://elk-audio.github.io/elk-docs/html/documents/working_with_elk_board.html?highlight=wifi#connecting-to-your-board) for connecting the Raspberry Pi to a local WiFi network)
+3. Download the ```update_models.bat```(Windows) or ```update_models.sh```(Mac/Linux) to your remote computer. These scripts are located in the "scripts/" directory of this repository. You must change the ```rpi_ip_address``` and ```host_model_path``` to the Raspberry Pi's IP address and path to your json tones (on remote computer). The json files will be first copied from the remote computer to the NeuralPi, and then back from the NeuralPi to the remote computer. This allows updating models from the NeuralPi when you connect a new remote computer.
+4. From the remote computer connected to the same local WiFi network as NeuralPi, run the ```update_models.bat```(Windows) or ```update_models.sh```(Mac/Linux) from a cmd terminal. <br><br>
+Note: It is important that all models files have unique names with no spaces. <br>
+Note: Ensure from the terminal output that you were able to connect over WiFi, and that the model files were copied properly. <br><br>
+6. Restart both the NeuralPi and the remote instance of the NeuralPi plugin. From the remote NeuralPi GUI, enter the Raspberry Pi's IP address. As long as both devices are connected to the local WiFi network, you will be able select models from the NeuralPi plugin dropdown list to change models running on the Raspberry Pi.
 
 ## To Do
-
-Currently, the NeuralPi plugin running on Elk OS has no user controls. It runs a single model that can be swapped out before running the plugin. The next step is to add user controls via OSC messages, so that a remote instance of the plugin can control the NeuralPi over Wifi. These controls will include Gain/Volume, EQ, and model selection. 
 
 Elk Audio OS also supports physical controls through [Sensei](https://github.com/elk-audio/sensei). Gain/Volume and EQ knobs can be added, as well as a LCD screen for selecting different models. One could build an actual guitar pedal with NeuralPi and any number of other digital effects and controls.
 

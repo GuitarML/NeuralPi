@@ -17,9 +17,8 @@ rpi_ip_address=127.0.0.1  # Update this field with the Raspberry Pi's IP address
 
 # Uncomment the appropriate path for your computer:
 
-# host_model_path=~/.config/GuitarML/NeuralPi/tones   #Typical Linux Path
-# host_model_path=/Library/GuitarML/NeuralPi/tones    #Typical Mac Path (System Install)
-# host_model_path=~/Library/GuitarML/NeuralPi/tones   #Typical Mac Path (User Install)
+# host_model_path=~/Documents/GuitarML/NeuralPi/tones   #Typical Linux Path
+# host_model_path=~/Documents/GuitarML/NeuralPi/tones   #Typical Mac Path
 
 
 rpi_model_path=/home/mind/.config/GuitarML/NeuralPi/tones # Rpi with Elk OS Path (shouldn't need to change)
