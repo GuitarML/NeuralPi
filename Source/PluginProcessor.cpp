@@ -194,7 +194,7 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
         }
 
         //    Master Volume 
-        buffer.applyGain(master * 2.0);
+        buffer.applyGain(master);
     }
 
     // process DC blocker

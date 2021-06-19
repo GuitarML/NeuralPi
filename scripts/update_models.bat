@@ -20,7 +20,7 @@ set "host_model_path=C:/Users/<YOUR_USERNAME>/Documents/GuitarML/NeuralPi/tones"
 
 
 :: Rpi with Elk OS Path (shouldn't need to change)
-set "rpi_model_path=/home/mind/.config/GuitarML/NeuralPi/tones"
+set "rpi_model_path=/home/mind/Documents/GuitarML/NeuralPi/tones"
 
 :: ############################################################################
 
