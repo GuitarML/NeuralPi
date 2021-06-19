@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT name="NeuralPi" companyName="GuitarML" version="1.0.0" companyWebsite="http://juce.com"
+<JUCERPROJECT name="NeuralPi" companyName="GuitarML" version="1.0.0" companyWebsite="https://guitarml.com"
               defines="PIP_JUCE_EXAMPLES_DIRECTORY=L2hvbWUvaWxpYXMvd29ya3NwYWNlcy9KVUNFL2V4YW1wbGVz"
-              projectType="audioplug" pluginManufacturer="JUCE" pluginAUIsSandboxSafe="1"
+              projectType="audioplug" pluginManufacturer="GuitarML" pluginAUIsSandboxSafe="1"
               pluginFormats="buildStandalone,buildVST3" id="vXK47v" jucerFormatVersion="1"
               displaySplashScreen="1">
   <MAINGROUP id="zI9r2C" name="NeuralPi">
     <GROUP id="{810D2D07-FCAC-0F25-F63F-DCF49FEE10C7}" name="Resources">
       <FILE id="V1lm9D" name="bj_model_best.json" compile="0" resource="1"
             file="models/bj_model_best.json"/>
+      <FILE id="JubKNX" name="npi_background.jpg" compile="0" resource="1"
+            file="resources/npi_background.jpg"/>
       <FILE id="lkEjdY" name="ts9_model_best.json" compile="0" resource="1"
             file="models/ts9_model_best.json"/>
     </GROUP>
     <GROUP id="{70CE292C-E9C5-C029-B95A-F7DF41E5F74C}" name="Source">
+      <FILE id="VgCJPH" name="AmpOSCReceiver.h" compile="0" resource="0"
+            file="Source/AmpOSCReceiver.h"/>
+      <FILE id="s1HQuK" name="Eq4Band.cpp" compile="1" resource="0" file="Source/Eq4Band.cpp"/>
+      <FILE id="xtLEtv" name="Eq4Band.h" compile="0" resource="0" file="Source/Eq4Band.h"/>
       <FILE id="hNjQV9" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
       <FILE id="BweFTe" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
@@ -68,7 +74,8 @@
     </LINUX_MAKE>
     <VS2019 targetFolder="Builds/VisualStudio2019">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="NeuralPi"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="NeuralPi" headerPath="C:\Users\rache\Desktop\dev\json-develop\include&#10;C:\Users\rache\Desktop\dev\NeuralPi\modules\RTNeural&#10;C:\Users\rache\Desktop\dev\NeuralPi\modules\RTNeural\modules\xsimd\include"
+                       defines="USE_XSIMD=1"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="NeuralPi" headerPath="C:\Users\rache\Desktop\dev\json-develop\include&#10;C:\Users\rache\Desktop\dev\NeuralPi\modules\RTNeural&#10;C:\Users\rache\Desktop\dev\NeuralPi\modules\RTNeural\modules\xsimd\include"
                        defines="USE_XSIMD=1"/>
       </CONFIGURATIONS>

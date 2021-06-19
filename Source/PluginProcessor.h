@@ -10,11 +10,27 @@
 
 #include <nlohmann/json.hpp>
 #include "RTNeuralLSTM.h"
+#include "AmpOSCReceiver.h"
+#include "Eq4Band.h"
 
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
-// USE_RTNEURAL 1
+
+#define GAIN_ID "gain"
+#define GAIN_NAME "Gain"
+#define MODEL_ID "model"
+#define MODEL_NAME "Model"
+#define MASTER_ID "master"
+#define MASTER_NAME "Master"
+#define BASS_ID "bass"
+#define BASS_NAME "Bass"
+#define MID_ID "mid"
+#define MID_NAME "Mid"
+#define TREBLE_ID "treble"
+#define TREBLE_NAME "Treble"
+#define PRESENCE_ID "presence"
+#define PRESENCE_NAME "Presence"
 
 //==============================================================================
 /**
@@ -59,24 +75,30 @@ public:
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    bool compareFunction(juce::File a, juce::File b);
+    int getModelIndex(float model_param);
     void loadConfig(File configFile);
     void setupDataDirectories();
     void installTones();
+
+    void set_ampEQ(float bass_slider, float mid_slider, float treble_slider, float presence_slider);
     
     // Overdrive Pedal
     float convertLogScale(float in_value, float x_min, float x_max, float y_min, float y_max);
 
     // Amp
+    /*
     void set_ampDrive(float db_ampCleanDrive);
     void set_ampMaster(float db_ampMaster);
-
+    void set_ampEQ(float bass_slider, float mid_slider, float treble_slider, float presence_slider);
+    */
     float decibelToLinear(float dbValue);
 
     void addDirectory(const File& file);
     void resetDirectory(const File& file);
     std::vector<File> jsonFiles;
     File currentDirectory = File::getCurrentWorkingDirectory().getFullPathName();
-    File userAppDataDirectory = File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile(JucePlugin_Manufacturer).getChildFile(JucePlugin_Name);
+    File userAppDataDirectory = File::getSpecialLocation(File::userDocumentsDirectory).getChildFile(JucePlugin_Manufacturer).getChildFile(JucePlugin_Name);
     File userAppDataDirectory_tones = userAppDataDirectory.getFullPathName() + "/tones";
 
     // Pedal/amp states
@@ -87,20 +109,24 @@ public:
     const char* char_filename = "";
     int model_loaded = 0;
     int current_model_index = 0;
-
-    // Amp knob states
-    float ampGainKnobState = 0.0;
-    float ampMasterKnobState = -24.0;
+    float num_models = 0.0;
+    int model_index = 0; // Used in processBlock when converting slider param to model index
 
     RT_LSTM LSTM;
 
-
 private:
-    // Amp
-    float ampDrive = 1.0;
-    float ampMaster = 1.0;
-
     var dummyVar;
+    Eq4Band eq4band; // Amp EQ
+
+    AudioParameterFloat* gainParam;
+    AudioParameterFloat* masterParam;
+    AudioParameterFloat* bassParam;
+    AudioParameterFloat* midParam;
+    AudioParameterFloat* trebleParam;
+    AudioParameterFloat* presenceParam;
+    AudioParameterFloat* modelParam;
+
+    dsp::IIR::Filter<float> dcBlocker;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NeuralPiAudioProcessor)
