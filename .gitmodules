@@ -1,3 +1,12 @@
 [submodule "modules/RTNeural"]
 	path = modules/RTNeural
 	url = https://github.com/jatinchowdhury18/RTNeural
+[submodule "modules/JUCE"]
+	path = modules/JUCE
+	url = https://github.com/juce-framework/JUCE.git
+[submodule "modules/DISTRHO-JUCE"]
+	path = modules/DISTRHO-JUCE
+	url = https://github.com/Chowdhury-DSP/DISTRHO-JUCE.git
+[submodule "modules/json"]
+	path = modules/json
+	url = https://github.com/nlohmann/json.git
