@@ -120,6 +120,11 @@ void NeuralPiAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
     LSTM.reset();
+
+    // set up DC blocker
+    dcBlocker.coefficients = dsp::IIR::Coefficients<float>::makeHighPass(sampleRate, 35.0f);
+    dsp::ProcessSpec spec{ sampleRate, static_cast<uint32> (samplesPerBlock), 2 };
+    dcBlocker.prepare(spec);
 }
 
 void NeuralPiAudioProcessor::releaseResources()
@@ -191,6 +196,10 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
         //    Master Volume 
         buffer.applyGain(master * 2.0);
     }
+
+    // process DC blocker
+    auto monoBlock = dsp::AudioBlock<float>(buffer).getSingleChannelBlock(0);
+    dcBlocker.process(dsp::ProcessContextReplacing<float>(monoBlock));
     
     for (int ch = 1; ch < buffer.getNumChannels(); ++ch)
         buffer.copyFrom(ch, 0, buffer, 0, 0, buffer.getNumSamples());

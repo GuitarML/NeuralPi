@@ -9,6 +9,8 @@
     <GROUP id="{810D2D07-FCAC-0F25-F63F-DCF49FEE10C7}" name="Resources">
       <FILE id="V1lm9D" name="bj_model_best.json" compile="0" resource="1"
             file="models/bj_model_best.json"/>
+      <FILE id="JubKNX" name="npi_background.jpg" compile="0" resource="1"
+            file="resources/npi_background.jpg"/>
       <FILE id="lkEjdY" name="ts9_model_best.json" compile="0" resource="1"
             file="models/ts9_model_best.json"/>
     </GROUP>

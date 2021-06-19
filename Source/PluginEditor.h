@@ -66,6 +66,8 @@ private:
     // access the processor object that created it.
     NeuralPiAudioProcessor& processor;
 
+    Image background = ImageCache::getFromMemory(BinaryData::npi_background_jpg, BinaryData::npi_background_jpgSize);
+
     // Amp Widgets
     Slider ampGainKnob;
     Slider ampMasterKnob;

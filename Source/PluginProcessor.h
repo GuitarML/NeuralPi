@@ -126,6 +126,8 @@ private:
     AudioParameterFloat* presenceParam;
     AudioParameterFloat* modelParam;
 
+    dsp::IIR::Filter<float> dcBlocker;
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NeuralPiAudioProcessor)
 };

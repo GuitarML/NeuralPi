@@ -89,8 +89,8 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     ampGainKnob.setRange(0.0, 1.0);
     ampGainKnob.setValue(0.5);
     ampGainKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
-    ampGainKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
-    ampGainKnob.setNumDecimalPlacesToDisplay(1);
+    ampGainKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
+    ampGainKnob.setNumDecimalPlacesToDisplay(2);
     ampGainKnob.setDoubleClickReturnValue(true, 0.5);
 
     auto gainValue = getParameterValue(gainName);
@@ -128,8 +128,10 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     ampMasterKnob.setRange(0.0, 1.0);
     ampMasterKnob.setValue(0.5);
     ampMasterKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
-    ampMasterKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20 );
-    ampMasterKnob.setNumDecimalPlacesToDisplay(1);
+    ampMasterKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
+    ampMasterKnob.setNumDecimalPlacesToDisplay(2);
+    //ampMasterKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20 );
+    //ampMasterKnob.setNumDecimalPlacesToDisplay(1);
     ampMasterKnob.setDoubleClickReturnValue(true, 0.5);
 
     auto masterValue = getParameterValue(masterName);
@@ -167,8 +169,8 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     ampBassKnob.setRange(0.0, 1.0);
     ampBassKnob.setValue(0.5);
     ampBassKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
-    ampBassKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
-    ampBassKnob.setNumDecimalPlacesToDisplay(1);
+    ampBassKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
+    ampBassKnob.setNumDecimalPlacesToDisplay(2);
     ampBassKnob.setDoubleClickReturnValue(true, 0.5);
 
     auto bassValue = getParameterValue(bassName);
@@ -205,8 +207,8 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     ampMidKnob.setRange(0.0, 1.0);
     ampMidKnob.setValue(0.5);
     ampMidKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
-    ampMidKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
-    ampMidKnob.setNumDecimalPlacesToDisplay(1);
+    ampMidKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
+    ampMidKnob.setNumDecimalPlacesToDisplay(2);
     ampMidKnob.setDoubleClickReturnValue(true, 0.5);
 
     auto midValue = getParameterValue(midName);
@@ -243,8 +245,8 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     ampTrebleKnob.setRange(0.0, 1.0);
     ampTrebleKnob.setValue(0.5);
     ampTrebleKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
-    ampTrebleKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
-    ampTrebleKnob.setNumDecimalPlacesToDisplay(1);
+    ampTrebleKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
+    ampTrebleKnob.setNumDecimalPlacesToDisplay(2);
     ampTrebleKnob.setDoubleClickReturnValue(true, 0.5);
 
     auto trebleValue = getParameterValue(trebleName);
@@ -281,8 +283,8 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     ampPresenceKnob.setRange(0.0, 1.0);
     ampPresenceKnob.setValue(0.5);
     ampPresenceKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
-    ampPresenceKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
-    ampPresenceKnob.setNumDecimalPlacesToDisplay(1);
+    ampPresenceKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
+    ampPresenceKnob.setNumDecimalPlacesToDisplay(2);
     ampPresenceKnob.setDoubleClickReturnValue(true, 0.5);
 
     auto presenceValue = getParameterValue(trebleName);
@@ -386,7 +388,7 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     connectSender();
 
     // Size of plugin GUI
-    setSize(250, 430);
+    setSize(276, 430);
 
 }
 
@@ -397,44 +399,51 @@ NeuralPiAudioProcessorEditor::~NeuralPiAudioProcessorEditor()
 //==============================================================================
 void NeuralPiAudioProcessorEditor::paint (Graphics& g)
 {
-    g.setColour (Colours::white);
-    g.setFont (15.0f);
+    // Workaround for graphics on Windows builds (clipping code doesn't work correctly on Windows)
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+    g.drawImageAt(background, 0, 0);  // Debug Line: Redraw entire background image
+#else
+// Redraw only the clipped part of the background image
+    juce::Rectangle<int> ClipRect = g.getClipBounds();
+    g.drawImage(background, ClipRect.getX(), ClipRect.getY(), ClipRect.getWidth(), ClipRect.getHeight(), ClipRect.getX(), ClipRect.getY(), ClipRect.getWidth(), ClipRect.getHeight());
+#endif
+   
 }
 
 void NeuralPiAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
-    modelSelect.setBounds(15, 10, 210, 25);
-    loadButton.setBounds(15, 42, 100, 25);
+    modelSelect.setBounds(19, 10, 234, 25);
+    loadButton.setBounds(19, 42, 100, 25);
     modelKnob.setBounds(140, 40, 75, 95);
 
     // Amp Widgets
-    ampGainKnob.setBounds(30, 72, 75, 95);
-    ampMasterKnob.setBounds(140, 72, 75, 95);
-    ampBassKnob.setBounds(30, 155, 75, 95);
-    ampMidKnob.setBounds(140, 155, 75, 95);
-    ampTrebleKnob.setBounds(30, 235, 75, 95);
-    ampPresenceKnob.setBounds(140, 235, 75, 95);
+    ampGainKnob.setBounds(15, 90, 75, 95);
+    ampMasterKnob.setBounds(100, 90, 75, 95);
+    ampBassKnob.setBounds(15, 225, 75, 95);
+    ampMidKnob.setBounds(100, 225, 75, 95);
+    ampTrebleKnob.setBounds(185, 225, 75, 95);
+    ampPresenceKnob.setBounds(185, 90, 75, 95);
 
-    GainLabel.setBounds(28, 150, 80, 10);
-    LevelLabel.setBounds(138, 150, 80, 10);
-    BassLabel.setBounds(28, 233, 80, 10);
-    MidLabel.setBounds(138, 233, 80, 10);
-    TrebleLabel.setBounds(28, 313, 80, 10);
-    PresenceLabel.setBounds(138, 313, 80, 10);
+    GainLabel.setBounds(11, 78, 80, 10);
+    LevelLabel.setBounds(98, 78, 80, 10);
+    BassLabel.setBounds(11, 213, 80, 10);
+    MidLabel.setBounds(97, 213, 80, 10);
+    TrebleLabel.setBounds(183, 213, 80, 10);
+    PresenceLabel.setBounds(183, 78, 80, 10);
 
     addAndMakeVisible(ampNameLabel);
     ampNameField.setEditable(true, true, true);
     addAndMakeVisible(ampNameField);
 
     // IP controls:
-    ipField.setBounds(150, 330, 100, 25);
-    ipLabel.setBounds(15, 330, 150, 25);
+    ipField.setBounds(150, 340, 100, 25);
+    ipLabel.setBounds(15, 340, 150, 25);
 
     // Port controls:
-    outPortNumberLabel.setBounds(15, 365, 150, 25);
-    outPortNumberField.setBounds(160, 365, 75, 25);
+    outPortNumberLabel.setBounds(15, 370, 150, 25);
+    outPortNumberField.setBounds(160, 370, 75, 25);
     inPortNumberLabel.setBounds(15, 400, 150, 25);
     inPortNumberField.setBounds(160, 400, 75, 25);
 }

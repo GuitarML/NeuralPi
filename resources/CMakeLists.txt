@@ -1,5 +1,6 @@
 juce_add_binary_data(BinaryData SOURCES
     logo.png
+    npi_background.jpg
     ../models/bj_model_best.json
     ../models/ts9_model_best.json
 )
