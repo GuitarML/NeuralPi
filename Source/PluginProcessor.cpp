@@ -246,7 +246,15 @@ void NeuralPiAudioProcessor::setStateInformation(const void* data, int sizeInByt
 int NeuralPiAudioProcessor::getModelIndex(float model_param)
 {
     //return static_cast<int>(model_param * (jsonFiles.size() - 1.0));
-    return static_cast<int>(model_param * (num_models - 1.0));
+    //return static_cast<int>(model_param * (num_models - 1.0));
+    int a = static_cast<int>(round(model_param * (num_models - 1.0)));
+    if (a > num_models - 1) {
+        a = num_models - 1;
+    }
+    else if (a < 0) {
+        a = 0;
+    }
+    return a;
 }
 
 void NeuralPiAudioProcessor::loadConfig(File configFile)
