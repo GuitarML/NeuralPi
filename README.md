@@ -8,6 +8,8 @@ Check out the step by step build guide published on [Towards Data Science](https
 
 NeuralPi can sound like an amplifier or distortion/overdrive pedal using the power of neural networks. Models trained from recordings of real amps and pedals can be loaded into the plugin for endless possiblities on your guitar. Create your own models or use custom tones from GuitarML.
 
+WARNING: The audio output of the HiFiBerry DAC + ADC is at line level. Guitar amplifiers expect a low level electric guitar signal (instrument level). Use NeuarlPi only where line level inputs are expected.
+
 There are four main components to the guitar pedal:
 
 1. [Raspberry Pi 4b](https://www.raspberrypi.org/products/raspberry-pi-4-model-b/)
@@ -21,8 +23,6 @@ There are four main components to the guitar pedal:
 ## Installing the plugin
 
 See the Release page for the cross-compiled Raspberry Pi / Elk Audio OS compatible VST3 plugin and Win/Mac installers.
-
-WARNING: The audio output of the NeuralPi is at line level. Guitar amplifiers expect a low level electric guitar signal (instrument level). When using the NeuralPi with a guitar amp, start with the master volume at 0 and SLOWLY increase from there. 
 
 ## Adding New Models
 
