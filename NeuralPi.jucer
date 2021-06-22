@@ -7,12 +7,11 @@
               displaySplashScreen="1">
   <MAINGROUP id="zI9r2C" name="NeuralPi">
     <GROUP id="{810D2D07-FCAC-0F25-F63F-DCF49FEE10C7}" name="Resources">
-      <FILE id="V1lm9D" name="bj_model_best.json" compile="0" resource="1"
-            file="models/bj_model_best.json"/>
+      <FILE id="hQ0vq1" name="BluesJR_FullD.json" compile="0" resource="1"
+            file="models/BluesJR_FullD.json"/>
       <FILE id="JubKNX" name="npi_background.jpg" compile="0" resource="1"
             file="resources/npi_background.jpg"/>
-      <FILE id="lkEjdY" name="ts9_model_best.json" compile="0" resource="1"
-            file="models/ts9_model_best.json"/>
+      <FILE id="wH6oji" name="TS9_FullD.json" compile="0" resource="1" file="models/TS9_FullD.json"/>
     </GROUP>
     <GROUP id="{70CE292C-E9C5-C029-B95A-F7DF41E5F74C}" name="Source">
       <FILE id="VgCJPH" name="AmpOSCReceiver.h" compile="0" resource="0"

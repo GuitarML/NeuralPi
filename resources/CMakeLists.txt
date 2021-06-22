@@ -1,8 +1,8 @@
 juce_add_binary_data(BinaryData SOURCES
     logo.png
     npi_background.jpg
-    ../models/bj_model_best.json
-    ../models/ts9_model_best.json
+    ../models/BluesJR_FullD.json
+    ../models/TS9_FullD.json
 )
 
 # Need to build BinaryData with -fPIC flag on Linux
