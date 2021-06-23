@@ -47,6 +47,7 @@ While running PyTorch locally on the Raspberry Pi might be a stretch, it is full
 The neural network is a re-creation of the LSTM inference model from [Real-Time Guitar Amplifier Emulation with Deep Learning](https://www.mdpi.com/2076-3417/10/3/766/htm)
 
 The [Automated-GuitarAmpModelling](https://github.com/Alec-Wright/Automated-GuitarAmpModelling) project was used to train the .json models.<br>
+GuitarML maintains a [fork](https://github.com/GuitarML/Automated-GuitarAmpModelling) with a few extra helpful features, including a Colab training script.
 IMPORTANT: When training models for NeuralPi, ensure that a LSTM size of 20 is used. NeuralPi is optimized to run models of this size, and other sizes are not currently compatible.
 
 The plugin uses [RTNeural](https://github.com/jatinchowdhury18/RTNeural), which is a highly optimized neural net inference engine intended for audio applications. 
