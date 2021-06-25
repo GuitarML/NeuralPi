@@ -20,6 +20,8 @@ There are four main components to the guitar pedal:
 ![app](https://github.com/GuitarML/NeuralPi/blob/main/resources/neuralpi_pic.jpg)
 <br>This is the normal plugin, available for Windows (Standalone, VST3) and Mac (Standalone, AU, VST3). After connencting the Raspberry Pi and remote computer to the same local WiFi network, enter the RaspberryPi's IP address (keep the default ports) to enable control over WiFi.
 
+Note: The plugin must be restarted after using the Import Tone button for changes to take effect.
+
 ## Installing the plugin
 
 See the Release page for the cross-compiled Raspberry Pi / Elk Audio OS compatible VST3 plugin and Win/Mac installers.
