@@ -24,7 +24,7 @@ Note: The plugin must be restarted after using the Import Tone button for change
 
 ## Installing the plugin
 
-See the Release page for the cross-compiled Raspberry Pi / Elk Audio OS compatible VST3 plugin and Win/Mac installers.
+See the [Release page](https://github.com/GuitarML/NeuralPi/releases) for the cross-compiled Raspberry Pi / Elk Audio OS compatible VST3 plugin and Win/Mac installers.
 
 After running the plugin or standalone for the first time, the two default models will be copied to the following locations. Any imported models will be copied here as well. Model files must be manually removed from these locations to perform model clean-up.
 ```
