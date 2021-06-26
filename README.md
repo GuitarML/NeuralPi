@@ -46,6 +46,8 @@ Note: It is important that all models files have unique names with no spaces. <b
 Note: Ensure from the terminal output that you were able to connect over WiFi, and that the model files were copied properly. <br><br>
 6. Restart both the NeuralPi and the remote instance of the NeuralPi plugin. From the remote NeuralPi GUI, enter the Raspberry Pi's IP address. As long as both devices are connected to the local WiFi network, you will be able select models from the NeuralPi plugin dropdown list to change models running on the Raspberry Pi.
 
+IMPORTANT: The plugin uses a sort() function to order the models alphabetically. Due to differences in the behaviour of this function on Linux (Elk OS) vs. Win/Mac, you must start json filenames with a capital letter, otherwise the NeuralPi on Elk will sort models starting with a lowercase letter at the end of the list and the controller will be out of sync with the NeuralPi pedal.
+
 ## To Do
 
 Elk Audio OS also supports physical controls through [Sensei](https://github.com/elk-audio/sensei). Gain/Volume and EQ knobs can be added, as well as a LCD screen for selecting different models. One could build an actual guitar pedal with NeuralPi and any number of other digital effects and controls.
