@@ -125,6 +125,9 @@ void NeuralPiAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     dcBlocker.coefficients = dsp::IIR::Coefficients<float>::makeHighPass(sampleRate, 35.0f);
     dsp::ProcessSpec spec{ sampleRate, static_cast<uint32> (samplesPerBlock), 2 };
     dcBlocker.prepare(spec);
+
+    // Set up IR
+    cabSimIR.prepare(spec);
 }
 
 void NeuralPiAudioProcessor::releaseResources()
@@ -193,6 +196,11 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
             LSTM.process(buffer.getReadPointer(0), buffer.getWritePointer(0), numSamples);
         }
 
+        // Process IR
+        auto block = dsp::AudioBlock<float>(buffer).getSingleChannelBlock(0);
+        auto context = juce::dsp::ProcessContextReplacing<float>(block);
+        cabSimIR.process(context);
+
         //    Master Volume 
         buffer.applyGain(master);
     }
@@ -245,8 +253,6 @@ void NeuralPiAudioProcessor::setStateInformation(const void* data, int sizeInByt
 
 int NeuralPiAudioProcessor::getModelIndex(float model_param)
 {
-    //return static_cast<int>(model_param * (jsonFiles.size() - 1.0));
-    //return static_cast<int>(model_param * (num_models - 1.0));
     int a = static_cast<int>(round(model_param * (num_models - 1.0)));
     if (a > num_models - 1) {
         a = num_models - 1;

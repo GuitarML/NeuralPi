@@ -12,6 +12,7 @@
 #include "RTNeuralLSTM.h"
 #include "AmpOSCReceiver.h"
 #include "Eq4Band.h"
+#include "CabSim.h"
 
 #pragma once
 
@@ -83,15 +84,8 @@ public:
 
     void set_ampEQ(float bass_slider, float mid_slider, float treble_slider, float presence_slider);
     
-    // Overdrive Pedal
     float convertLogScale(float in_value, float x_min, float x_max, float y_min, float y_max);
 
-    // Amp
-    /*
-    void set_ampDrive(float db_ampCleanDrive);
-    void set_ampMaster(float db_ampMaster);
-    void set_ampEQ(float bass_slider, float mid_slider, float treble_slider, float presence_slider);
-    */
     float decibelToLinear(float dbValue);
 
     void addDirectory(const File& file);
@@ -127,6 +121,9 @@ private:
     AudioParameterFloat* modelParam;
 
     dsp::IIR::Filter<float> dcBlocker;
+
+    // IR processing
+    CabSim cabSimIR;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NeuralPiAudioProcessor)
