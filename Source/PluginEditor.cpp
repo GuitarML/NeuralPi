@@ -80,6 +80,22 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     loadButton.setColour(juce::Label::textColourId, juce::Colours::black);
     loadButton.addListener(this);
 
+    addAndMakeVisible(irSelect);
+    irSelect.setColour(juce::Label::textColourId, juce::Colours::black);
+    int i = 1;
+    for (const auto& jsonFile : processor.irFiles) {
+        irSelect.addItem(jsonFile.getFileNameWithoutExtension(), i);
+        i += 1;
+    }
+    irSelect.onChange = [this] {irSelectChanged(); };
+    irSelect.setSelectedItemIndex(processor.current_ir_index, juce::NotificationType::dontSendNotification);
+    irSelect.setScrollWheelEnabled(true);
+
+    addAndMakeVisible(loadIR);
+    loadIR.setButtonText("Import IR");
+    loadIR.setColour(juce::Label::textColourId, juce::Colours::black);
+    loadIR.addListener(this);
+
     //gainSliderAttach = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.treeState, GAIN_ID, ampGainKnob);
     addAndMakeVisible(ampGainKnob);
     //ampGainKnob.setLookAndFeel(&ampSilverKnobLAF);
@@ -388,7 +404,7 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     connectSender();
 
     // Size of plugin GUI
-    setSize(276, 430);
+    setSize(276, 455);
 
 }
 
@@ -415,37 +431,40 @@ void NeuralPiAudioProcessorEditor::resized()
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
     modelSelect.setBounds(19, 10, 234, 25);
-    loadButton.setBounds(19, 42, 100, 25);
+    loadButton.setBounds(19, 74, 100, 25);
     modelKnob.setBounds(140, 40, 75, 95);
 
-    // Amp Widgets
-    ampGainKnob.setBounds(15, 90, 75, 95);
-    ampMasterKnob.setBounds(100, 90, 75, 95);
-    ampBassKnob.setBounds(15, 225, 75, 95);
-    ampMidKnob.setBounds(100, 225, 75, 95);
-    ampTrebleKnob.setBounds(185, 225, 75, 95);
-    ampPresenceKnob.setBounds(185, 90, 75, 95);
+    irSelect.setBounds(19, 42, 234, 25);
+    loadIR.setBounds(125, 74, 100, 25);
 
-    GainLabel.setBounds(11, 78, 80, 10);
-    LevelLabel.setBounds(98, 78, 80, 10);
-    BassLabel.setBounds(11, 213, 80, 10);
-    MidLabel.setBounds(97, 213, 80, 10);
-    TrebleLabel.setBounds(183, 213, 80, 10);
-    PresenceLabel.setBounds(183, 78, 80, 10);
+    // Amp Widgets
+    ampGainKnob.setBounds(15, 120, 75, 95);
+    ampMasterKnob.setBounds(100, 120, 75, 95);
+    ampBassKnob.setBounds(15, 250, 75, 95);
+    ampMidKnob.setBounds(100, 250, 75, 95);
+    ampTrebleKnob.setBounds(185, 250, 75, 95);
+    ampPresenceKnob.setBounds(185, 120, 75, 95);
+
+    GainLabel.setBounds(11, 108, 80, 10);
+    LevelLabel.setBounds(98, 108, 80, 10);
+    BassLabel.setBounds(11, 238, 80, 10);
+    MidLabel.setBounds(97, 238, 80, 10);
+    TrebleLabel.setBounds(183, 238, 80, 10);
+    PresenceLabel.setBounds(183, 108, 80, 10);
 
     addAndMakeVisible(ampNameLabel);
     ampNameField.setEditable(true, true, true);
     addAndMakeVisible(ampNameField);
 
     // IP controls:
-    ipField.setBounds(150, 340, 100, 25);
-    ipLabel.setBounds(15, 340, 150, 25);
+    ipField.setBounds(150, 365, 100, 25);
+    ipLabel.setBounds(15, 365, 150, 25);
 
     // Port controls:
-    outPortNumberLabel.setBounds(15, 370, 150, 25);
-    outPortNumberField.setBounds(160, 370, 75, 25);
-    inPortNumberLabel.setBounds(15, 400, 150, 25);
-    inPortNumberField.setBounds(160, 400, 75, 25);
+    outPortNumberLabel.setBounds(15, 395, 150, 25);
+    outPortNumberField.setBounds(160, 395, 75, 25);
+    inPortNumberLabel.setBounds(15, 425, 150, 25);
+    inPortNumberField.setBounds(160, 425, 75, 25);
 }
 
 void NeuralPiAudioProcessorEditor::modelSelectChanged()
@@ -457,6 +476,18 @@ void NeuralPiAudioProcessorEditor::modelSelectChanged()
     }
     auto newValue = static_cast<float>(processor.current_model_index / (processor.num_models - 1.0));
     modelKnob.setValue(newValue);
+    //modelKnob.setValue(processor.current_model_index);
+}
+
+void NeuralPiAudioProcessorEditor::irSelectChanged()
+{
+    const int selectedFileIndex = irSelect.getSelectedItemIndex();
+    if (selectedFileIndex >= 0 && selectedFileIndex < processor.jsonFiles.size()) {
+        processor.loadIR(processor.irFiles[selectedFileIndex]);
+        processor.current_ir_index = irSelect.getSelectedItemIndex();
+    }
+    //auto newValue = static_cast<float>(processor.current_ir_index / (processor.num_irs - 1.0));
+    //modelKnob.setValue(newValue);
     //modelKnob.setValue(processor.current_model_index);
 }
 
@@ -495,11 +526,50 @@ void NeuralPiAudioProcessorEditor::loadButtonClicked()
     }
 }
 
+void NeuralPiAudioProcessorEditor::loadIRClicked()
+{
+    FileChooser chooser("Select one or more .wav IR files to import",
+        {},
+        "*.wav");
+    if (chooser.browseForMultipleFilesToOpen())
+    {
+        int import_fail = 1;
+        Array<File> files = chooser.getResults();
+        for (auto file : files) {
+            File fullpath = processor.userAppDataDirectory_irs.getFullPathName() + "/" + file.getFileName();
+            bool b = fullpath.existsAsFile();
+            if (b == false) {
+
+                processor.loadIR(file);
+                fname = file.getFileName();
+                processor.loaded_ir = file;
+                processor.loaded_ir_name = fname;
+                processor.custom_ir = 1;
+
+                // Copy selected file to model directory and load into dropdown menu
+                bool a = file.copyFileTo(fullpath);
+                if (a == true) {
+                    irSelect.addItem(file.getFileNameWithoutExtension(), processor.irFiles.size() + 1);
+                    irSelect.setSelectedItemIndex(processor.irFiles.size(), juce::NotificationType::dontSendNotification);
+                    processor.irFiles.push_back(file);
+                    //processor.num_models += 1;
+                }
+                // Sort jsonFiles alphabetically
+                std::sort(processor.irFiles.begin(), processor.irFiles.end());
+            }
+        }
+    }
+}
+
 
 void NeuralPiAudioProcessorEditor::buttonClicked(juce::Button* button)
 {
     if (button == &loadButton) {
         loadButtonClicked();
+    }
+    else
+    {
+        loadIRClicked();
     }
 }
 

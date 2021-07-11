@@ -75,6 +75,7 @@ private:
     //ImageButton ampOnButton;
     //ImageButton ampLED;
     ComboBox modelSelect;
+    ComboBox irSelect;
     Slider ampBassKnob;
     Slider ampMidKnob;
     Slider ampTrebleKnob;
@@ -91,10 +92,13 @@ private:
     File model_folder;
 
     TextButton loadButton;
+    TextButton loadIR;
     juce::String fname;
     virtual void buttonClicked(Button* button) override;
     void modelSelectChanged();
     void loadButtonClicked();
+    void irSelectChanged();
+    void loadIRClicked();
     virtual void sliderValueChanged(Slider* slider) override;
 
 

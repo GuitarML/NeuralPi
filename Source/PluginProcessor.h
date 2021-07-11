@@ -79,6 +79,7 @@ public:
     bool compareFunction(juce::File a, juce::File b);
     int getModelIndex(float model_param);
     void loadConfig(File configFile);
+    void loadIR(File irFile);
     void setupDataDirectories();
     void installTones();
 
@@ -89,11 +90,15 @@ public:
     float decibelToLinear(float dbValue);
 
     void addDirectory(const File& file);
+    void addDirectoryIR(const File& file);
     void resetDirectory(const File& file);
+    void resetDirectoryIR(const File& file);
     std::vector<File> jsonFiles;
+    std::vector<File> irFiles;
     File currentDirectory = File::getCurrentWorkingDirectory().getFullPathName();
     File userAppDataDirectory = File::getSpecialLocation(File::userDocumentsDirectory).getChildFile(JucePlugin_Manufacturer).getChildFile(JucePlugin_Name);
     File userAppDataDirectory_tones = userAppDataDirectory.getFullPathName() + "/tones";
+    File userAppDataDirectory_irs = userAppDataDirectory.getFullPathName() + "/irs";
 
     // Pedal/amp states
     int amp_state = 1; // 0 = off, 1 = on
@@ -105,6 +110,14 @@ public:
     int current_model_index = 0;
     float num_models = 0.0;
     int model_index = 0; // Used in processBlock when converting slider param to model index
+
+    juce::String loaded_ir_name;
+    float num_irs = 0.0;
+    int ir_loaded = 0;
+    int custom_ir = 0; // 0 = custom tone loaded, 1 = default channel tone
+    File loaded_ir;
+    
+    int current_ir_index = 0;
 
     RT_LSTM LSTM;
 

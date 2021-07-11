@@ -37,6 +37,12 @@ NeuralPiAudioProcessor::NeuralPiAudioProcessor()
     // Sort jsonFiles alphabetically
     std::sort(jsonFiles.begin(), jsonFiles.end());
 
+    if (irFiles.size() > 0) {
+        loadIR(irFiles[current_ir_index]);
+    }
+    // Sort irFiles alphabetically
+    std::sort(irFiles.begin(), irFiles.end());
+
     // initialize parameters:
     addParameter(gainParam = new AudioParameterFloat(GAIN_ID, GAIN_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.5f));
     addParameter(masterParam = new AudioParameterFloat(MASTER_ID, MASTER_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.5f));
@@ -276,6 +282,18 @@ void NeuralPiAudioProcessor::loadConfig(File configFile)
     this->suspendProcessing(false);
 }
 
+void NeuralPiAudioProcessor::loadIR(File irFile)
+{
+    this->suspendProcessing(true);
+    ir_loaded = 1;
+    //String path = irFile.getFullPathName();
+    //char_filename = path.toUTF8();
+    // TODO Add check here for invalid files
+    cabSimIR.load(irFile);
+
+    this->suspendProcessing(false);
+}
+
 void NeuralPiAudioProcessor::resetDirectory(const File& file)
 {
     jsonFiles.clear();
@@ -285,6 +303,18 @@ void NeuralPiAudioProcessor::resetDirectory(const File& file)
         file.findChildFiles(results, juce::File::findFiles, false, "*.json");
         for (int i = results.size(); --i >= 0;)
             jsonFiles.push_back(File(results.getReference(i).getFullPathName()));
+    }
+}
+
+void NeuralPiAudioProcessor::resetDirectoryIR(const File& file)
+{
+    irFiles.clear();
+    if (file.isDirectory())
+    {
+        juce::Array<juce::File> results;
+        file.findChildFiles(results, juce::File::findFiles, false, "*.wav");
+        for (int i = results.size(); --i >= 0;)
+            irFiles.push_back(File(results.getReference(i).getFullPathName()));
     }
 }
 
@@ -302,6 +332,20 @@ void NeuralPiAudioProcessor::addDirectory(const File& file)
     }
 }
 
+void NeuralPiAudioProcessor::addDirectoryIR(const File& file)
+{
+    if (file.isDirectory())
+    {
+        juce::Array<juce::File> results;
+        file.findChildFiles(results, juce::File::findFiles, false, "*.wav");
+        for (int i = results.size(); --i >= 0;)
+        {
+            irFiles.push_back(File(results.getReference(i).getFullPathName()));
+            num_irs = num_irs + 1.0;
+        }
+    }
+}
+
 void NeuralPiAudioProcessor::setupDataDirectories()
 {
     // User app data directory
@@ -309,6 +353,7 @@ void NeuralPiAudioProcessor::setupDataDirectories()
 
     File userAppDataTempFile_tones = userAppDataDirectory_tones.getChildFile("tmp.pdl");
 
+    File userAppDataTempFile_irs = userAppDataDirectory_irs.getChildFile("tmp.pdl");
 
     // Create (and delete) temp file if necessary, so that user doesn't have
     // to manually create directories
@@ -326,9 +371,17 @@ void NeuralPiAudioProcessor::setupDataDirectories()
         userAppDataTempFile_tones.deleteFile();
     }
 
+    if (!userAppDataDirectory_irs.exists()) {
+        userAppDataTempFile_irs.create();
+    }
+    if (userAppDataTempFile_irs.existsAsFile()) {
+        userAppDataTempFile_irs.deleteFile();
+    }
+
 
     // Add the tones directory and update tone list
     addDirectory(userAppDataDirectory_tones);
+    addDirectoryIR(userAppDataDirectory_irs);
 }
 
 void NeuralPiAudioProcessor::installTones()

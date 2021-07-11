@@ -53,6 +53,15 @@ public:
         processorChain.reset();
     }
 
+    void load(File irFile) noexcept
+    {
+        auto& convolution = processorChain.template get<convolutionIndex>();
+        convolution.loadImpulseResponse(irFile,
+            juce::dsp::Convolution::Stereo::yes,
+            juce::dsp::Convolution::Trim::no,
+            1024);
+    }
+
 private:
     //==============================================================================
     enum
