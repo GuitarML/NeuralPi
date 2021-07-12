@@ -96,6 +96,17 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     loadIR.setColour(juce::Label::textColourId, juce::Colours::black);
     loadIR.addListener(this);
 
+    // Toggle IR
+    addAndMakeVisible(irButton);
+    irButton.setToggleState(true, juce::NotificationType::dontSendNotification);
+    irButton.onClick = [this] { updateToggleState(&irButton, "IR");   };
+
+    // Toggle LSTM
+    addAndMakeVisible(lstmButton);
+    lstmButton.setToggleState(true, juce::NotificationType::dontSendNotification);
+    lstmButton.onClick = [this] { updateToggleState(&lstmButton, "LSTM");   };
+  
+
     //gainSliderAttach = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.treeState, GAIN_ID, ampGainKnob);
     addAndMakeVisible(ampGainKnob);
     //ampGainKnob.setLookAndFeel(&ampSilverKnobLAF);
@@ -430,12 +441,14 @@ void NeuralPiAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
-    modelSelect.setBounds(19, 10, 234, 25);
+    modelSelect.setBounds(11, 10, 234, 25);
     loadButton.setBounds(19, 74, 100, 25);
     modelKnob.setBounds(140, 40, 75, 95);
 
-    irSelect.setBounds(19, 42, 234, 25);
+    irSelect.setBounds(11, 42, 234, 25);
     loadIR.setBounds(125, 74, 100, 25);
+    irButton.setBounds(248, 42, 257, 25);
+    lstmButton.setBounds(248, 10, 257, 25);
 
     // Amp Widgets
     ampGainKnob.setBounds(15, 120, 75, 95);
@@ -489,6 +502,14 @@ void NeuralPiAudioProcessorEditor::irSelectChanged()
     //auto newValue = static_cast<float>(processor.current_ir_index / (processor.num_irs - 1.0));
     //modelKnob.setValue(newValue);
     //modelKnob.setValue(processor.current_model_index);
+}
+
+void NeuralPiAudioProcessorEditor::updateToggleState(juce::Button* button, juce::String name)
+{
+    if (name == "IR")
+        processor.ir_state = button->getToggleState();
+    else
+        processor.lstm_state = button->getToggleState();
 }
 
 void NeuralPiAudioProcessorEditor::loadButtonClicked()

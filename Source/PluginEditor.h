@@ -93,10 +93,14 @@ private:
 
     TextButton loadButton;
     TextButton loadIR;
+    ToggleButton irButton;
+    ToggleButton lstmButton;
+    
     juce::String fname;
     virtual void buttonClicked(Button* button) override;
     void modelSelectChanged();
     void loadButtonClicked();
+    void updateToggleState(juce::Button* button, juce::String name);
     void irSelectChanged();
     void loadIRClicked();
     virtual void sliderValueChanged(Slider* slider) override;

@@ -76,7 +76,6 @@ public:
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
-    bool compareFunction(juce::File a, juce::File b);
     int getModelIndex(float model_param);
     void loadConfig(File configFile);
     void loadIR(File irFile);
@@ -110,12 +109,14 @@ public:
     int current_model_index = 0;
     float num_models = 0.0;
     int model_index = 0; // Used in processBlock when converting slider param to model index
+    bool lstm_state = true;
 
     juce::String loaded_ir_name;
     float num_irs = 0.0;
     int ir_loaded = 0;
     int custom_ir = 0; // 0 = custom tone loaded, 1 = default channel tone
     File loaded_ir;
+    bool ir_state = true;
     
     int current_ir_index = 0;
 

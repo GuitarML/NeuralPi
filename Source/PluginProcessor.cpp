@@ -30,18 +30,18 @@ NeuralPiAudioProcessor::NeuralPiAudioProcessor()
     setupDataDirectories();
     installTones();
     resetDirectory(userAppDataDirectory_tones);
+    // Sort jsonFiles alphabetically
+    std::sort(jsonFiles.begin(), jsonFiles.end());
     if (jsonFiles.size() > 0) {
         loadConfig(jsonFiles[current_model_index]);
     }
 
-    // Sort jsonFiles alphabetically
-    std::sort(jsonFiles.begin(), jsonFiles.end());
-
+    resetDirectoryIR(userAppDataDirectory_irs);
+    // Sort irFiles alphabetically
+    std::sort(irFiles.begin(), irFiles.end());
     if (irFiles.size() > 0) {
         loadIR(irFiles[current_ir_index]);
     }
-    // Sort irFiles alphabetically
-    std::sort(irFiles.begin(), irFiles.end());
 
     // initialize parameters:
     addParameter(gainParam = new AudioParameterFloat(GAIN_ID, GAIN_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.5f));
@@ -194,7 +194,7 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
         eq4band.process(buffer.getReadPointer(0), buffer.getWritePointer(0), midiMessages, numSamples, numInputChannels, sampleRate);
 
         // Apply LSTM model
-        if (model_loaded == 1) {
+        if (model_loaded == 1 && lstm_state == true) {
             if (current_model_index != model_index) {
                 loadConfig(jsonFiles[model_index]);
                 current_model_index = model_index;
@@ -203,9 +203,11 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
         }
 
         // Process IR
-        auto block = dsp::AudioBlock<float>(buffer).getSingleChannelBlock(0);
-        auto context = juce::dsp::ProcessContextReplacing<float>(block);
-        cabSimIR.process(context);
+        if (ir_state == true) {
+            auto block = dsp::AudioBlock<float>(buffer).getSingleChannelBlock(0);
+            auto context = juce::dsp::ProcessContextReplacing<float>(block);
+            cabSimIR.process(context);
+        }
 
         //    Master Volume 
         buffer.applyGain(master);
@@ -315,6 +317,7 @@ void NeuralPiAudioProcessor::resetDirectoryIR(const File& file)
         file.findChildFiles(results, juce::File::findFiles, false, "*.wav");
         for (int i = results.size(); --i >= 0;)
             irFiles.push_back(File(results.getReference(i).getFullPathName()));
+        
     }
 }
 
