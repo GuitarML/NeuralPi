@@ -4,6 +4,6 @@ Includes three .stl files for creating a 3-D printed case for Neural Pi. The cas
 
 Note: The final print is a tight fit. The bottom four screw holes in the printed case line up with the Raspberry Pi board fasteners. The bottom of the RaspberryPi board should be flush with the four screw holes in the case.
 
-![app](https://github.com/GuitarML/NeuralPi/blob/3d-printed-case/resources/3d_models.jpg)
-![app](https://github.com/GuitarML/NeuralPi/blob/3d-printed-case/resources/npi_case_blue.jpg)
-![app](https://github.com/GuitarML/NeuralPi/blob/3d-printed-case/resources/npi_case_grey.jpg)
+![app](https://github.com/GuitarML/NeuralPi/blob/main/resources/3d_models.jpg)
+![app](https://github.com/GuitarML/NeuralPi/blob/main/resources/npi_case_blue.jpg)
+![app](https://github.com/GuitarML/NeuralPi/blob/main/resources/npi_case_grey.jpg)
