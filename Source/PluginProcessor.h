@@ -22,6 +22,8 @@
 #define GAIN_NAME "Gain"
 #define MODEL_ID "model"
 #define MODEL_NAME "Model"
+#define IR_ID "ir"
+#define IR_NAME "Ir"
 #define MASTER_ID "master"
 #define MASTER_NAME "Master"
 #define BASS_ID "bass"
@@ -77,6 +79,7 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
     int getModelIndex(float model_param);
+    int getIrIndex(float ir_param);
     void loadConfig(File configFile);
     void loadIR(File irFile);
     void setupDataDirectories();
@@ -117,8 +120,8 @@ public:
     int custom_ir = 0; // 0 = custom tone loaded, 1 = default channel tone
     File loaded_ir;
     bool ir_state = true;
-    
     int current_ir_index = 0;
+    int ir_index = 0;
 
     RT_LSTM LSTM;
 
@@ -133,6 +136,7 @@ private:
     AudioParameterFloat* trebleParam;
     AudioParameterFloat* presenceParam;
     AudioParameterFloat* modelParam;
+    AudioParameterFloat* irParam;
 
     dsp::IIR::Filter<float> dcBlocker;
 

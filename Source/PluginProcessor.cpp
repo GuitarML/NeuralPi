@@ -51,6 +51,7 @@ NeuralPiAudioProcessor::NeuralPiAudioProcessor()
     addParameter(trebleParam = new AudioParameterFloat(TREBLE_ID, TREBLE_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.5f));
     addParameter(presenceParam = new AudioParameterFloat(PRESENCE_ID, PRESENCE_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.5f));
     addParameter(modelParam = new AudioParameterFloat(MODEL_ID, MODEL_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.0f));
+    addParameter(irParam = new AudioParameterFloat(IR_ID, IR_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.0f));
 }
 
 
@@ -189,6 +190,9 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
         auto model = static_cast<float> (modelParam->get());
         model_index = getModelIndex(model);
 
+        auto ir = static_cast<float> (irParam->get());
+        ir_index = getIrIndex(ir);
+
         buffer.applyGain(gain * 2.0);
         eq4band.setParameters(bass, mid, treble, presence);// Better to move this somewhere else? Only need to set when value changes
         eq4band.process(buffer.getReadPointer(0), buffer.getWritePointer(0), midiMessages, numSamples, numInputChannels, sampleRate);
@@ -204,6 +208,10 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
 
         // Process IR
         if (ir_state == true) {
+            if (current_ir_index != ir_index) {
+                loadIR(irFiles[ir_index]);
+                current_ir_index = ir_index;
+            }
             auto block = dsp::AudioBlock<float>(buffer).getSingleChannelBlock(0);
             auto context = juce::dsp::ProcessContextReplacing<float>(block);
             cabSimIR.process(context);
@@ -244,6 +252,7 @@ void NeuralPiAudioProcessor::getStateInformation(MemoryBlock& destData)
     stream.writeFloat(*trebleParam);
     stream.writeFloat(*presenceParam);
     stream.writeFloat(*modelParam);
+    stream.writeFloat(*irParam);
 }
 
 void NeuralPiAudioProcessor::setStateInformation(const void* data, int sizeInBytes)
@@ -257,6 +266,7 @@ void NeuralPiAudioProcessor::setStateInformation(const void* data, int sizeInByt
     trebleParam->setValueNotifyingHost(stream.readFloat());
     presenceParam->setValueNotifyingHost(stream.readFloat());
     modelParam->setValueNotifyingHost(stream.readFloat());
+    irParam->setValueNotifyingHost(stream.readFloat());
 }
 
 int NeuralPiAudioProcessor::getModelIndex(float model_param)
@@ -264,6 +274,18 @@ int NeuralPiAudioProcessor::getModelIndex(float model_param)
     int a = static_cast<int>(round(model_param * (num_models - 1.0)));
     if (a > num_models - 1) {
         a = num_models - 1;
+    }
+    else if (a < 0) {
+        a = 0;
+    }
+    return a;
+}
+
+int NeuralPiAudioProcessor::getIrIndex(float ir_param)
+{
+    int a = static_cast<int>(round(ir_param * (num_irs - 1.0)));
+    if (a > num_irs - 1) {
+        a = num_irs - 1;
     }
     else if (a < 0) {
         a = 0;
@@ -288,8 +310,6 @@ void NeuralPiAudioProcessor::loadIR(File irFile)
 {
     this->suspendProcessing(true);
     ir_loaded = 1;
-    //String path = irFile.getFullPathName();
-    //char_filename = path.toUTF8();
     // TODO Add check here for invalid files
     cabSimIR.load(irFile);
 

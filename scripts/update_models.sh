@@ -18,13 +18,22 @@ rpi_ip_address=127.0.0.1  # Update this field with the Raspberry Pi's IP address
 # Uncomment the appropriate path for your computer:
 
 host_model_path=~/Documents/GuitarML/NeuralPi/tones   #Typical Mac/Linux Path (shouldn't need to change)
+host_ir_path=~/Documents/GuitarML/NeuralPi/irs   #Typical Mac/Linux Path (shouldn't need to change)
 
 
 rpi_model_path=/home/mind/Documents/GuitarML/NeuralPi/tones # Rpi with Elk OS Path (shouldn't need to change)
+rpi_ir_path=/home/mind/Documents/GuitarML/NeuralPi/irs # Rpi with Elk OS Path (shouldn't need to change)
 
 #############################################################################
 echo "Copying all models from local computer to Rpi.."
 scp $host_model_path/*.json  root@$rpi_ip_address:$rpi_model_path/
 
+echo "Copying all IRs from local computer to Rpi.."
+scp $host_ir_path/*.json  root@$rpi_ip_address:$rpi_ir_path/
+
+
 echo "Copying all models from Rpi to local computer.."
-scp root@$rpi_ip_address:$rpi_model_path/*.json  $host_model_path/
+scp root@$rpi_ip_address:$rpi_model_path/*.wav  $host_model_path/
+
+echo "Copying all IRs from Rpi to local computer.."
+scp root@$rpi_ip_address:$rpi_ir_path/*.wav  $host_ir_path/
