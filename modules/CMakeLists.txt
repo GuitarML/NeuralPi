@@ -1,9 +1,4 @@
-# use DISTRHO-JUCE on Linux to support LV2
-if(UNIX AND NOT APPLE)
-    add_subdirectory(DISTRHO-JUCE)
-else()
-    add_subdirectory(JUCE)
-endif()
+add_subdirectory(JUCE)
 
 include(cmake/SubprojectVersion.cmake)
 subproject_version(JUCE juce_version)
