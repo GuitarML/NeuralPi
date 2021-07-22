@@ -207,7 +207,7 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
         }
 
         // Process IR
-        if (ir_state == true) {
+        if (ir_state == true && num_irs > 0) {
             if (current_ir_index != ir_index) {
                 loadIR(irFiles[ir_index]);
                 current_ir_index = ir_index;
@@ -215,6 +215,9 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
             auto block = dsp::AudioBlock<float>(buffer).getSingleChannelBlock(0);
             auto context = juce::dsp::ProcessContextReplacing<float>(block);
             cabSimIR.process(context);
+
+            // IR generally makes output quieter, add volume here to make ir on/off volume more even
+            buffer.applyGain(2.0);
         }
 
         //    Master Volume 
