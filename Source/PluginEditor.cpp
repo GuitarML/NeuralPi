@@ -732,7 +732,7 @@ void NeuralPiAudioProcessorEditor::buildAddressPatterns()
     trebleAddressPattern = "/parameter/" + ampName + "/Treble";
     presenceAddressPattern = "/parameter/" + ampName + "/Presence";
     modelAddressPattern = "/parameter/" + ampName + "/Model";
-    modelAddressPattern = "/parameter/" + ampName + "/Ir";
+    irAddressPattern = "/parameter/" + ampName + "/Ir";
 }
 
 void NeuralPiAudioProcessorEditor::connectSender()
