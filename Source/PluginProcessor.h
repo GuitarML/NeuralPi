@@ -12,6 +12,7 @@
 #include "RTNeuralLSTM.h"
 #include "AmpOSCReceiver.h"
 #include "Eq4Band.h"
+#include "CabSim.h"
 
 #pragma once
 
@@ -21,6 +22,8 @@
 #define GAIN_NAME "Gain"
 #define MODEL_ID "model"
 #define MODEL_NAME "Model"
+#define IR_ID "ir"
+#define IR_NAME "Ir"
 #define MASTER_ID "master"
 #define MASTER_NAME "Master"
 #define BASS_ID "bass"
@@ -75,31 +78,29 @@ public:
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
-    bool compareFunction(juce::File a, juce::File b);
     int getModelIndex(float model_param);
+    int getIrIndex(float ir_param);
     void loadConfig(File configFile);
+    void loadIR(File irFile);
     void setupDataDirectories();
     void installTones();
 
     void set_ampEQ(float bass_slider, float mid_slider, float treble_slider, float presence_slider);
     
-    // Overdrive Pedal
     float convertLogScale(float in_value, float x_min, float x_max, float y_min, float y_max);
 
-    // Amp
-    /*
-    void set_ampDrive(float db_ampCleanDrive);
-    void set_ampMaster(float db_ampMaster);
-    void set_ampEQ(float bass_slider, float mid_slider, float treble_slider, float presence_slider);
-    */
     float decibelToLinear(float dbValue);
 
     void addDirectory(const File& file);
+    void addDirectoryIR(const File& file);
     void resetDirectory(const File& file);
+    void resetDirectoryIR(const File& file);
     std::vector<File> jsonFiles;
+    std::vector<File> irFiles;
     File currentDirectory = File::getCurrentWorkingDirectory().getFullPathName();
     File userAppDataDirectory = File::getSpecialLocation(File::userDocumentsDirectory).getChildFile(JucePlugin_Manufacturer).getChildFile(JucePlugin_Name);
     File userAppDataDirectory_tones = userAppDataDirectory.getFullPathName() + "/tones";
+    File userAppDataDirectory_irs = userAppDataDirectory.getFullPathName() + "/irs";
 
     // Pedal/amp states
     int amp_state = 1; // 0 = off, 1 = on
@@ -111,6 +112,16 @@ public:
     int current_model_index = 0;
     float num_models = 0.0;
     int model_index = 0; // Used in processBlock when converting slider param to model index
+    bool lstm_state = true;
+
+    juce::String loaded_ir_name;
+    float num_irs = 0.0;
+    int ir_loaded = 0;
+    int custom_ir = 0; // 0 = custom tone loaded, 1 = default channel tone
+    File loaded_ir;
+    bool ir_state = true;
+    int current_ir_index = 0;
+    int ir_index = 0;
 
     RT_LSTM LSTM;
 
@@ -125,8 +136,12 @@ private:
     AudioParameterFloat* trebleParam;
     AudioParameterFloat* presenceParam;
     AudioParameterFloat* modelParam;
+    AudioParameterFloat* irParam;
 
     dsp::IIR::Filter<float> dcBlocker;
+
+    // IR processing
+    CabSim cabSimIR;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NeuralPiAudioProcessor)

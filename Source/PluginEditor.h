@@ -46,6 +46,7 @@ public:
     String gainAddressPattern{ "/parameter/NeuralPi/Gain" };
     String masterAddressPattern{ "/parameter/NeuralPi/Master" };
     String modelAddressPattern{ "/parameter/NeuralPi/Model" };
+    String irAddressPattern{ "/parameter/NeuralPi/Ir" };
     String bassAddressPattern{ "/parameter/NeuralPi/Bass" };
     String midAddressPattern{ "/parameter/NeuralPi/Mid" };
     String trebleAddressPattern{ "/parameter/NeuralPi/Treble" };
@@ -59,7 +60,7 @@ public:
     const String presenceName{ "presence" };
 
     const String modelName{ "model" };
-
+    const String irName{ "ir" };
 
 private:
     // This reference is provided as a quick way for your editor to
@@ -72,9 +73,11 @@ private:
     Slider ampGainKnob;
     Slider ampMasterKnob;
     Slider modelKnob;
+    Slider irKnob;
     //ImageButton ampOnButton;
     //ImageButton ampLED;
     ComboBox modelSelect;
+    ComboBox irSelect;
     Slider ampBassKnob;
     Slider ampMidKnob;
     Slider ampTrebleKnob;
@@ -91,10 +94,17 @@ private:
     File model_folder;
 
     TextButton loadButton;
+    TextButton loadIR;
+    ToggleButton irButton;
+    ToggleButton lstmButton;
+    
     juce::String fname;
     virtual void buttonClicked(Button* button) override;
     void modelSelectChanged();
     void loadButtonClicked();
+    void updateToggleState(juce::Button* button, juce::String name);
+    void irSelectChanged();
+    void loadIRClicked();
     virtual void sliderValueChanged(Slider* slider) override;
 
 
@@ -122,6 +132,7 @@ private:
     Slider& getGainSlider();
     Slider& getMasterSlider();
     Slider& getModelSlider();
+    Slider& getIrSlider();
     Slider& getBassSlider();
     Slider& getMidSlider();
     Slider& getTrebleSlider();

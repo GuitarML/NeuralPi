@@ -49,6 +49,11 @@ public:
         return modelValue;
     }
 
+    Value& getIrValue()
+    {
+        return irValue;
+    }
+
     void changePort (int port)
     {
         if (! connect (port))
@@ -84,6 +89,7 @@ private:
         trebleAddressPattern = "/parameter/" + ampName + "/Treble";
         presenceAddressPattern = "/parameter/" + ampName + "/Presence";
         modelAddressPattern = "/parameter/" + ampName + "/Model";
+        irAddressPattern = "/parameter/" + ampName + "/Ir";
     }
 
     void oscMessageReceived(const OSCMessage& message) override
@@ -124,6 +130,10 @@ private:
             {
                 modelValue.setValue(jlimit(0.0f, 1.0f, message[0].getFloat32()));
             }
+            else if (message.getAddressPattern().matches(irAddressPattern))
+            {
+                irValue.setValue(jlimit(0.0f, 1.0f, message[0].getFloat32()));
+            }
 
         }
     }
@@ -138,6 +148,7 @@ private:
     String trebleAddressPattern {"/parameter/elk_juce_example/Treble"};
     String presenceAddressPattern {"/parameter/elk_juce_example/Presence"};
     String modelAddressPattern {"/parameter/elk_juce_example/Model"};
+    String irAddressPattern {"/parameter/elk_juce_example/Ir"};
 
     Value gainValue {0.5f};
     Value masterValue {0.5f};
@@ -147,6 +158,7 @@ private:
     Value presenceValue {0.5f};
 
     Value modelValue {0.0f};
+    Value irValue {0.0f};
 
     bool connected = false;
 

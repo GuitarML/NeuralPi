@@ -16,6 +16,7 @@
     <GROUP id="{70CE292C-E9C5-C029-B95A-F7DF41E5F74C}" name="Source">
       <FILE id="VgCJPH" name="AmpOSCReceiver.h" compile="0" resource="0"
             file="Source/AmpOSCReceiver.h"/>
+      <FILE id="HvJFu8" name="CabSim.h" compile="0" resource="0" file="Source/CabSim.h"/>
       <FILE id="s1HQuK" name="Eq4Band.cpp" compile="1" resource="0" file="Source/Eq4Band.cpp"/>
       <FILE id="xtLEtv" name="Eq4Band.h" compile="0" resource="0" file="Source/Eq4Band.h"/>
       <FILE id="hNjQV9" name="PluginEditor.cpp" compile="1" resource="0"

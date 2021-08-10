@@ -80,7 +80,74 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     loadButton.setColour(juce::Label::textColourId, juce::Colours::black);
     loadButton.addListener(this);
 
-    //gainSliderAttach = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.treeState, GAIN_ID, ampGainKnob);
+
+    //addAndMakeVisible(irKnob);
+    //irKnob.setLookAndFeel(&ampSilverKnobLAF);
+    irKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
+    irKnob.setNumDecimalPlacesToDisplay(1);
+    irKnob.addListener(this);
+    //irKnob.setRange(0, processor.irFiles.size() - 1);
+    irKnob.setRange(0.0, 1.0);
+    irKnob.setValue(0.0);
+    irKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
+    irKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
+    irKnob.setNumDecimalPlacesToDisplay(1);
+    irKnob.setDoubleClickReturnValue(true, 0.0);
+
+    auto irValue = getParameterValue(irName);
+    Slider& irSlider = getIrSlider();
+    irSlider.setValue(irValue, NotificationType::dontSendNotification);
+
+    irKnob.onValueChange = [this]
+    {
+        const float sliderValue = static_cast<float> (getIrSlider().getValue());
+        const float irValue = getParameterValue(irName);
+
+        if (!approximatelyEqual(irValue, sliderValue))
+        {
+            setParameterValue(irName, sliderValue);
+
+            // create and send an OSC message with an address and a float value:
+            float value = static_cast<float> (getIrSlider().getValue());
+
+            if (!oscSender.send(irAddressPattern, value))
+            {
+                updateOutConnectedLabel(false);
+            }
+            else
+            {
+                DBG("Sent value " + String(value) + " to AP " + irAddressPattern);
+            }
+        }
+    };
+
+    addAndMakeVisible(irSelect);
+    irSelect.setColour(juce::Label::textColourId, juce::Colours::black);
+    int i = 1;
+    for (const auto& jsonFile : processor.irFiles) {
+        irSelect.addItem(jsonFile.getFileNameWithoutExtension(), i);
+        i += 1;
+    }
+    irSelect.onChange = [this] {irSelectChanged(); };
+    irSelect.setSelectedItemIndex(processor.current_ir_index, juce::NotificationType::dontSendNotification);
+    irSelect.setScrollWheelEnabled(true);
+
+    addAndMakeVisible(loadIR);
+    loadIR.setButtonText("Import IR");
+    loadIR.setColour(juce::Label::textColourId, juce::Colours::black);
+    loadIR.addListener(this);
+
+    // Toggle IR
+    //addAndMakeVisible(irButton); // Toggle is for testing purposes
+    irButton.setToggleState(true, juce::NotificationType::dontSendNotification);
+    irButton.onClick = [this] { updateToggleState(&irButton, "IR");   };
+
+    // Toggle LSTM
+    //addAndMakeVisible(lstmButton); // Toggle is for testing purposes
+    lstmButton.setToggleState(true, juce::NotificationType::dontSendNotification);
+    lstmButton.onClick = [this] { updateToggleState(&lstmButton, "LSTM");   };
+  
+
     addAndMakeVisible(ampGainKnob);
     //ampGainKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampGainKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
@@ -382,14 +449,14 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     oscReceiver.getPresenceValue().addListener(this);
 
     oscReceiver.getModelValue().addListener(this);
+    oscReceiver.getIrValue().addListener(this);
 
     updateInConnectedLabel();
 
     connectSender();
 
     // Size of plugin GUI
-    setSize(276, 430);
-
+    setSize(260, 455);
 }
 
 NeuralPiAudioProcessorEditor::~NeuralPiAudioProcessorEditor()
@@ -414,50 +481,77 @@ void NeuralPiAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
-    modelSelect.setBounds(19, 10, 234, 25);
-    loadButton.setBounds(19, 42, 100, 25);
+    modelSelect.setBounds(11, 10, 234, 25);
+    loadButton.setBounds(19, 74, 100, 25);
     modelKnob.setBounds(140, 40, 75, 95);
 
-    // Amp Widgets
-    ampGainKnob.setBounds(15, 90, 75, 95);
-    ampMasterKnob.setBounds(100, 90, 75, 95);
-    ampBassKnob.setBounds(15, 225, 75, 95);
-    ampMidKnob.setBounds(100, 225, 75, 95);
-    ampTrebleKnob.setBounds(185, 225, 75, 95);
-    ampPresenceKnob.setBounds(185, 90, 75, 95);
+    irSelect.setBounds(11, 42, 234, 25);
+    loadIR.setBounds(125, 74, 100, 25);
+    irButton.setBounds(248, 42, 257, 25);
+    lstmButton.setBounds(248, 10, 257, 25);
 
-    GainLabel.setBounds(11, 78, 80, 10);
-    LevelLabel.setBounds(98, 78, 80, 10);
-    BassLabel.setBounds(11, 213, 80, 10);
-    MidLabel.setBounds(97, 213, 80, 10);
-    TrebleLabel.setBounds(183, 213, 80, 10);
-    PresenceLabel.setBounds(183, 78, 80, 10);
+    // Amp Widgets
+    ampGainKnob.setBounds(10, 120, 75, 95);
+    ampMasterKnob.setBounds(95, 120, 75, 95);
+    ampBassKnob.setBounds(10, 250, 75, 95);
+    ampMidKnob.setBounds(95, 250, 75, 95);
+    ampTrebleKnob.setBounds(180, 250, 75, 95);
+    ampPresenceKnob.setBounds(180, 120, 75, 95);
+
+    GainLabel.setBounds(6, 108, 80, 10);
+    LevelLabel.setBounds(93, 108, 80, 10);
+    BassLabel.setBounds(6, 238, 80, 10);
+    MidLabel.setBounds(91, 238, 80, 10);
+    TrebleLabel.setBounds(178, 238, 80, 10);
+    PresenceLabel.setBounds(178, 108, 80, 10);
 
     addAndMakeVisible(ampNameLabel);
     ampNameField.setEditable(true, true, true);
     addAndMakeVisible(ampNameField);
 
     // IP controls:
-    ipField.setBounds(150, 340, 100, 25);
-    ipLabel.setBounds(15, 340, 150, 25);
+    ipField.setBounds(150, 365, 100, 25);
+    ipLabel.setBounds(15, 365, 150, 25);
 
     // Port controls:
-    outPortNumberLabel.setBounds(15, 370, 150, 25);
-    outPortNumberField.setBounds(160, 370, 75, 25);
-    inPortNumberLabel.setBounds(15, 400, 150, 25);
-    inPortNumberField.setBounds(160, 400, 75, 25);
+    outPortNumberLabel.setBounds(15, 395, 150, 25);
+    outPortNumberField.setBounds(160, 395, 75, 25);
+    inPortNumberLabel.setBounds(15, 425, 150, 25);
+    inPortNumberField.setBounds(160, 425, 75, 25);
 }
 
 void NeuralPiAudioProcessorEditor::modelSelectChanged()
 {
     const int selectedFileIndex = modelSelect.getSelectedItemIndex();
+    File selectedFile = processor.userAppDataDirectory_tones.getFullPathName() + "/" + modelSelect.getText() + ".json";
     if (selectedFileIndex >= 0 && selectedFileIndex < processor.jsonFiles.size()) {
-        processor.loadConfig(processor.jsonFiles[selectedFileIndex]);
-        processor.current_model_index = modelSelect.getSelectedItemIndex();
+        //processor.loadConfig(processor.jsonFiles[selectedFileIndex]);
+        processor.loadConfig(selectedFile);
+        processor.current_model_index = selectedFileIndex;
     }
     auto newValue = static_cast<float>(processor.current_model_index / (processor.num_models - 1.0));
     modelKnob.setValue(newValue);
-    //modelKnob.setValue(processor.current_model_index);
+}
+
+void NeuralPiAudioProcessorEditor::irSelectChanged()
+{
+    const int selectedFileIndex = irSelect.getSelectedItemIndex();
+    File selectedFile = processor.userAppDataDirectory_irs.getFullPathName() + "/" + irSelect.getText() + ".wav";
+    if (selectedFileIndex >= 0 && selectedFileIndex < processor.irFiles.size()) {
+        //processor.loadIR(processor.irFiles[selectedFileIndex]);
+        processor.loadIR(selectedFile);
+        processor.current_ir_index = selectedFileIndex;
+    }
+    auto newValue = static_cast<float>(processor.current_ir_index / (processor.num_irs - 1.0));
+    irKnob.setValue(newValue);
+}
+
+void NeuralPiAudioProcessorEditor::updateToggleState(juce::Button* button, juce::String name)
+{
+    if (name == "IR")
+        processor.ir_state = button->getToggleState();
+    else
+        processor.lstm_state = button->getToggleState();
 }
 
 void NeuralPiAudioProcessorEditor::loadButtonClicked()
@@ -486,10 +580,45 @@ void NeuralPiAudioProcessorEditor::loadButtonClicked()
                     modelSelect.addItem(file.getFileNameWithoutExtension(), processor.jsonFiles.size() + 1);
                     modelSelect.setSelectedItemIndex(processor.jsonFiles.size(), juce::NotificationType::dontSendNotification);
                     processor.jsonFiles.push_back(file);
-                    //processor.num_models += 1;
+                    processor.num_models += 1;
                 }
                 // Sort jsonFiles alphabetically
                 std::sort(processor.jsonFiles.begin(), processor.jsonFiles.end());
+            }
+        }
+    }
+}
+
+void NeuralPiAudioProcessorEditor::loadIRClicked()
+{
+    FileChooser chooser("Select one or more .wav IR files to import",
+        {},
+        "*.wav");
+    if (chooser.browseForMultipleFilesToOpen())
+    {
+        int import_fail = 1;
+        Array<File> files = chooser.getResults();
+        for (auto file : files) {
+            File fullpath = processor.userAppDataDirectory_irs.getFullPathName() + "/" + file.getFileName();
+            bool b = fullpath.existsAsFile();
+            if (b == false) {
+
+                processor.loadIR(file);
+                fname = file.getFileName();
+                processor.loaded_ir = file;
+                processor.loaded_ir_name = fname;
+                processor.custom_ir = 1;
+
+                // Copy selected file to model directory and load into dropdown menu
+                bool a = file.copyFileTo(fullpath);
+                if (a == true) {
+                    irSelect.addItem(file.getFileNameWithoutExtension(), processor.irFiles.size() + 1);
+                    irSelect.setSelectedItemIndex(processor.irFiles.size(), juce::NotificationType::dontSendNotification);
+                    processor.irFiles.push_back(file);
+                    processor.num_irs += 1;
+                }
+                // Sort jsonFiles alphabetically
+                std::sort(processor.irFiles.begin(), processor.irFiles.end());
             }
         }
     }
@@ -501,30 +630,25 @@ void NeuralPiAudioProcessorEditor::buttonClicked(juce::Button* button)
     if (button == &loadButton) {
         loadButtonClicked();
     }
+    else
+    {
+        loadIRClicked();
+    }
 }
 
 
 void NeuralPiAudioProcessorEditor::sliderValueChanged(Slider* slider)
 {
-    if (slider == &modelKnob)
+    if (slider == &modelKnob) {
         if (slider->getValue() >= 0 && slider->getValue() < processor.jsonFiles.size()) {
             modelSelect.setSelectedItemIndex(processor.getModelIndex(slider->getValue()), juce::NotificationType::dontSendNotification);
         }
-}
-/*
-    else if (slider == &ampBassKnob || slider == &ampMidKnob || slider == &ampTrebleKnob) {
-        processor.set_ampEQ(ampBassKnob.getValue(), ampMidKnob.getValue(), ampTrebleKnob.getValue(), ampPresenceKnob.getValue());
-        // Set knob states for saving positions when closing/reopening GUI
-        processor.ampBassKnobState = ampBassKnob.getValue();
-        processor.ampMidKnobState = ampMidKnob.getValue();
-        processor.ampTrebleKnobState = ampTrebleKnob.getValue();
-    }
-    else if (slider == &ampPresenceKnob) {
-        processor.set_ampEQ(ampBassKnob.getValue(), ampMidKnob.getValue(), ampTrebleKnob.getValue(), ampPresenceKnob.getValue());
+    } else if (slider == &irKnob) {
+        if (slider->getValue() >= 0 && slider->getValue() < processor.irFiles.size()) {
+            irSelect.setSelectedItemIndex(processor.getIrIndex(slider->getValue()), juce::NotificationType::dontSendNotification);
+        }
     }
 }
-*/
-
 
 // OSC Messages
 Slider& NeuralPiAudioProcessorEditor::getGainSlider()
@@ -560,6 +684,11 @@ Slider& NeuralPiAudioProcessorEditor::getPresenceSlider()
 Slider& NeuralPiAudioProcessorEditor::getModelSlider()
 {
     return modelKnob;
+}
+
+Slider& NeuralPiAudioProcessorEditor::getIrSlider()
+{
+    return irKnob;
 }
 
 
@@ -602,6 +731,7 @@ void NeuralPiAudioProcessorEditor::buildAddressPatterns()
     trebleAddressPattern = "/parameter/" + ampName + "/Treble";
     presenceAddressPattern = "/parameter/" + ampName + "/Presence";
     modelAddressPattern = "/parameter/" + ampName + "/Model";
+    irAddressPattern = "/parameter/" + ampName + "/Ir";
 }
 
 void NeuralPiAudioProcessorEditor::connectSender()
@@ -741,6 +871,14 @@ void NeuralPiAudioProcessorEditor::valueChanged(Value& value)
                 NotificationType::sendNotification);
         }
     }
+    else if (value.refersToSameSourceAs(oscReceiver.getIrValue()))
+    {
+        if (!approximatelyEqual(static_cast<double> (value.getValue()), getIrSlider().getValue()))
+        {
+            getIrSlider().setValue(static_cast<double> (value.getValue()),
+                NotificationType::sendNotification);
+        }
+    }
 }
 
 void NeuralPiAudioProcessorEditor::timerCallback()
@@ -752,6 +890,7 @@ void NeuralPiAudioProcessorEditor::timerCallback()
     getTrebleSlider().setValue(getParameterValue(trebleName), NotificationType::dontSendNotification);
     getPresenceSlider().setValue(getParameterValue(presenceName), NotificationType::dontSendNotification);
     getModelSlider().setValue(getParameterValue(modelName), NotificationType::dontSendNotification);
+    getIrSlider().setValue(getParameterValue(irName), NotificationType::dontSendNotification);
 }
 
 AudioProcessorParameter* NeuralPiAudioProcessorEditor::getParameter(const String& paramId)
