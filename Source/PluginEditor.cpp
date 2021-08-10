@@ -138,17 +138,16 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     loadIR.addListener(this);
 
     // Toggle IR
-    addAndMakeVisible(irButton);
+    //addAndMakeVisible(irButton); // Toggle is for testing purposes
     irButton.setToggleState(true, juce::NotificationType::dontSendNotification);
     irButton.onClick = [this] { updateToggleState(&irButton, "IR");   };
 
     // Toggle LSTM
-    addAndMakeVisible(lstmButton);
+    //addAndMakeVisible(lstmButton); // Toggle is for testing purposes
     lstmButton.setToggleState(true, juce::NotificationType::dontSendNotification);
     lstmButton.onClick = [this] { updateToggleState(&lstmButton, "LSTM");   };
   
 
-    //gainSliderAttach = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.treeState, GAIN_ID, ampGainKnob);
     addAndMakeVisible(ampGainKnob);
     //ampGainKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampGainKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
@@ -457,7 +456,7 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     connectSender();
 
     // Size of plugin GUI
-    setSize(276, 455);
+    setSize(260, 455);
 }
 
 NeuralPiAudioProcessorEditor::~NeuralPiAudioProcessorEditor()
@@ -492,19 +491,19 @@ void NeuralPiAudioProcessorEditor::resized()
     lstmButton.setBounds(248, 10, 257, 25);
 
     // Amp Widgets
-    ampGainKnob.setBounds(15, 120, 75, 95);
-    ampMasterKnob.setBounds(100, 120, 75, 95);
-    ampBassKnob.setBounds(15, 250, 75, 95);
-    ampMidKnob.setBounds(100, 250, 75, 95);
-    ampTrebleKnob.setBounds(185, 250, 75, 95);
-    ampPresenceKnob.setBounds(185, 120, 75, 95);
+    ampGainKnob.setBounds(10, 120, 75, 95);
+    ampMasterKnob.setBounds(95, 120, 75, 95);
+    ampBassKnob.setBounds(10, 250, 75, 95);
+    ampMidKnob.setBounds(95, 250, 75, 95);
+    ampTrebleKnob.setBounds(180, 250, 75, 95);
+    ampPresenceKnob.setBounds(180, 120, 75, 95);
 
-    GainLabel.setBounds(11, 108, 80, 10);
-    LevelLabel.setBounds(98, 108, 80, 10);
-    BassLabel.setBounds(11, 238, 80, 10);
-    MidLabel.setBounds(97, 238, 80, 10);
-    TrebleLabel.setBounds(183, 238, 80, 10);
-    PresenceLabel.setBounds(183, 108, 80, 10);
+    GainLabel.setBounds(6, 108, 80, 10);
+    LevelLabel.setBounds(93, 108, 80, 10);
+    BassLabel.setBounds(6, 238, 80, 10);
+    MidLabel.setBounds(91, 238, 80, 10);
+    TrebleLabel.setBounds(178, 238, 80, 10);
+    PresenceLabel.setBounds(178, 108, 80, 10);
 
     addAndMakeVisible(ampNameLabel);
     ampNameField.setEditable(true, true, true);

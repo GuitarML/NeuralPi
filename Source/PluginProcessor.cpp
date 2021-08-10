@@ -181,11 +181,11 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
     if (amp_state == 1) {
         auto gain = static_cast<float> (gainParam->get());
         auto master = static_cast<float> (masterParam->get());
-        // Note: Default 0.0 -> 1.0 param range is converted to +-8.0 here
-        auto bass = (static_cast<float> (bassParam->get() - 0.5) * 16.0);
-        auto mid = (static_cast<float> (midParam->get() - 0.5) * 16.0);
-        auto treble = (static_cast<float> (trebleParam->get() - 0.5) * 16.0);
-        auto presence = (static_cast<float> (presenceParam->get() - 0.5) * 16.0);
+        // Note: Default 0.0 -> 1.0 param range is converted to +-12.0 here
+        auto bass = (static_cast<float> (bassParam->get() - 0.5) * 24.0);
+        auto mid = (static_cast<float> (midParam->get() - 0.5) * 24.0);
+        auto treble = (static_cast<float> (trebleParam->get() - 0.5) * 24.0);
+        auto presence = (static_cast<float> (presenceParam->get() - 0.5) * 24.0);
 
         auto model = static_cast<float> (modelParam->get());
         model_index = getModelIndex(model);
@@ -299,12 +299,17 @@ int NeuralPiAudioProcessor::getIrIndex(float ir_param)
 void NeuralPiAudioProcessor::loadConfig(File configFile)
 {
     this->suspendProcessing(true);
-    model_loaded = 1;
     String path = configFile.getFullPathName();
     char_filename = path.toUTF8();
-    // TODO Add check here for invalid files
 
-    LSTM.load_json(char_filename);
+    try {
+        LSTM.load_json(char_filename);
+        model_loaded = 1;
+    }
+    catch (const std::exception& e) {
+        DBG("Unable to load IR file: " + configFile.getFullPathName());
+        std::cout << e.what();
+    }
 
     this->suspendProcessing(false);
 }
@@ -312,10 +317,15 @@ void NeuralPiAudioProcessor::loadConfig(File configFile)
 void NeuralPiAudioProcessor::loadIR(File irFile)
 {
     this->suspendProcessing(true);
-    ir_loaded = 1;
-    // TODO Add check here for invalid files
-    cabSimIR.load(irFile);
 
+    try {
+        cabSimIR.load(irFile);
+        ir_loaded = 1;
+    }
+    catch (const std::exception& e) {
+        DBG("Unable to load IR file: " + irFile.getFullPathName());
+        std::cout << e.what();
+    }
     this->suspendProcessing(false);
 }
 
