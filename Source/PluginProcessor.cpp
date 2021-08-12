@@ -52,6 +52,8 @@ NeuralPiAudioProcessor::NeuralPiAudioProcessor()
     addParameter(presenceParam = new AudioParameterFloat(PRESENCE_ID, PRESENCE_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.5f));
     addParameter(modelParam = new AudioParameterFloat(MODEL_ID, MODEL_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.0f));
     addParameter(irParam = new AudioParameterFloat(IR_ID, IR_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.0f));
+    addParameter(delayParam = new AudioParameterFloat(DELAY_ID, DELAY_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.0f));
+    addParameter(reverbParam = new AudioParameterFloat(REVERB_ID, REVERB_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.0f));
 }
 
 
@@ -135,6 +137,9 @@ void NeuralPiAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
 
     // Set up IR
     cabSimIR.prepare(spec);
+
+    // fx chain
+    fxChain.prepare(spec);    
 }
 
 void NeuralPiAudioProcessor::releaseResources()
@@ -177,6 +182,9 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
     const int numInputChannels = getTotalNumInputChannels();
     const int sampleRate = getSampleRate();
 
+    auto block = dsp::AudioBlock<float>(buffer).getSingleChannelBlock(0);
+    auto context = juce::dsp::ProcessContextReplacing<float>(block);
+
     // Amp =============================================================================
     if (amp_state == 1) {
         auto gain = static_cast<float> (gainParam->get());
@@ -186,6 +194,9 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
         auto mid = (static_cast<float> (midParam->get() - 0.5) * 24.0);
         auto treble = (static_cast<float> (trebleParam->get() - 0.5) * 24.0);
         auto presence = (static_cast<float> (presenceParam->get() - 0.5) * 24.0);
+
+        auto delay = (static_cast<float> (delayParam->get()));
+        auto reverb = (static_cast<float> (reverbParam->get()));
 
         auto model = static_cast<float> (modelParam->get());
         model_index = getModelIndex(model);
@@ -221,8 +232,15 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
         }
 
         //    Master Volume 
-        buffer.applyGain(master * 1.5);
+        buffer.applyGain(master);
+
+        // Process Delay, and Reverb
+        set_delayParams(delay);
+        set_reverbParams(reverb);
+        fxChain.process(context);
     }
+
+
 
     // process DC blocker
     auto monoBlock = dsp::AudioBlock<float>(buffer).getSingleChannelBlock(0);
@@ -256,6 +274,8 @@ void NeuralPiAudioProcessor::getStateInformation(MemoryBlock& destData)
     stream.writeFloat(*presenceParam);
     stream.writeFloat(*modelParam);
     stream.writeFloat(*irParam);
+    stream.writeFloat(*delayParam);
+    stream.writeFloat(*reverbParam);
 }
 
 void NeuralPiAudioProcessor::setStateInformation(const void* data, int sizeInBytes)
@@ -270,6 +290,8 @@ void NeuralPiAudioProcessor::setStateInformation(const void* data, int sizeInByt
     presenceParam->setValueNotifyingHost(stream.readFloat());
     modelParam->setValueNotifyingHost(stream.readFloat());
     irParam->setValueNotifyingHost(stream.readFloat());
+    delayParam->setValueNotifyingHost(stream.readFloat());
+    reverbParam->setValueNotifyingHost(stream.readFloat());
 }
 
 int NeuralPiAudioProcessor::getModelIndex(float model_param)
@@ -459,6 +481,28 @@ void NeuralPiAudioProcessor::installTones()
 void NeuralPiAudioProcessor::set_ampEQ(float bass_slider, float mid_slider, float treble_slider, float presence_slider)
 {
     eq4band.setParameters(bass_slider, mid_slider, treble_slider, presence_slider);
+}
+
+void NeuralPiAudioProcessor::set_delayParams(float paramValue)
+{
+    auto& del = fxChain.template get<delayIndex>();
+    del.setWetLevel(paramValue);
+    del.setDelayTime(0, paramValue);
+    del.setFeedback(paramValue);
+}
+
+
+void NeuralPiAudioProcessor::set_reverbParams(float paramValue)
+{
+    auto& rev = fxChain.template get<reverbIndex>();
+    rev_params = rev.getParameters();
+
+    // Sets reverb params as a function of a single reverb param value ( 0.0 to 1.0)
+    rev_params.wetLevel = paramValue;
+    rev_params.damping = 1.0 - paramValue; // decay is inverse of damping
+    rev_params.roomSize= paramValue;
+
+    rev.setParameters(rev_params);
 }
 
 float NeuralPiAudioProcessor::convertLogScale(float in_value, float x_min, float x_max, float y_min, float y_max)

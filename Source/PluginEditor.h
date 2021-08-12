@@ -51,6 +51,8 @@ public:
     String midAddressPattern{ "/parameter/NeuralPi/Mid" };
     String trebleAddressPattern{ "/parameter/NeuralPi/Treble" };
     String presenceAddressPattern{ "/parameter/NeuralPi/Presence" };
+    String delayAddressPattern{ "/parameter/NeuralPi/Delay" };
+    String reverbAddressPattern{ "/parameter/NeuralPi/Reverb" };
 
     const String gainName{ "gain" };
     const String masterName{ "master" };
@@ -58,6 +60,8 @@ public:
     const String midName{ "mid" };
     const String trebleName{ "treble" };
     const String presenceName{ "presence" };
+    const String delayName{ "delay" };
+    const String reverbName{ "reverb" };
 
     const String modelName{ "model" };
     const String irName{ "ir" };
@@ -82,6 +86,8 @@ private:
     Slider ampMidKnob;
     Slider ampTrebleKnob;
     Slider ampPresenceKnob;
+    Slider ampDelayKnob;
+    Slider ampReverbKnob;
 
     Label GainLabel;
     Label LevelLabel;
@@ -89,6 +95,8 @@ private:
     Label MidLabel;
     Label TrebleLabel;
     Label PresenceLabel;
+    Label DelayLabel;
+    Label ReverbLabel;
 
     File test_file;
     File model_folder;
@@ -137,6 +145,8 @@ private:
     Slider& getMidSlider();
     Slider& getTrebleSlider();
     Slider& getPresenceSlider();
+    Slider& getDelaySlider();
+    Slider& getReverbSlider();
 
     Label& getOutPortNumberField();
     Label& getInPortNumberField();
