@@ -54,6 +54,16 @@ public:
         return irValue;
     }
 
+    Value& getDelayValue()
+    {
+        return delayValue;
+    }
+
+    Value& getReverbValue()
+    {
+        return reverbValue;
+    }
+
     void changePort (int port)
     {
         if (! connect (port))
@@ -90,6 +100,8 @@ private:
         presenceAddressPattern = "/parameter/" + ampName + "/Presence";
         modelAddressPattern = "/parameter/" + ampName + "/Model";
         irAddressPattern = "/parameter/" + ampName + "/Ir";
+        reverbAddressPattern = "/parameter/" + ampName + "/Reverb";
+        delayAddressPattern = "/parameter/" + ampName + "/Delay";
     }
 
     void oscMessageReceived(const OSCMessage& message) override
@@ -134,7 +146,14 @@ private:
             {
                 irValue.setValue(jlimit(0.0f, 1.0f, message[0].getFloat32()));
             }
-
+            else if (message.getAddressPattern().matches(reverbAddressPattern))
+            {
+                reverbValue.setValue(jlimit(0.0f, 1.0f, message[0].getFloat32()));
+            }
+            else if (message.getAddressPattern().matches(delayAddressPattern))
+            {
+                delayValue.setValue(jlimit(0.0f, 1.0f, message[0].getFloat32()));
+            }
         }
     }
 
@@ -149,6 +168,8 @@ private:
     String presenceAddressPattern {"/parameter/elk_juce_example/Presence"};
     String modelAddressPattern {"/parameter/elk_juce_example/Model"};
     String irAddressPattern {"/parameter/elk_juce_example/Ir"};
+    String delayAddressPattern {"/parameter/elk_juce_example/Delay"};
+    String reverbAddressPattern {"/parameter/elk_juce_example/Reverb"};
 
     Value gainValue {0.5f};
     Value masterValue {0.5f};
@@ -159,6 +180,9 @@ private:
 
     Value modelValue {0.0f};
     Value irValue {0.0f};
+
+    Value delayValue {0.0f};
+    Value reverbValue {0.0f};
 
     bool connected = false;
 

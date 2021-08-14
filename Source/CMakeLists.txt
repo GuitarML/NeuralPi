@@ -2,6 +2,7 @@
 
 target_sources(NeuralPi PRIVATE
         AmpOSCReceiver.h
+        Delay.h
 	Eq4Band.cpp
 	Eq4Band.h
 	PluginEditor.cpp

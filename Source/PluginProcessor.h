@@ -13,6 +13,7 @@
 #include "AmpOSCReceiver.h"
 #include "Eq4Band.h"
 #include "CabSim.h"
+#include "Delay.h"
 
 #pragma once
 
@@ -34,6 +35,10 @@
 #define TREBLE_NAME "Treble"
 #define PRESENCE_ID "presence"
 #define PRESENCE_NAME "Presence"
+#define DELAY_ID "delay"
+#define DELAY_NAME "Delay"
+#define REVERB_ID "reverb"
+#define REVERB_NAME "Reverb"
 
 //==============================================================================
 /**
@@ -86,6 +91,8 @@ public:
     void installTones();
 
     void set_ampEQ(float bass_slider, float mid_slider, float treble_slider, float presence_slider);
+    void set_delayParams(float paramValue);
+    void set_reverbParams(float paramValue);
     
     float convertLogScale(float in_value, float x_min, float x_max, float y_min, float y_max);
 
@@ -125,6 +132,8 @@ public:
 
     RT_LSTM LSTM;
 
+    juce::dsp::Reverb::Parameters rev_params;
+
 private:
     var dummyVar;
     Eq4Band eq4band; // Amp EQ
@@ -137,11 +146,22 @@ private:
     AudioParameterFloat* presenceParam;
     AudioParameterFloat* modelParam;
     AudioParameterFloat* irParam;
+    AudioParameterFloat* delayParam;
+    AudioParameterFloat* reverbParam;
 
     dsp::IIR::Filter<float> dcBlocker;
 
     // IR processing
     CabSim cabSimIR;
+
+    // Effects
+    enum
+    {
+        delayIndex,
+        reverbIndex
+    };
+
+    juce::dsp::ProcessorChain<Delay<float>, juce::dsp::Reverb> fxChain;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NeuralPiAudioProcessor)

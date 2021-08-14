@@ -381,6 +381,82 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
         }
     };
 
+    addAndMakeVisible(ampDelayKnob);
+    ampDelayKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
+    ampDelayKnob.setNumDecimalPlacesToDisplay(1);
+    ampDelayKnob.addListener(this);
+    ampDelayKnob.setRange(0.0, 1.0);
+    ampDelayKnob.setValue(0.0);
+    ampDelayKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
+    ampDelayKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
+    ampDelayKnob.setNumDecimalPlacesToDisplay(2);
+    ampDelayKnob.setDoubleClickReturnValue(true, 0.0);
+
+    auto delayValue = getParameterValue(delayName);
+    Slider& delaySlider = getDelaySlider();
+    delaySlider.setValue(delayValue, NotificationType::dontSendNotification);
+
+    ampDelayKnob.onValueChange = [this]
+    {
+        const float sliderValue = static_cast<float> (getDelaySlider().getValue());
+        const float delayValue = getParameterValue(delayName);
+
+        if (!approximatelyEqual(delayValue, sliderValue))
+        {
+            setParameterValue(delayName, sliderValue);
+
+            // create and send an OSC message with an address and a float value:
+            float value = static_cast<float> (getDelaySlider().getValue());
+
+            if (!oscSender.send(delayAddressPattern, value))
+            {
+                updateOutConnectedLabel(false);
+            }
+            else
+            {
+                DBG("Sent value " + String(value) + " to AP " + delayAddressPattern);
+            }
+        }
+    };
+
+    addAndMakeVisible(ampReverbKnob);
+    ampReverbKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
+    ampReverbKnob.setNumDecimalPlacesToDisplay(1);
+    ampReverbKnob.addListener(this);
+    ampReverbKnob.setRange(0.0, 1.0);
+    ampReverbKnob.setValue(0.0);
+    ampReverbKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
+    ampReverbKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
+    ampReverbKnob.setNumDecimalPlacesToDisplay(2);
+    ampReverbKnob.setDoubleClickReturnValue(true, 0.0);
+
+    auto reverbValue = getParameterValue(reverbName);
+    Slider& reverbSlider = getReverbSlider();
+    reverbSlider.setValue(reverbValue, NotificationType::dontSendNotification);
+
+    ampReverbKnob.onValueChange = [this]
+    {
+        const float sliderValue = static_cast<float> (getReverbSlider().getValue());
+        const float reverbValue = getParameterValue(reverbName);
+
+        if (!approximatelyEqual(reverbValue, sliderValue))
+        {
+            setParameterValue(reverbName, sliderValue);
+
+            // create and send an OSC message with an address and a float value:
+            float value = static_cast<float> (getReverbSlider().getValue());
+
+            if (!oscSender.send(reverbAddressPattern, value))
+            {
+                updateOutConnectedLabel(false);
+            }
+            else
+            {
+                DBG("Sent value " + String(value) + " to AP " + reverbAddressPattern);
+            }
+        }
+    };
+
     addAndMakeVisible(GainLabel);
     GainLabel.setText("Gain", juce::NotificationType::dontSendNotification);
     GainLabel.setJustificationType(juce::Justification::centred);
@@ -401,6 +477,13 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     PresenceLabel.setText("Presence", juce::NotificationType::dontSendNotification);
     PresenceLabel.setJustificationType(juce::Justification::centred);
 
+    addAndMakeVisible(DelayLabel);
+    DelayLabel.setText("Delay", juce::NotificationType::dontSendNotification);
+    DelayLabel.setJustificationType(juce::Justification::centred);
+    addAndMakeVisible(ReverbLabel);
+    ReverbLabel.setText("Reverb", juce::NotificationType::dontSendNotification);
+    ReverbLabel.setJustificationType(juce::Justification::centred);
+
     auto font = GainLabel.getFont();
     float height = font.getHeight();
     font.setHeight(height); // 0.75);
@@ -410,6 +493,8 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     MidLabel.setFont(font);
     TrebleLabel.setFont(font);
     PresenceLabel.setFont(font);
+    DelayLabel.setFont(font);
+    ReverbLabel.setFont(font);
 
     // Name controls:
     addAndMakeVisible(ampNameLabel);
@@ -456,7 +541,7 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     connectSender();
 
     // Size of plugin GUI
-    setSize(260, 455);
+    setSize(345, 455);
 }
 
 NeuralPiAudioProcessorEditor::~NeuralPiAudioProcessorEditor()
@@ -481,12 +566,12 @@ void NeuralPiAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
-    modelSelect.setBounds(11, 10, 234, 25);
-    loadButton.setBounds(19, 74, 100, 25);
+    modelSelect.setBounds(11, 10, 270, 25);
+    loadButton.setBounds(11, 74, 100, 25);
     modelKnob.setBounds(140, 40, 75, 95);
 
-    irSelect.setBounds(11, 42, 234, 25);
-    loadIR.setBounds(125, 74, 100, 25);
+    irSelect.setBounds(11, 42, 270, 25);
+    loadIR.setBounds(120, 74, 100, 25);
     irButton.setBounds(248, 42, 257, 25);
     lstmButton.setBounds(248, 10, 257, 25);
 
@@ -496,14 +581,20 @@ void NeuralPiAudioProcessorEditor::resized()
     ampBassKnob.setBounds(10, 250, 75, 95);
     ampMidKnob.setBounds(95, 250, 75, 95);
     ampTrebleKnob.setBounds(180, 250, 75, 95);
-    ampPresenceKnob.setBounds(180, 120, 75, 95);
+    ampPresenceKnob.setBounds(265, 250, 75, 95);
+
+    ampDelayKnob.setBounds(180, 120, 75, 95);
+    ampReverbKnob.setBounds(265, 120, 75, 95);
 
     GainLabel.setBounds(6, 108, 80, 10);
     LevelLabel.setBounds(93, 108, 80, 10);
     BassLabel.setBounds(6, 238, 80, 10);
     MidLabel.setBounds(91, 238, 80, 10);
     TrebleLabel.setBounds(178, 238, 80, 10);
-    PresenceLabel.setBounds(178, 108, 80, 10);
+    PresenceLabel.setBounds(265, 238, 80, 10);
+
+    DelayLabel.setBounds(178, 108, 80, 10);
+    ReverbLabel.setBounds(265, 108, 80, 10);
 
     addAndMakeVisible(ampNameLabel);
     ampNameField.setEditable(true, true, true);
@@ -681,6 +772,16 @@ Slider& NeuralPiAudioProcessorEditor::getPresenceSlider()
     return ampPresenceKnob;
 }
 
+Slider& NeuralPiAudioProcessorEditor::getDelaySlider()
+{
+    return ampDelayKnob;
+}
+
+Slider& NeuralPiAudioProcessorEditor::getReverbSlider()
+{
+    return ampReverbKnob;
+}
+
 Slider& NeuralPiAudioProcessorEditor::getModelSlider()
 {
     return modelKnob;
@@ -730,6 +831,8 @@ void NeuralPiAudioProcessorEditor::buildAddressPatterns()
     midAddressPattern = "/parameter/" + ampName + "/Mid";
     trebleAddressPattern = "/parameter/" + ampName + "/Treble";
     presenceAddressPattern = "/parameter/" + ampName + "/Presence";
+    delayAddressPattern = "/parameter/" + ampName + "/Delay";
+    reverbAddressPattern = "/parameter/" + ampName + "/Reverb";
     modelAddressPattern = "/parameter/" + ampName + "/Model";
     irAddressPattern = "/parameter/" + ampName + "/Ir";
 }
@@ -863,6 +966,22 @@ void NeuralPiAudioProcessorEditor::valueChanged(Value& value)
                 NotificationType::sendNotification);
         }
     }
+    if (value.refersToSameSourceAs(oscReceiver.getDelayValue()))
+    {
+        if (!approximatelyEqual(static_cast<double> (value.getValue()), getDelaySlider().getValue()))
+        {
+            getDelaySlider().setValue(static_cast<double> (value.getValue()),
+                NotificationType::sendNotification);
+        }
+    }
+    else if (value.refersToSameSourceAs(oscReceiver.getReverbValue()))
+    {
+        if (!approximatelyEqual(static_cast<double> (value.getValue()), getReverbSlider().getValue()))
+        {
+            getReverbSlider().setValue(static_cast<double> (value.getValue()),
+                NotificationType::sendNotification);
+        }
+    }
     else if (value.refersToSameSourceAs(oscReceiver.getModelValue()))
     {
         if (!approximatelyEqual(static_cast<double> (value.getValue()), getModelSlider().getValue()))
@@ -889,6 +1008,8 @@ void NeuralPiAudioProcessorEditor::timerCallback()
     getMidSlider().setValue(getParameterValue(midName), NotificationType::dontSendNotification);
     getTrebleSlider().setValue(getParameterValue(trebleName), NotificationType::dontSendNotification);
     getPresenceSlider().setValue(getParameterValue(presenceName), NotificationType::dontSendNotification);
+    getDelaySlider().setValue(getParameterValue(delayName), NotificationType::dontSendNotification);
+    getReverbSlider().setValue(getParameterValue(reverbName), NotificationType::dontSendNotification);
     getModelSlider().setValue(getParameterValue(modelName), NotificationType::dontSendNotification);
     getIrSlider().setValue(getParameterValue(irName), NotificationType::dontSendNotification);
 }
