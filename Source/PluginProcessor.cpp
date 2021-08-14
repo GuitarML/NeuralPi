@@ -487,8 +487,17 @@ void NeuralPiAudioProcessor::set_delayParams(float paramValue)
 {
     auto& del = fxChain.template get<delayIndex>();
     del.setWetLevel(paramValue);
-    del.setDelayTime(0, paramValue);
-    del.setFeedback(paramValue);
+    // Setting delay time as larger steps to minimize clicking, and to start delay time at a reasonable value
+    if (paramValue < 0.25) {
+        del.setDelayTime(0, 0.25);
+    } else if (paramValue < 0.5) {
+        del.setDelayTime(0, 0.5);
+    } else if (paramValue < 0.75) {
+        del.setDelayTime(0, 0.75);
+    } else {
+        del.setDelayTime(0, 1.0);
+    }
+    del.setFeedback(0.8-paramValue/2);
 }
 
 
@@ -499,9 +508,9 @@ void NeuralPiAudioProcessor::set_reverbParams(float paramValue)
 
     // Sets reverb params as a function of a single reverb param value ( 0.0 to 1.0)
     rev_params.wetLevel = paramValue;
-    rev_params.damping = 1.0 - paramValue; // decay is inverse of damping
-    rev_params.roomSize= paramValue;
-
+    rev_params.damping = 0.6 - paramValue/2; // decay is inverse of damping
+    rev_params.roomSize = 0.8 - paramValue/2;
+    //rev_params.width = paramValue;
     rev.setParameters(rev_params);
 }
 
