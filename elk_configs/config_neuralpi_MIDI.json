@@ -1,0 +1,148 @@
+{
+    "host_config" : {
+        "samplerate" : 44100
+    },
+    "tracks" : [
+        {
+            "name" : "main",
+            "mode" : "stereo",
+            "inputs" : [
+                {
+                    "engine_bus" : 0,
+                    "track_bus" : 0
+                }
+            ],
+            "outputs" : [
+                {
+                    "engine_bus" : 0,
+                    "track_bus" : 0
+                }
+            ],
+            "plugins" : [
+			    {
+				    "uid"  : "sushi.testing.mono_summing",
+					"name" : "mono_summing",
+					"type" : "internal"
+				},
+                {
+                    "uid"  : "NeuralPi",
+                    "path" : "/home/mind/plugins/NeuralPi.vst3",
+                    "name" : "NeuralPi",
+                    "type" : "vst3x"
+                }
+            ]
+        }
+    ],
+    "midi" : {
+	"track_connections": [
+            {
+                "port": 0,
+                "channel": "all",
+                "track": "main",
+                "raw_midi": false
+            }
+        ],
+	"cc_mappings": [
+	    {
+                "port": 0,
+                "channel": "all",
+                "plugin_name": "NeuralPi",
+                "cc_number": 1,
+		"parameter_name": "Gain",
+		"min_range": 0.0,
+		"max_range": 1.0,
+		"mode": "absolute"
+            },
+ 	    {
+                "port": 0,
+                "channel": "all",
+                "plugin_name": "NeuralPi",
+                "cc_number": 2,
+		"parameter_name": "Master",
+		"min_range": 0.0,
+		"max_range": 1.0,
+		"mode": "absolute"
+            },
+ 	    {
+                "port": 0,
+                "channel": "all",
+                "plugin_name": "NeuralPi",
+                "cc_number": 3,
+		"parameter_name": "Bass",
+		"min_range": 0.0,
+		"max_range": 1.0,
+		"mode": "absolute"
+            },
+	    {
+                "port": 0,
+                "channel": "all",
+                "plugin_name": "NeuralPi",
+                "cc_number": 4,
+		"parameter_name": "Mid",
+		"min_range": 0.0,
+		"max_range": 1.0,
+		"mode": "absolute"
+            },
+	    {
+                "port": 0,
+                "channel": "all",
+                "plugin_name": "NeuralPi",
+                "cc_number": 5,
+		"parameter_name": "Treble",
+		"min_range": 0.0,
+		"max_range": 1.0,
+		"mode": "absolute"
+            },
+ 	    {
+                "port": 0,
+                "channel": "all",
+                "plugin_name": "NeuralPi",
+                "cc_number": 6,
+		"parameter_name": "Presence",
+		"min_range": 0.0,
+		"max_range": 1.0,
+		"mode": "absolute"
+            },
+ 	    {
+                "port": 0,
+                "channel": "all",
+                "plugin_name": "NeuralPi",
+                "cc_number": 7,
+		"parameter_name": "Delay",
+		"min_range": 0.0,
+		"max_range": 1.0,
+		"mode": "absolute"
+            },
+ 	    {
+                "port": 0,
+                "channel": "all",
+                "plugin_name": "NeuralPi",
+                "cc_number": 8,
+		"parameter_name": "Reverb",
+		"min_range": 0.0,
+		"max_range": 1.0,
+		"mode": "absolute"
+            },
+ 	    {
+                "port": 0,
+                "channel": "all",
+                "plugin_name": "NeuralPi",
+                "cc_number": 9,
+		"parameter_name": "Model",
+		"min_range": 0.0,
+		"max_range": 1.0,
+		"mode": "absolute"
+            },
+	    {
+                "port": 0,
+                "channel": "all",
+                "plugin_name": "NeuralPi",
+                "cc_number": 10,
+		"parameter_name": "Ir",
+		"min_range": 0.0,
+		"max_range": 1.0,
+		"mode": "absolute"
+            }
+        ]
+    }
+}
