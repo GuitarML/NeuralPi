@@ -48,6 +48,39 @@ Note: Ensure from the terminal output that you were able to connect over WiFi, a
 
 IMPORTANT: The plugin uses a sort() function to order the models alphabetically. Due to differences in the behaviour of this function on Linux (Elk OS) vs. Win/Mac, you must start json filenames with a capital letter, otherwise the NeuralPi on Elk will sort models starting with a lowercase letter at the end of the list and the controller will be out of sync with the NeuralPi pedal.
 
+## MIDI control of NeuralPi parameters
+
+The “config_neuralpi_MIDI.json” file contains MIDI mapping of NeuralPi parameters.
+
+The names of parameters are: "Gain", "Master", "Bass", "Mid", "Treble", "Presence", "Delay", "Reverb", "Model", "Ir".
+In that json file, you can see that those parameters have been asigned to incoming MIDI CC# messages "1", "2", "3", "4, "5", "6", "7", "8", "9" and "10" respectively. But editing the file allows you to chose whatever CC# to whatever parameter, by just changing values in the “cc_number” and “parameter_name” commmands.
+
+Sushi will listen to incoming MIDI CC# messages, will normalize (0, 127)  MIDI values range to (0, 1) Sushi range, and will set that value to correspondent parameter. For instance, if your MIDI controller sends a CC2 message with value "127", Sushi will receive that message and set "Master" parameter (“Master” is assigned to “CC2”) to be "1" (MIDI “127” value normalized to “1”).
+
+You´ll need to copy the config file to the Raspberry, for instance through ssh over Wifi (login as root):
+
+scp -r config_neuralpi_MIDI.json root@<rpi-ip-address>:/home/mind/config_files/
+
+For connecting a MIDI device:
+
+1 - Plug your MIDI device into any Raspberry USB port.
+
+2 - Login as “mind” user, “elk” password, and run Sushi with the MIDI config:
+
+sushi -r --multicore-processing=2 –c ~/config_files/config_neuralpi_MIDI.json &
+
+3 – To list MIDI devices connected to the Raspberry, run:
+
+aconnect –l
+
+4 – You can now connect your MIDI device to Sushi either by their listed ports, or by their names. Run:
+
+aconnect "your-listed-device-name" "Sushi"
+
+NOTE 1: Currentlly, "Model" and "Ir" parameters are a little tricky to control. NeuralPi asigns a value to each file saved in "tones" or "Ir" directory. It divides the (0, 1) range of values by the number of files available, so for instance, if you had just 2 tone files in the directory, one of them would respond to any value in the (0, 0.49) range, and the other would respond to any value in the (0.5, 1) range. When a lot of tones/IR files are stored in the directories, it´s difficult to guess which value corresponds to which tone/IR... so for the moment, if you need to control tones or IRs with MIDI, you´d have to work a little to find out values, or just reduce the number of tones/IRs in your directories to make the task easier.
+
+NOTE 2: When NeuralPi is started, it seeks for tones in the directory. If it doesn´t find the default ones (“BluesJR_FullD.json” and “TS9_FullD.json” tones), it will create them again. So if you had only 2 tones because yo wanted to control them easily by MIDI, and neither of them are the BluesJr nor TS9, bear in mind that at Sushi startup, suddenly BluesJr and TS9 files will be created again in the directory, so there´ll be 4 models/files stored and the values assigned for each one might have changed. If you want only 2 models, you can cheat a little and rename your desired model files as “BluesJR_FullD.json” and “TS9_FullD.json” (make sure the name is identical). This way, NeuralPi thinks that default models are already in the directory and doesn´t add any files.
+
 ## To Do
 
 Elk Audio OS also supports physical controls through [Sensei](https://github.com/elk-audio/sensei). Gain/Volume and EQ knobs can be added, as well as a LCD screen for selecting different models. One could build an actual guitar pedal with NeuralPi and any number of other digital effects and controls.
@@ -105,3 +138,4 @@ The binaries will be located in `NeuralPi/build/NeuralPi_artefacts/`
 6. Build NeuralPi from the Juce Projucer application for the intended build target. 
 
 Note: Make sure to build in Release mode unless actually debugging. Debug mode will not keep up with real time playing.
+
