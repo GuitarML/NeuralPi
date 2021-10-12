@@ -614,8 +614,8 @@ void NeuralPiAudioProcessorEditor::resized()
 void NeuralPiAudioProcessorEditor::modelSelectChanged()
 {
     const int selectedFileIndex = modelSelect.getSelectedItemIndex();
-    File selectedFile = processor.userAppDataDirectory_tones.getFullPathName() + "/" + modelSelect.getText() + ".json";
     if (selectedFileIndex >= 0 && selectedFileIndex < processor.jsonFiles.size()) {
+        File selectedFile = processor.userAppDataDirectory_tones.getFullPathName() + "/" + modelSelect.getText() + ".json";
         //processor.loadConfig(processor.jsonFiles[selectedFileIndex]);
         processor.loadConfig(selectedFile);
         processor.current_model_index = selectedFileIndex;
@@ -627,8 +627,8 @@ void NeuralPiAudioProcessorEditor::modelSelectChanged()
 void NeuralPiAudioProcessorEditor::irSelectChanged()
 {
     const int selectedFileIndex = irSelect.getSelectedItemIndex();
-    File selectedFile = processor.userAppDataDirectory_irs.getFullPathName() + "/" + irSelect.getText() + ".wav";
     if (selectedFileIndex >= 0 && selectedFileIndex < processor.irFiles.size()) {
+        File selectedFile = processor.userAppDataDirectory_irs.getFullPathName() + "/" + irSelect.getText() + ".wav";
         //processor.loadIR(processor.irFiles[selectedFileIndex]);
         processor.loadIR(selectedFile);
         processor.current_ir_index = selectedFileIndex;
@@ -852,7 +852,7 @@ void NeuralPiAudioProcessorEditor::connectSender()
 
 void NeuralPiAudioProcessorEditor::updateOutgoingIP(String ip)
 {
-    outgoingIP = ip;
+    outgoingIP = std::move(ip);
     connectSender();
 }
 

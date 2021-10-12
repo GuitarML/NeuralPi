@@ -80,7 +80,7 @@ public:
 
     void updateAmpName (String name)
     {
-        ampName = name;
+        ampName = std::move(name);
         buildAddressPatterns();
     }
 
