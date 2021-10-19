@@ -51,8 +51,12 @@ void RT_LSTM::reset()
     model.reset();
 }
 
-void RT_LSTM::process(const float* inData, float* outData, int numSamples)
+void RT_LSTM::process(const float* inData, float param, float* outData, int numSamples)
 {
-    for (int i = 0; i < numSamples; ++i)
-        outData[i] = model.forward(inData + i) + inData[i];
+    for (int i = 0; i < numSamples; ++i) {
+        inArray[0] = inData[i];
+        inArray[1] = param;
+        outData[i] = model.forward(inArray) + inData[i];
+    }
+
 }
