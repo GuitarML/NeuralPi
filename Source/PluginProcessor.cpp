@@ -340,9 +340,11 @@ void NeuralPiAudioProcessor::loadConfig(File configFile)
         int input_size_json = weights_json["/model_data/input_size"_json_pointer];
         LSTM.input_size = input_size_json;
         if (input_size_json == 1) {
+            is_conditioned = false;
             LSTM.load_json(char_filename);
         }
         else {
+            is_conditioned = true;
             LSTM.load_json2(char_filename);
         }
         model_loaded = 1;
@@ -472,6 +474,7 @@ void NeuralPiAudioProcessor::installTones()
     // Default tones
     File ts9_tone = userAppDataDirectory_tones.getFullPathName() + "/TS9_FullD.json";
     File bjdirty_tone = userAppDataDirectory_tones.getFullPathName() + "/BluesJR_FullD.json";
+    File ht40od_tone = userAppDataDirectory_tones.getFullPathName() + "/HT40_Overdrive.json";
 
     if (ts9_tone.existsAsFile() == false) {
         std::string string_command = ts9_tone.getFullPathName().toStdString();
@@ -491,6 +494,17 @@ void NeuralPiAudioProcessor::installTones()
         std::ofstream myfile;
         myfile.open(char_bjdirty);
         myfile << BinaryData::BluesJR_FullD_json;
+
+        myfile.close();
+    }
+
+    if (ht40od_tone.existsAsFile() == false) {
+        std::string string_command = ht40od_tone.getFullPathName().toStdString();
+        const char* char_ht40od = &string_command[0];
+
+        std::ofstream myfile;
+        myfile.open(char_ht40od);
+        myfile << BinaryData::HT40_Overdrive_json;
 
         myfile.close();
     }

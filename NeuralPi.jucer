@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT name="NeuralPi" companyName="GuitarML" version="1.0.0" companyWebsite="https://guitarml.com"
+<JUCERPROJECT name="NeuralPi" companyName="GuitarML" version="1.3.0" companyWebsite="https://guitarml.com"
               defines="PIP_JUCE_EXAMPLES_DIRECTORY=L2hvbWUvaWxpYXMvd29ya3NwYWNlcy9KVUNFL2V4YW1wbGVz"
               projectType="audioplug" pluginManufacturer="GuitarML" pluginAUIsSandboxSafe="1"
               pluginFormats="buildStandalone,buildVST3" id="vXK47v" jucerFormatVersion="1"
-              displaySplashScreen="1">
+              displaySplashScreen="1" companyEmail="smartguitarml@gmail.com">
   <MAINGROUP id="zI9r2C" name="NeuralPi">
     <GROUP id="{810D2D07-FCAC-0F25-F63F-DCF49FEE10C7}" name="Resources">
       <FILE id="hQ0vq1" name="BluesJR_FullD.json" compile="0" resource="1"
             file="models/BluesJR_FullD.json"/>
+      <FILE id="YURBrY" name="HT40_Overdrive.json" compile="0" resource="1"
+            file="models/HT40_Overdrive.json"/>
       <FILE id="JubKNX" name="npi_background.jpg" compile="0" resource="1"
             file="resources/npi_background.jpg"/>
       <FILE id="wH6oji" name="TS9_FullD.json" compile="0" resource="1" file="models/TS9_FullD.json"/>
