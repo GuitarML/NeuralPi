@@ -214,8 +214,13 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
                 loadConfig(jsonFiles[model_index]);
                 current_model_index = model_index;
             }
-            //LSTM.process(buffer.getReadPointer(0), buffer.getWritePointer(0), numSamples);
-            LSTM.process(buffer.getReadPointer(0), gain, buffer.getWritePointer(0), numSamples);
+
+            // Process LSTM based on input_size (snapshot model or conditioned model)
+            if (LSTM.input_size == 1) {
+                LSTM.process(buffer.getReadPointer(0), buffer.getWritePointer(0), numSamples);
+            } else {
+                LSTM.process(buffer.getReadPointer(0), gain, buffer.getWritePointer(0), numSamples);
+            }
         }
 
         // Process IR
@@ -326,7 +331,20 @@ void NeuralPiAudioProcessor::loadConfig(File configFile)
     char_filename = path.toUTF8();
 
     try {
-        LSTM.load_json(char_filename);
+        // Check input size for conditioned models
+        // read JSON file
+        std::ifstream i2(char_filename);
+        nlohmann::json weights_json;
+        i2 >> weights_json;
+
+        int input_size_json = weights_json["/model_data/input_size"_json_pointer];
+        LSTM.input_size = input_size_json;
+        if (input_size_json == 1) {
+            LSTM.load_json(char_filename);
+        }
+        else {
+            LSTM.load_json2(char_filename);
+        }
         model_loaded = 1;
     }
     catch (const std::exception& e) {
