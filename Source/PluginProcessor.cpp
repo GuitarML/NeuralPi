@@ -474,8 +474,8 @@ void NeuralPiAudioProcessor::installTones()
 //====================================================================
 {
     // Default tones
-    File ts9_tone = userAppDataDirectory_tones.getFullPathName() + "/TS9_FullD.json";
-    File bjdirty_tone = userAppDataDirectory_tones.getFullPathName() + "/BluesJR_FullD.json";
+    File ts9_tone = userAppDataDirectory_tones.getFullPathName() + "/TS9.json";
+    File bjdirty_tone = userAppDataDirectory_tones.getFullPathName() + "/BluesJR.json";
     File ht40od_tone = userAppDataDirectory_tones.getFullPathName() + "/HT40_Overdrive.json";
 
     if (ts9_tone.existsAsFile() == false) {
@@ -484,7 +484,7 @@ void NeuralPiAudioProcessor::installTones()
 
         std::ofstream myfile;
         myfile.open(char_ts9_tone);
-        myfile << BinaryData::TS9_FullD_json;
+        myfile << BinaryData::TS9_json;
 
         myfile.close();
     }
@@ -495,7 +495,7 @@ void NeuralPiAudioProcessor::installTones()
 
         std::ofstream myfile;
         myfile.open(char_bjdirty);
-        myfile << BinaryData::BluesJR_FullD_json;
+        myfile << BinaryData::BluesJr_json;
 
         myfile.close();
     }
