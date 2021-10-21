@@ -204,7 +204,9 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
         auto ir = static_cast<float> (irParam->get());
         ir_index = getIrIndex(ir);
 
-        //buffer.applyGain(gain * 2.0);
+        if (LSTM.input_size == 1) {
+            buffer.applyGain(gain * 2.0);
+        }
         eq4band.setParameters(bass, mid, treble, presence);// Better to move this somewhere else? Only need to set when value changes
         eq4band.process(buffer.getReadPointer(0), buffer.getWritePointer(0), midiMessages, numSamples, numInputChannels, sampleRate);
 
