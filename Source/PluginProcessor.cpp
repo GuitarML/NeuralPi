@@ -204,9 +204,12 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
         auto ir = static_cast<float> (irParam->get());
         ir_index = getIrIndex(ir);
 
+        // Applying gain adjustment for snapshot models
         if (LSTM.input_size == 1) {
             buffer.applyGain(gain * 2.0);
-        }
+        } 
+
+        // Process EQ
         eq4band.setParameters(bass, mid, treble, presence);// Better to move this somewhere else? Only need to set when value changes
         eq4band.process(buffer.getReadPointer(0), buffer.getWritePointer(0), midiMessages, numSamples, numInputChannels, sampleRate);
 
@@ -240,15 +243,13 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
         }
 
         //    Master Volume 
-        buffer.applyGain(master);
+        buffer.applyGain(master * 2.0); // Adding volume range (2x) mainly for clean models
 
         // Process Delay, and Reverb
         set_delayParams(delay);
         set_reverbParams(reverb);
         fxChain.process(context);
     }
-
-
 
     // process DC blocker
     auto monoBlock = dsp::AudioBlock<float>(buffer).getSingleChannelBlock(0);
@@ -352,7 +353,7 @@ void NeuralPiAudioProcessor::loadConfig(File configFile)
         model_loaded = 1;
     }
     catch (const std::exception& e) {
-        DBG("Unable to load IR file: " + configFile.getFullPathName());
+        DBG("Unable to load json file: " + configFile.getFullPathName());
         std::cout << e.what();
     }
 
@@ -395,7 +396,6 @@ void NeuralPiAudioProcessor::resetDirectoryIR(const File& file)
         file.findChildFiles(results, juce::File::findFiles, false, "*.wav");
         for (int i = results.size(); --i >= 0;)
             irFiles.push_back(File(results.getReference(i).getFullPathName()));
-        
     }
 }
 
