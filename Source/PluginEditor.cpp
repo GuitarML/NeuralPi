@@ -23,6 +23,9 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to
 
+    blueLookAndFeel.setColour(juce::Slider::thumbColourId, juce::Colours::aqua);
+    redLookAndFeel.setColour(juce::Slider::thumbColourId, juce::Colours::red);
+
     //addAndMakeVisible(modelKnob);
     //ampGainKnob.setLookAndFeel(&ampSilverKnobLAF);
     modelKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
@@ -149,7 +152,7 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
   
 
     addAndMakeVisible(ampGainKnob);
-    //ampGainKnob.setLookAndFeel(&ampSilverKnobLAF);
+    ampGainKnob.setLookAndFeel(&blueLookAndFeel);
     ampGainKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
     ampGainKnob.setNumDecimalPlacesToDisplay(1);
     ampGainKnob.addListener(this);
@@ -188,7 +191,7 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     };
 
     addAndMakeVisible(ampMasterKnob);
-    //ampMasterKnob.setLookAndFeel(&ampSilverKnobLAF);
+    ampMasterKnob.setLookAndFeel(&blueLookAndFeel);
     ampMasterKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
     ampMasterKnob.setNumDecimalPlacesToDisplay(1);
     ampMasterKnob.addListener(this);
@@ -230,6 +233,7 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
 
 
     addAndMakeVisible(ampBassKnob);
+    ampBassKnob.setLookAndFeel(&blueLookAndFeel);
     ampBassKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
     ampBassKnob.setNumDecimalPlacesToDisplay(1);
     ampBassKnob.addListener(this);
@@ -268,6 +272,7 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     };
 
     addAndMakeVisible(ampMidKnob);
+    ampMidKnob.setLookAndFeel(&blueLookAndFeel);
     ampMidKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
     ampMidKnob.setNumDecimalPlacesToDisplay(1);
     ampMidKnob.addListener(this);
@@ -306,6 +311,7 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     };
 
     addAndMakeVisible(ampTrebleKnob);
+    ampTrebleKnob.setLookAndFeel(&blueLookAndFeel);
     ampTrebleKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
     ampTrebleKnob.setNumDecimalPlacesToDisplay(1);
     ampTrebleKnob.addListener(this);
@@ -344,6 +350,7 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     };
 
     addAndMakeVisible(ampPresenceKnob);
+    ampPresenceKnob.setLookAndFeel(&blueLookAndFeel);
     ampPresenceKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
     ampPresenceKnob.setNumDecimalPlacesToDisplay(1);
     ampPresenceKnob.addListener(this);
@@ -382,6 +389,7 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     };
 
     addAndMakeVisible(ampDelayKnob);
+    ampDelayKnob.setLookAndFeel(&blueLookAndFeel);
     ampDelayKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
     ampDelayKnob.setNumDecimalPlacesToDisplay(1);
     ampDelayKnob.addListener(this);
@@ -420,6 +428,7 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     };
 
     addAndMakeVisible(ampReverbKnob);
+    ampReverbKnob.setLookAndFeel(&blueLookAndFeel);
     ampReverbKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
     ampReverbKnob.setNumDecimalPlacesToDisplay(1);
     ampReverbKnob.addListener(this);
@@ -467,12 +476,15 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     addAndMakeVisible(BassLabel);
     BassLabel.setText("Bass", juce::NotificationType::dontSendNotification);
     BassLabel.setJustificationType(juce::Justification::centred);
+
     addAndMakeVisible(MidLabel);
     MidLabel.setText("Mid", juce::NotificationType::dontSendNotification);
     MidLabel.setJustificationType(juce::Justification::centred);
+
     addAndMakeVisible(TrebleLabel);
     TrebleLabel.setText("Treble", juce::NotificationType::dontSendNotification);
     TrebleLabel.setJustificationType(juce::Justification::centred);
+
     addAndMakeVisible(PresenceLabel);
     PresenceLabel.setText("Presence", juce::NotificationType::dontSendNotification);
     PresenceLabel.setJustificationType(juce::Justification::centred);
@@ -480,9 +492,22 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     addAndMakeVisible(DelayLabel);
     DelayLabel.setText("Delay", juce::NotificationType::dontSendNotification);
     DelayLabel.setJustificationType(juce::Justification::centred);
+
     addAndMakeVisible(ReverbLabel);
     ReverbLabel.setText("Reverb", juce::NotificationType::dontSendNotification);
     ReverbLabel.setJustificationType(juce::Justification::centred);
+
+    addAndMakeVisible(toneDropDownLabel);
+    toneDropDownLabel.setText("Tone", juce::NotificationType::dontSendNotification);
+    toneDropDownLabel.setJustificationType(juce::Justification::centred);
+
+    addAndMakeVisible(irDropDownLabel);
+    irDropDownLabel.setText("IR", juce::NotificationType::dontSendNotification);
+    irDropDownLabel.setJustificationType(juce::Justification::centred);
+
+    addAndMakeVisible(versionLabel);
+    versionLabel.setText("v1.3.0", juce::NotificationType::dontSendNotification);
+    versionLabel.setJustificationType(juce::Justification::centred);
 
     auto font = GainLabel.getFont();
     float height = font.getHeight();
@@ -495,6 +520,10 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     PresenceLabel.setFont(font);
     DelayLabel.setFont(font);
     ReverbLabel.setFont(font);
+    toneDropDownLabel.setFont(font);
+    irDropDownLabel.setFont(font);
+    versionLabel.setFont(font);
+
 
     // Name controls:
     addAndMakeVisible(ampNameLabel);
@@ -542,6 +571,9 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
 
     // Size of plugin GUI
     setSize(345, 455);
+
+    // Set gain knob color based on conditioned/snapshot model 
+    setGainKnobColor();
 }
 
 NeuralPiAudioProcessorEditor::~NeuralPiAudioProcessorEditor()
@@ -592,9 +624,12 @@ void NeuralPiAudioProcessorEditor::resized()
     MidLabel.setBounds(91, 238, 80, 10);
     TrebleLabel.setBounds(178, 238, 80, 10);
     PresenceLabel.setBounds(265, 238, 80, 10);
-
     DelayLabel.setBounds(178, 108, 80, 10);
     ReverbLabel.setBounds(265, 108, 80, 10);
+
+    toneDropDownLabel.setBounds(267, 16, 80, 10);
+    irDropDownLabel.setBounds(261, 48, 80, 10);
+    versionLabel.setBounds(268, 431, 80, 10);
 
     addAndMakeVisible(ampNameLabel);
     ampNameField.setEditable(true, true, true);
@@ -622,6 +657,7 @@ void NeuralPiAudioProcessorEditor::modelSelectChanged()
     }
     auto newValue = static_cast<float>(processor.current_model_index / (processor.num_models - 1.0));
     modelKnob.setValue(newValue);
+    setGainKnobColor();
 }
 
 void NeuralPiAudioProcessorEditor::irSelectChanged()
@@ -678,6 +714,7 @@ void NeuralPiAudioProcessorEditor::loadButtonClicked()
             }
         }
     }
+    setGainKnobColor();
 }
 
 void NeuralPiAudioProcessorEditor::loadIRClicked()
@@ -1045,4 +1082,15 @@ void NeuralPiAudioProcessorEditor::setParameterValue(const String& paramId, floa
 {
     if (auto* param = getParameter(paramId))
         param->setValueNotifyingHost(value);
+}
+
+
+void NeuralPiAudioProcessorEditor::setGainKnobColor()
+{
+    if (processor.is_conditioned == false) {
+        ampGainKnob.setLookAndFeel(&blueLookAndFeel);
+    }
+    else {
+        ampGainKnob.setLookAndFeel(&redLookAndFeel);
+    }
 }

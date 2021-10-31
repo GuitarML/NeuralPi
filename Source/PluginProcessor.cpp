@@ -204,7 +204,12 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
         auto ir = static_cast<float> (irParam->get());
         ir_index = getIrIndex(ir);
 
-        buffer.applyGain(gain * 2.0);
+        // Applying gain adjustment for snapshot models
+        if (LSTM.input_size == 1) {
+            buffer.applyGain(gain * 2.0);
+        } 
+
+        // Process EQ
         eq4band.setParameters(bass, mid, treble, presence);// Better to move this somewhere else? Only need to set when value changes
         eq4band.process(buffer.getReadPointer(0), buffer.getWritePointer(0), midiMessages, numSamples, numInputChannels, sampleRate);
 
@@ -214,7 +219,13 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
                 loadConfig(jsonFiles[model_index]);
                 current_model_index = model_index;
             }
-            LSTM.process(buffer.getReadPointer(0), buffer.getWritePointer(0), numSamples);
+
+            // Process LSTM based on input_size (snapshot model or conditioned model)
+            if (LSTM.input_size == 1) {
+                LSTM.process(buffer.getReadPointer(0), buffer.getWritePointer(0), numSamples);
+            } else {
+                LSTM.process(buffer.getReadPointer(0), gain, buffer.getWritePointer(0), numSamples);
+            }
         }
 
         // Process IR
@@ -232,15 +243,13 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
         }
 
         //    Master Volume 
-        buffer.applyGain(master);
+        buffer.applyGain(master * 2.0); // Adding volume range (2x) mainly for clean models
 
         // Process Delay, and Reverb
         set_delayParams(delay);
         set_reverbParams(reverb);
         fxChain.process(context);
     }
-
-
 
     // process DC blocker
     auto monoBlock = dsp::AudioBlock<float>(buffer).getSingleChannelBlock(0);
@@ -325,11 +334,26 @@ void NeuralPiAudioProcessor::loadConfig(File configFile)
     char_filename = path.toUTF8();
 
     try {
-        LSTM.load_json(char_filename);
+        // Check input size for conditioned models
+        // read JSON file
+        std::ifstream i2(char_filename);
+        nlohmann::json weights_json;
+        i2 >> weights_json;
+
+        int input_size_json = weights_json["/model_data/input_size"_json_pointer];
+        LSTM.input_size = input_size_json;
+        if (input_size_json == 1) {
+            is_conditioned = false;
+            LSTM.load_json(char_filename);
+        }
+        else {
+            is_conditioned = true;
+            LSTM.load_json2(char_filename);
+        }
         model_loaded = 1;
     }
     catch (const std::exception& e) {
-        DBG("Unable to load IR file: " + configFile.getFullPathName());
+        DBG("Unable to load json file: " + configFile.getFullPathName());
         std::cout << e.what();
     }
 
@@ -372,7 +396,6 @@ void NeuralPiAudioProcessor::resetDirectoryIR(const File& file)
         file.findChildFiles(results, juce::File::findFiles, false, "*.wav");
         for (int i = results.size(); --i >= 0;)
             irFiles.push_back(File(results.getReference(i).getFullPathName()));
-        
     }
 }
 
@@ -451,8 +474,9 @@ void NeuralPiAudioProcessor::installTones()
 //====================================================================
 {
     // Default tones
-    File ts9_tone = userAppDataDirectory_tones.getFullPathName() + "/TS9_FullD.json";
-    File bjdirty_tone = userAppDataDirectory_tones.getFullPathName() + "/BluesJR_FullD.json";
+    File ts9_tone = userAppDataDirectory_tones.getFullPathName() + "/TS9.json";
+    File bjdirty_tone = userAppDataDirectory_tones.getFullPathName() + "/BluesJR.json";
+    File ht40od_tone = userAppDataDirectory_tones.getFullPathName() + "/HT40_Overdrive.json";
 
     if (ts9_tone.existsAsFile() == false) {
         std::string string_command = ts9_tone.getFullPathName().toStdString();
@@ -460,7 +484,7 @@ void NeuralPiAudioProcessor::installTones()
 
         std::ofstream myfile;
         myfile.open(char_ts9_tone);
-        myfile << BinaryData::TS9_FullD_json;
+        myfile << BinaryData::TS9_json;
 
         myfile.close();
     }
@@ -471,7 +495,18 @@ void NeuralPiAudioProcessor::installTones()
 
         std::ofstream myfile;
         myfile.open(char_bjdirty);
-        myfile << BinaryData::BluesJR_FullD_json;
+        myfile << BinaryData::BluesJr_json;
+
+        myfile.close();
+    }
+
+    if (ht40od_tone.existsAsFile() == false) {
+        std::string string_command = ht40od_tone.getFullPathName().toStdString();
+        const char* char_ht40od = &string_command[0];
+
+        std::ofstream myfile;
+        myfile.open(char_ht40od);
+        myfile << BinaryData::HT40_Overdrive_json;
 
         myfile.close();
     }
