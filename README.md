@@ -35,7 +35,7 @@ Elk Audio OS: /home/mind/Documents/GuitarML/NeuralPi/tones
 
 ## Conditioned Models
 
-Starting with version 1.3, NeuralPi can load tones conditioned on the Gain parameter. The three default tones included with NeuralPi are now conditioned models. This type of model uses a neural network for the full range of the Gain/Drive parameter, rather than just a snapshot model. When a conditioned model is loaded, the Gain knob will turn red.
+Starting with version 1.3, NeuralPi can load tones conditioned on the Gain parameter. The three default tones included with NeuralPi are now conditioned models (TS9 pedal, Fender Blues Jr. amp, and Blackstar HT40 amp set to overdrive channel). The conditioned model uses a neural network for the full range of the Gain/Drive parameter, rather than just a snapshot model. When a conditioned model is loaded, the Gain knob will turn red. 
 
 ## Adding New Models
 
