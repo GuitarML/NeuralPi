@@ -97,6 +97,9 @@ private:
     Label PresenceLabel;
     Label DelayLabel;
     Label ReverbLabel;
+    Label toneDropDownLabel;
+    Label irDropDownLabel;
+    Label versionLabel;
 
     File test_file;
     File model_folder;
@@ -105,6 +108,9 @@ private:
     TextButton loadIR;
     ToggleButton irButton;
     ToggleButton lstmButton;
+
+    juce::LookAndFeel_V4 blueLookAndFeel;
+    juce::LookAndFeel_V4 redLookAndFeel;
     
     juce::String fname;
     virtual void buttonClicked(Button* button) override;
@@ -169,6 +175,7 @@ private:
 
     float getParameterValue(const String& paramId);
     void setParameterValue(const String& paramId, float value);
+    void setGainKnobColor();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NeuralPiAudioProcessorEditor)
 };

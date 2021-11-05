@@ -18,7 +18,7 @@ There are four main components to the guitar pedal:
 4. NeuralPi VST3 plugin
 
 ![app](https://github.com/GuitarML/NeuralPi/blob/main/resources/neuralpi_pic.jpg)
-<br>This is the normal plugin (v1.2.0), available for Windows (Standalone, VST3) and Mac (Standalone, AU, VST3). After connencting the Raspberry Pi and remote computer to the same local WiFi network, enter the RaspberryPi's IP address (keep the default ports) to enable control over WiFi. The Win/Mac plugins are fully functional guitar plugins that allow you to try out GuitarML's most advanced amp/pedal models without building the Raspberry Pi pedal.
+<br>This is the normal plugin (v1.3.0), available for Windows (Standalone, VST3) and Mac (Standalone, AU, VST3). After connencting the Raspberry Pi and remote computer to the same local WiFi network, enter the RaspberryPi's IP address (keep the default ports) to enable control over WiFi. The Win/Mac plugins are fully functional guitar plugins that allow you to try out GuitarML's most advanced amp/pedal models without building the Raspberry Pi pedal.
 
 Note: The plugin must be restarted after using the Import Tone button for changes to take effect.
 
@@ -32,6 +32,10 @@ Mac/Linux: /home/<username>/Documents/GuitarML/NeuralPi/tones
 Windows: C:/Users/<username>/Documents/GuitarML/NeuralPi/tones
 Elk Audio OS: /home/mind/Documents/GuitarML/NeuralPi/tones
 ```
+
+## Conditioned Models
+
+Starting with version 1.3, NeuralPi can load tones conditioned on the Gain parameter. The three default tones included with NeuralPi are now conditioned models (TS9 pedal, Fender Blues Jr. amp, and Blackstar HT40 amp set to overdrive channel). The conditioned model uses a neural network for the full range of the Gain/Drive parameter, rather than just a snapshot model. When a conditioned model is loaded, the Gain knob will turn red. 
 
 ## Adding New Models
 
@@ -50,14 +54,14 @@ IMPORTANT: The plugin uses a sort() function to order the models alphabetically.
 
 ## MIDI control of NeuralPi parameters
 
-The ìconfig_neuralpi_MIDI.jsonî file contains MIDI mapping of NeuralPi parameters.
+The ‚Äúconfig_neuralpi_MIDI.json‚Äù file contains MIDI mapping of NeuralPi parameters.
 
 The names of parameters are: "Gain", "Master", "Bass", "Mid", "Treble", "Presence", "Delay", "Reverb", "Model", "Ir".
-In that json file, you can see that those parameters have been asigned to incoming MIDI CC# messages "1", "2", "3", "4, "5", "6", "7", "8", "9" and "10" respectively. But editing the file allows you to chose whatever CC# to whatever parameter, by just changing values in the ìcc_numberî and ìparameter_nameî commmands.
+In that json file, you can see that those parameters have been asigned to incoming MIDI CC# messages "1", "2", "3", "4, "5", "6", "7", "8", "9" and "10" respectively. But editing the file allows you to chose whatever CC# to whatever parameter, by just changing values in the ‚Äúcc_number‚Äù and ‚Äúparameter_name‚Äù commmands.
 
-Sushi will listen to incoming MIDI CC# messages, will normalize (0, 127)  MIDI values range to (0, 1) Sushi range, and will set that value to correspondent parameter. For instance, if your MIDI controller sends a CC2 message with value "127", Sushi will receive that message and set "Master" parameter (ìMasterî is assigned to ìCC2î) to be "1" (MIDI ì127î value normalized to ì1î).
+Sushi will listen to incoming MIDI CC# messages, will normalize (0, 127)  MIDI values range to (0, 1) Sushi range, and will set that value to correspondent parameter. For instance, if your MIDI controller sends a CC2 message with value "127", Sushi will receive that message and set "Master" parameter (‚ÄúMaster‚Äù is assigned to ‚ÄúCC2‚Äù) to be "1" (MIDI ‚Äú127‚Äù value normalized to ‚Äú1‚Äù).
 
-You¥ll need to copy the config file to the Raspberry, for instance through ssh over Wifi (login as root):
+You¬¥ll need to copy the config file to the Raspberry, for instance through ssh over Wifi (login as root):
 
 scp -r config_neuralpi_MIDI.json root@<rpi-ip-address>:/home/mind/config_files/
 
@@ -65,21 +69,19 @@ For connecting a MIDI device:
 
 1 - Plug your MIDI device into any Raspberry USB port.
 
-2 - Login as ìmindî user, ìelkî password, and run Sushi with the MIDI config:
+2 - Login as ‚Äúmind‚Äù user, ‚Äúelk‚Äù password, and run Sushi with the MIDI config:
 
-sushi -r --multicore-processing=2 ñc ~/config_files/config_neuralpi_MIDI.json &
+sushi -r --multicore-processing=2 ‚Äìc ~/config_files/config_neuralpi_MIDI.json &
 
-3 ñ To list MIDI devices connected to the Raspberry, run:
+3 ‚Äì To list MIDI devices connected to the Raspberry, run:
 
-aconnect ñl
+aconnect ‚Äìl
 
-4 ñ You can now connect your MIDI device to Sushi either by their listed ports, or by their names. Run:
+4 ‚Äì You can now connect your MIDI device to Sushi either by their listed ports, or by their names. Run:
 
 aconnect "your-listed-device-name" "Sushi"
 
-NOTE 1: Currentlly, "Model" and "Ir" parameters are a little tricky to control. NeuralPi asigns a value to each file saved in "tones" or "Ir" directory. It divides the (0, 1) range of values by the number of files available, so for instance, if you had just 2 tone files in the directory, one of them would respond to any value in the (0, 0.49) range, and the other would respond to any value in the (0.5, 1) range. When a lot of tones/IR files are stored in the directories, it¥s difficult to guess which value corresponds to which tone/IR... so for the moment, if you need to control tones or IRs with MIDI, you¥d have to work a little to find out values, or just reduce the number of tones/IRs in your directories to make the task easier.
-
-NOTE 2: When NeuralPi is started, it seeks for tones in the directory. If it doesn¥t find the default ones (ìBluesJR_FullD.jsonî and ìTS9_FullD.jsonî tones), it will create them again. So if you had only 2 tones because yo wanted to control them easily by MIDI, and neither of them are the BluesJr nor TS9, bear in mind that at Sushi startup, suddenly BluesJr and TS9 files will be created again in the directory, so there¥ll be 4 models/files stored and the values assigned for each one might have changed. If you want only 2 models, you can cheat a little and rename your desired model files as ìBluesJR_FullD.jsonî and ìTS9_FullD.jsonî (make sure the name is identical). This way, NeuralPi thinks that default models are already in the directory and doesn¥t add any files.
+NOTE 1: Currentlly, "Model" and "Ir" parameters are a little tricky to control. NeuralPi asigns a value to each file saved in "tones" or "Ir" directory. It divides the (0, 1) range of values by the number of files available, so for instance, if you had just 2 tone files in the directory, one of them would respond to any value in the (0, 0.49) range, and the other would respond to any value in the (0.5, 1) range. 
 
 ## To Do
 
@@ -93,6 +95,8 @@ The neural network is a re-creation of the LSTM inference model from [Real-Time 
 The [Automated-GuitarAmpModelling](https://github.com/Alec-Wright/Automated-GuitarAmpModelling) project was used to train the .json models.<br>
 GuitarML maintains a [fork](https://github.com/GuitarML/Automated-GuitarAmpModelling) with a few extra helpful features, including a Colab training script.
 IMPORTANT: When training models for NeuralPi, ensure that a LSTM size of 20 is used. NeuralPi is optimized to run models of this size, and other sizes are not currently compatible.
+   
+Note: The GuitarML fork of the Automated-GuitarAmpModelling code now contains helper scripts for training conditioned models, which are compatible with NeuralPi v1.3.
 
 The plugin uses [RTNeural](https://github.com/jatinchowdhury18/RTNeural), which is a highly optimized neural net inference engine intended for audio applications. 
 

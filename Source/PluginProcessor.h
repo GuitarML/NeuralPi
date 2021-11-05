@@ -130,6 +130,8 @@ public:
     int current_ir_index = 0;
     int ir_index = 0;
 
+    bool is_conditioned = false;
+
     RT_LSTM LSTM;
 
     juce::dsp::Reverb::Parameters rev_params;
