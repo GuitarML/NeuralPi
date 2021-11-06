@@ -17,17 +17,46 @@ Vec2d transpose(const Vec2d& x)
     return y;
 }
 
+template <typename T1, typename T2>
+void RT_LSTM::set_weights(T1 lstm, T2 dense, const char* filename)
+{
+     // read a JSON file
+    std::ifstream i2(filename);
+    nlohmann::json weights_json;
+    i2 >> weights_json;
+
+    Vec2d lstm_weights_ih = weights_json["/state_dict/rec.weight_ih_l0"_json_pointer];
+    lstm.setWVals(transpose(lstm_weights_ih));
+
+    Vec2d lstm_weights_hh = weights_json["/state_dict/rec.weight_hh_l0"_json_pointer];
+    lstm.setUVals(transpose(lstm_weights_hh));
+
+    std::vector<float> lstm_bias_ih = weights_json["/state_dict/rec.bias_ih_l0"_json_pointer];
+    std::vector<float> lstm_bias_hh = weights_json["/state_dict/rec.bias_hh_l0"_json_pointer];
+    for (int i = 0; i < 80; ++i)
+        lstm_bias_hh[i] += lstm_bias_ih[i];
+    lstm.setBVals(lstm_bias_hh);
+
+    Vec2d dense_weights = weights_json["/state_dict/lin.weight"_json_pointer];
+    dense.setWeights(dense_weights);
+
+    std::vector<float> dense_bias = weights_json["/state_dict/lin.bias"_json_pointer];
+    dense.setBias(dense_bias.data());
+   
+}
 void RT_LSTM::load_json(const char* filename)
 {
-
+    // Initialize the correct model
     auto& lstm = model.get<0>();
     auto& dense = model.get<1>();
+ 
+    // set_weights(lstm, dense, filename);
 
     // read a JSON file
     std::ifstream i2(filename);
     nlohmann::json weights_json;
     i2 >> weights_json;
-
+   
     Vec2d lstm_weights_ih = weights_json["/state_dict/rec.weight_ih_l0"_json_pointer];
     lstm.setWVals(transpose(lstm_weights_ih));
 
@@ -53,29 +82,33 @@ void RT_LSTM::load_json2(const char* filename)
     auto& lstm = model_cond1.get<0>();
     auto& dense = model_cond1.get<1>();
 
-    // read a JSON file
-    std::ifstream i2(filename);
-    nlohmann::json weights_json;
-    i2 >> weights_json;
+    set_weights(lstm, dense, filename);
 
-    Vec2d lstm_weights_ih = weights_json["/state_dict/rec.weight_ih_l0"_json_pointer];
-    lstm.setWVals(transpose(lstm_weights_ih));
+    // // read a JSON file
+    // std::ifstream i2(filename);
+    // nlohmann::json weights_json;
+    // i2 >> weights_json;
 
-    Vec2d lstm_weights_hh = weights_json["/state_dict/rec.weight_hh_l0"_json_pointer];
-    lstm.setUVals(transpose(lstm_weights_hh));
+    // Vec2d lstm_weights_ih = weights_json["/state_dict/rec.weight_ih_l0"_json_pointer];
+    // lstm.setWVals(transpose(lstm_weights_ih));
 
-    std::vector<float> lstm_bias_ih = weights_json["/state_dict/rec.bias_ih_l0"_json_pointer];
-    std::vector<float> lstm_bias_hh = weights_json["/state_dict/rec.bias_hh_l0"_json_pointer];
-    for (int i = 0; i < 80; ++i)
-        lstm_bias_hh[i] += lstm_bias_ih[i];
-    lstm.setBVals(lstm_bias_hh);
+    // Vec2d lstm_weights_hh = weights_json["/state_dict/rec.weight_hh_l0"_json_pointer];
+    // lstm.setUVals(transpose(lstm_weights_hh));
 
-    Vec2d dense_weights = weights_json["/state_dict/lin.weight"_json_pointer];
-    dense.setWeights(dense_weights);
+    // std::vector<float> lstm_bias_ih = weights_json["/state_dict/rec.bias_ih_l0"_json_pointer];
+    // std::vector<float> lstm_bias_hh = weights_json["/state_dict/rec.bias_hh_l0"_json_pointer];
+    // for (int i = 0; i < 80; ++i)
+    //     lstm_bias_hh[i] += lstm_bias_ih[i];
+    // lstm.setBVals(lstm_bias_hh);
 
-    std::vector<float> dense_bias = weights_json["/state_dict/lin.bias"_json_pointer];
-    dense.setBias(dense_bias.data());
+    // Vec2d dense_weights = weights_json["/state_dict/lin.weight"_json_pointer];
+    // dense.setWeights(dense_weights);
+
+    // std::vector<float> dense_bias = weights_json["/state_dict/lin.bias"_json_pointer];
+    // dense.setBias(dense_bias.data());
 }
+
+
 
 void RT_LSTM::reset()
 {
