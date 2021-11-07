@@ -9,9 +9,9 @@ public:
 
     void reset();
     void load_json(const char* filename);
-    void load_json2(const char* filename);
-    template <typename T1, typename T2>
-    void set_weights(T1 lstm, T2 dense, const char* filename);
+    template <typename T1>
+    
+    void set_weights(T1 model, const char* filename);
 
     void process(const float* inData, float* outData, int numSamples);
     void process(const float* inData, float param, float* outData, int numSamples);
