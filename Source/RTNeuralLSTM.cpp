@@ -63,10 +63,12 @@ void RT_LSTM::load_json(const char* filename)
     if (input_size == 1) {
 		set_weights(&model, filename);
     }
-    else {
+    else if (input_size == 2) {
 		set_weights(&model_cond1, filename);
-    }
-
+    } 
+    else if (input_size == 3) {
+		set_weights(&model_cond2, filename);
+    } 
 }
 
 
@@ -88,8 +90,19 @@ void RT_LSTM::process(const float* inData, float* outData, int numSamples)
 void RT_LSTM::process(const float* inData, float param, float* outData, int numSamples)
 {
     for (int i = 0; i < numSamples; ++i) {
-        inArray[0] = inData[i];
-        inArray[1] = param;
-        outData[i] = model_cond1.forward(inArray) + inData[i];
+        inArray1[0] = inData[i];
+        inArray1[1] = param;
+        outData[i] = model_cond1.forward(inArray1) + inData[i];
     }
 }
+
+void RT_LSTM::process(const float* inData, float param1, float param2, float* outData, int numSamples)
+{
+    for (int i = 0; i < numSamples; ++i) {
+        inArray2[0] = inData[i];
+        inArray2[1] = param1;
+        inArray2[2] = param2;
+        outData[i] = model_cond2.forward(inArray2) + inData[i];
+    }
+}
+

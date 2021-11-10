@@ -223,8 +223,12 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
             // Process LSTM based on input_size (snapshot model or conditioned model)
             if (LSTM.input_size == 1) {
                 LSTM.process(buffer.getReadPointer(0), buffer.getWritePointer(0), numSamples);
-            } else {
+            }  
+            else if (LSTM.input_size == 2) {
                 LSTM.process(buffer.getReadPointer(0), gain, buffer.getWritePointer(0), numSamples);
+            }
+            else if (LSTM.input_size == 3) {
+                LSTM.process(buffer.getReadPointer(0), gain, master, buffer.getWritePointer(0), numSamples);
             }
         }
 
@@ -243,7 +247,9 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
         }
 
         //    Master Volume 
-        buffer.applyGain(master * 2.0); // Adding volume range (2x) mainly for clean models
+		if (LSTM.input_size == 1 || LSTM.input_size == 2) {
+			buffer.applyGain(master * 2.0); // Adding volume range (2x) mainly for clean models
+		}
 
         // Process Delay, and Reverb
         set_delayParams(delay);
@@ -334,22 +340,21 @@ void NeuralPiAudioProcessor::loadConfig(File configFile)
     char_filename = path.toUTF8();
 
     try {
-        // Check input size for conditioned models
-        // read JSON file
-        std::ifstream i2(char_filename);
-        nlohmann::json weights_json;
-        i2 >> weights_json;
-
-        int input_size_json = weights_json["/model_data/input_size"_json_pointer];
-        LSTM.input_size = input_size_json;
-        if (input_size_json == 1) {
-            is_conditioned = false;
-            LSTM.load_json(char_filename);
+        // Load the JSON file into the correct model
+        LSTM.load_json(char_filename);
+    
+        // Check what the input size is and then update the GUI appropirately
+        if (LSTM.input_size == 1) {
+            params = 0;
         }
-        else {
-            is_conditioned = true;
-            LSTM.load_json2(char_filename);
+        else if (LSTM.input_size == 2) {
+            params = 1;
         }
+        else if (LSTM.input_size == 3) {
+            params = 2;
+        }
+        
+        // If we are good: let's say so
         model_loaded = 1;
     }
     catch (const std::exception& e) {
