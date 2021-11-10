@@ -79,9 +79,9 @@
     </LINUX_MAKE>
     <VS2019 targetFolder="Builds/VisualStudio2019">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="NeuralPi" headerPath="C:\Users\rache\Desktop\dev\json-develop\include&#10;C:\Users\rache\Desktop\dev\NeuralPi\modules\RTNeural&#10;C:\Users\rache\Desktop\dev\NeuralPi\modules\RTNeural\modules\xsimd\include"
+        <CONFIGURATION isDebug="1" name="Debug" targetName="NeuralPi" headerPath="C:\Users\tseng\Personal\mlamsk\NeuralPi\modules\json\include&#10;C:\Users\tseng\Personal\mlamsk\NeuralPi\modules\RTNeural&#10;C:\Users\tseng\Personal\mlamsk\NeuralPi\modules\RTNeural\modules\xsimd\include"
                        defines="USE_XSIMD=1"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="NeuralPi" headerPath="C:\Users\rache\Desktop\dev\json-develop\include&#10;C:\Users\rache\Desktop\dev\NeuralPi\modules\RTNeural&#10;C:\Users\rache\Desktop\dev\NeuralPi\modules\RTNeural\modules\xsimd\include"
+        <CONFIGURATION isDebug="0" name="Release" targetName="NeuralPi" headerPath="C:\Users\tseng\Personal\mlamsk\NeuralPi\modules\json\include&#10;C:\Users\tseng\Personal\mlamsk\NeuralPi\modules\RTNeural&#10;C:\Users\tseng\Personal\mlamsk\NeuralPi\modules\RTNeural\modules\xsimd\include"
                        defines="USE_XSIMD=1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

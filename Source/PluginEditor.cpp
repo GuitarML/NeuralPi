@@ -573,7 +573,7 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     setSize(345, 455);
 
     // Set gain knob color based on conditioned/snapshot model 
-    setGainKnobColor();
+    setParamKnobColor();
 }
 
 NeuralPiAudioProcessorEditor::~NeuralPiAudioProcessorEditor()
@@ -657,7 +657,7 @@ void NeuralPiAudioProcessorEditor::modelSelectChanged()
     }
     auto newValue = static_cast<float>(processor.current_model_index / (processor.num_models - 1.0));
     modelKnob.setValue(newValue);
-    setGainKnobColor();
+    setParamKnobColor();
 }
 
 void NeuralPiAudioProcessorEditor::irSelectChanged()
@@ -714,7 +714,7 @@ void NeuralPiAudioProcessorEditor::loadButtonClicked()
             }
         }
     }
-    setGainKnobColor();
+    setParamKnobColor();
 }
 
 void NeuralPiAudioProcessorEditor::loadIRClicked()
@@ -1085,12 +1085,20 @@ void NeuralPiAudioProcessorEditor::setParameterValue(const String& paramId, floa
 }
 
 
-void NeuralPiAudioProcessorEditor::setGainKnobColor()
+void NeuralPiAudioProcessorEditor::setParamKnobColor()
 {
-    if (processor.is_conditioned == false) {
+    // If the knob is used for a parameter, change it to red
+    if (processor.params == 0) {
         ampGainKnob.setLookAndFeel(&blueLookAndFeel);
+        ampMasterKnob.setLookAndFeel(&blueLookAndFeel);
     }
-    else {
+    else if (processor.params == 1) {
         ampGainKnob.setLookAndFeel(&redLookAndFeel);
+        ampMasterKnob.setLookAndFeel(&blueLookAndFeel);
     }
+    else if (processor.params == 2) {
+        ampGainKnob.setLookAndFeel(&redLookAndFeel);
+        ampMasterKnob.setLookAndFeel(&redLookAndFeel);
+    }
+
 }
