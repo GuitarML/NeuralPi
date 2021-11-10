@@ -130,7 +130,10 @@ public:
     int current_ir_index = 0;
     int ir_index = 0;
 
-    bool is_conditioned = false;
+    // The number of parameters for the model
+    // 0 is for a snap shot model
+    // The PluginEditor uses this to determin which knobs to color red
+    int params = 0;
 
     RT_LSTM LSTM;
 

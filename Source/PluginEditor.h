@@ -175,7 +175,7 @@ private:
 
     float getParameterValue(const String& paramId);
     void setParameterValue(const String& paramId, float value);
-    void setGainKnobColor();
+    void setParamKnobColor();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NeuralPiAudioProcessorEditor)
 };
