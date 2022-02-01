@@ -21,8 +21,8 @@ template <typename T1>
 void RT_LSTM::set_weights(T1 model, const char* filename)
 {
     // Initialize the correct model
-    auto& lstm = (*model).get<0>();
-    auto& dense = (*model).get<1>();
+    auto& lstm = typename (*model).get<0>();
+    auto& dense = typename (*model).get<1>();
 
     // read a JSON file
     std::ifstream i2(filename);
