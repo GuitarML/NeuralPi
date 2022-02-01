@@ -24,18 +24,24 @@ install_pluginval_win()
 
 # install
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    pluginval=$(install_pluginval_linux)
-    plugin="build/NeuralPi_artefacts/Release/VST3/NeuralPi.vst3"
+    exit 0
+    # pluginval=$(install_pluginval_linux)
+    # declare -a plugins=()
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     pluginval=$(install_pluginval_mac)
-    plugin="build/NeuralPi_artefacts/VST3/NeuralPi.vst3"
+    declare -a plugins=("build/NeuralPi_artefacts/VST3/NeuralPi.vst3")
+else
+    pluginval=$(install_pluginval_win)
+    declare -a plugins=("build/NeuralPi_artefacts/Release/VST3/NeuralPi.vst3")
 fi
 
 echo "Pluginval installed at ${pluginval}"
-echo "Validating ${plugin}"
-$pluginval --strictness-level 8 --validate-in-process --validate $plugin --timeout-ms 600000
-result=$?
+
+# run
+for plugin in "${plugins[@]}"; do
+    echo "Validating ${plugin}"
+    $pluginval --strictness-level 8 --validate-in-process --validate $plugin
+done
 
 # clean up
 rm -Rf pluginval*
-exit $result
