@@ -58,79 +58,75 @@
   <EXPORTFORMATS>
     <LINUX_MAKE targetFolder="Builds/LinuxMakefile">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="NeuralPi"/>
-        <CONFIGURATION isDebug="0" name="Release" headerPath="/home/keith/Desktop/Projects/json-develop/include&#10;/home/keith/Desktop/Elk/RTNeural&#10;/home/keith/Desktop/Elk/RTNeural\modules\xsimd\include"
-                       defines="USE_XSIMD=1" targetName="NeuralPi"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="NewProject" defines="USE_XSIMD=1"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="NewProject" defines="USE_XSIMD=1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="RTNeural" path="modules"/>
         <MODULEPATH id="json" path="modules"/>
         <MODULEPATH id="chowdsp_utils" path="modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../juce"/>
-        <MODULEPATH id="juce_gui_basics" path="../../juce"/>
-        <MODULEPATH id="juce_graphics" path="../../juce"/>
-        <MODULEPATH id="juce_events" path="../../juce"/>
-        <MODULEPATH id="juce_data_structures" path="../../juce"/>
-        <MODULEPATH id="juce_core" path="../../juce"/>
-        <MODULEPATH id="juce_audio_utils" path="../../juce"/>
-        <MODULEPATH id="juce_audio_processors" path="../../juce"/>
-        <MODULEPATH id="juce_audio_plugin_client" path="../../juce"/>
-        <MODULEPATH id="juce_audio_formats" path="../../juce"/>
-        <MODULEPATH id="juce_audio_devices" path="../../juce"/>
-        <MODULEPATH id="juce_audio_basics" path="../../juce"/>
-        <MODULEPATH id="juce_osc" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_dsp" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_osc" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="modules/JUCE/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
     <VS2019 targetFolder="Builds/VisualStudio2019">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="NeuralPi" headerPath="C:\Users\tseng\Personal\mlamsk\NeuralPi\modules\json\include&#10;C:\Users\tseng\Personal\mlamsk\NeuralPi\modules\RTNeural&#10;C:\Users\tseng\Personal\mlamsk\NeuralPi\modules\RTNeural\modules\xsimd\include"
-                       defines="USE_XSIMD=1"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="NeuralPi" headerPath="C:\Users\tseng\Personal\mlamsk\NeuralPi\modules\json\include&#10;C:\Users\tseng\Personal\mlamsk\NeuralPi\modules\RTNeural&#10;C:\Users\tseng\Personal\mlamsk\NeuralPi\modules\RTNeural\modules\xsimd\include"
-                       defines="USE_XSIMD=1"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="NewProject" defines="USE_XSIMD=1"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="NewProject" defines="USE_XSIMD=1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="RTNeural" path="modules"/>
         <MODULEPATH id="json" path="modules"/>
-        <MODULEPATH id="juce_osc" path="../../juce"/>
-        <MODULEPATH id="juce_gui_extra" path="../../juce"/>
-        <MODULEPATH id="juce_gui_basics" path="../../juce"/>
-        <MODULEPATH id="juce_graphics" path="../../juce"/>
-        <MODULEPATH id="juce_events" path="../../juce"/>
-        <MODULEPATH id="juce_dsp" path="../../juce"/>
-        <MODULEPATH id="juce_data_structures" path="../../juce"/>
-        <MODULEPATH id="juce_core" path="../../juce"/>
-        <MODULEPATH id="juce_audio_utils" path="../../juce"/>
-        <MODULEPATH id="juce_audio_processors" path="../../juce"/>
-        <MODULEPATH id="juce_audio_plugin_client" path="../../juce"/>
-        <MODULEPATH id="juce_audio_formats" path="../../juce"/>
-        <MODULEPATH id="juce_audio_devices" path="../../juce"/>
-        <MODULEPATH id="juce_audio_basics" path="../../juce"/>
+        <MODULEPATH id="juce_osc" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="modules/JUCE/modules"/>
       </MODULEPATHS>
     </VS2019>
     <XCODE_MAC targetFolder="Builds/MacOSX">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="NewProject"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="NewProject"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="NewProject" defines="USE_XSIMD=1"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="NewProject" defines="USE_XSIMD=1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="RTNeural" path="modules"/>
         <MODULEPATH id="json" path="modules"/>
-        <MODULEPATH id="juce_core" path="modules/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_basics" path="modules/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_devices" path="modules/JUCE/modules"/>
-        <MODULEPATH id="juce_events" path="modules/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="modules/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="modules/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_osc" path="modules/JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="modules/JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="modules/JUCE/modules"/>
         <MODULEPATH id="juce_graphics" path="modules/JUCE/modules"/>
-        <MODULEPATH id="juce_data_structures" path="modules/JUCE/modules"/>
-        <MODULEPATH id="foleys_gui_magic" path="modules"/>
+        <MODULEPATH id="juce_events" path="modules/JUCE/modules"/>
         <MODULEPATH id="juce_dsp" path="modules/JUCE/modules"/>
-        <MODULEPATH id="juce_opengl" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="modules/JUCE/modules"/>
         <MODULEPATH id="juce_audio_plugin_client" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="modules/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>
