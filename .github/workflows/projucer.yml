@@ -1,0 +1,94 @@
+name: CI-Projucer
+
+on:
+  push:
+    branches:
+    - main
+    - develop
+  pull_request:
+    branches:
+    - main
+    - develop
+
+  workflow_dispatch:
+
+jobs:
+  build_and_test:
+    if: contains(toJson(github.event.commits), '***NO_CI***') == false && contains(toJson(github.event.commits), '[ci skip]') == false && contains(toJson(github.event.commits), '[skip ci]') == false
+    name: Build plugin with Projucer on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false # show all errors for each platform (vs. cancel jobs on error)
+      matrix:
+        include:
+          - os: ubuntu-latest
+            jucer: "modules/JUCE/extras/Projucer/Builds/LinuxMakefile/build/Projucer"
+          - os: macos-latest
+            jucer: "modules/JUCE/extras/Projucer/Builds/MacOSX/build/Debug/Projucer.app/Contents/MacOS/Projucer"
+          - os: windows-latest
+            jucer: "modules/JUCE/extras/Projucer/Builds/VisualStudio2019/x64/Debug/App/Projucer.exe"
+    
+    steps:
+    - name: Install Linux Deps
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt install libasound2-dev libcurl4-openssl-dev libx11-dev libxinerama-dev libxext-dev libfreetype6-dev libwebkit2gtk-4.0-dev libglu1-mesa-dev libjack-jackd2-dev lv2-dev
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 9
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 9
+    - name: Add msbuild to PATH
+      if: runner.os == 'Windows'
+      uses: microsoft/setup-msbuild@v1.0.3
+
+    - name: Set up Xcode
+      if: runner.os == 'MacOS'
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Build Projucer (MacOS)
+      if: runner.os == 'MacOS'
+      shell: bash
+      run: xcodebuild -project Projucer.xcodeproj -jobs 4 | xcpretty
+      working-directory: modules/JUCE/extras/Projucer/Builds/MacOSX
+    
+    - name: Build Projucer (Windows)
+      if: runner.os == 'Windows'
+      shell: bash
+      run: msbuild.exe -v:normal -m:4 Projucer.sln
+      working-directory: modules/JUCE/extras/Projucer/Builds/VisualStudio2019
+    
+    - name: Build Projucer (Linux)
+      if: runner.os == 'Linux'
+      shell: bash
+      run: make -j4
+      working-directory: modules/JUCE/extras/Projucer/Builds/LinuxMakefile
+
+    - name: Resave jucer
+      shell: bash
+      run: $PROJUCER --resave NeuralPi.jucer
+      env:
+        PROJUCER: ${{ matrix.jucer }}
+
+    - name: Build Plugin (MacOS)
+      if: runner.os == 'MacOS'
+      shell: bash
+      run: xcodebuild -project NeuralPi.xcodeproj -jobs 4 | xcpretty
+      working-directory: Builds/MacOSX
+
+    - name: Build Plugin (Windows)
+      if: runner.os == 'Windows'
+      shell: bash
+      run: msbuild.exe -v:normal -m:4 NeuralPi.sln
+      working-directory: Builds/VisualStudio2019
+
+    - name: Build Plugin (Linux)
+      if: runner.os == 'Linux'
+      shell: bash
+      run: make -j4
+      working-directory: Builds/LinuxMakefile
