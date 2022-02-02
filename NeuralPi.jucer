@@ -37,6 +37,8 @@
     </GROUP>
   </MAINGROUP>
   <MODULES>
+    <MODULE id="RTNeural" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="json" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
     <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
     <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="1" useGlobalPath="1"/>
@@ -61,6 +63,9 @@
                        defines="USE_XSIMD=1" targetName="NeuralPi"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
+        <MODULEPATH id="RTNeural" path="modules"/>
+        <MODULEPATH id="json" path="modules"/>
+        <MODULEPATH id="chowdsp_utils" path="modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../juce"/>
         <MODULEPATH id="juce_gui_basics" path="../../juce"/>
         <MODULEPATH id="juce_graphics" path="../../juce"/>
@@ -85,6 +90,8 @@
                        defines="USE_XSIMD=1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
+        <MODULEPATH id="RTNeural" path="modules"/>
+        <MODULEPATH id="json" path="modules"/>
         <MODULEPATH id="juce_osc" path="../../juce"/>
         <MODULEPATH id="juce_gui_extra" path="../../juce"/>
         <MODULEPATH id="juce_gui_basics" path="../../juce"/>
