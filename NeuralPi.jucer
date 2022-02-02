@@ -108,6 +108,31 @@
         <MODULEPATH id="juce_audio_basics" path="../../juce"/>
       </MODULEPATHS>
     </VS2019>
+    <XCODE_MAC targetFolder="Builds/MacOSX">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="NewProject"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="NewProject"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="RTNeural" path="modules"/>
+        <MODULEPATH id="json" path="modules"/>
+        <MODULEPATH id="juce_core" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="modules/JUCE/modules"/>
+        <MODULEPATH id="foleys_gui_magic" path="modules"/>
+        <MODULEPATH id="juce_dsp" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="modules/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="modules/JUCE/modules"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
   </EXPORTFORMATS>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"
                JUCE_WEB_BROWSER="0"/>
