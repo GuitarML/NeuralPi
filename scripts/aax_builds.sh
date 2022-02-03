@@ -50,7 +50,7 @@ else # Windows
     echo "Building for WINDOWS"
 
     AAX_PATH=C:/SDKs/AAX_SDK/
-    ilok_pass=$(cat /d/ilok_pass)
+	ilok_pass=$(cat /c/SDKs/ilok_pass)
     aax_target_dir="/c/Program Files/Common Files/Avid/Audio/Plug-Ins"
     TARGET_DIR="Win64"
 fi
@@ -77,7 +77,7 @@ fi
 
 # sign with PACE
 aax_location=build-aax/NeuralPi_artefacts/$build_config/AAX/NeuralPi.aaxplugin
-wcguid="" # Update this line
+wcguid="" # Update
 if [[ "$OSTYPE" == "darwin"* ]]; then
     wraptool sign --verbose \
         --account keyth72 \
@@ -92,7 +92,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 
 else # Windows
     wraptool sign --verbose \
-        --account chowdsp \
+        --account keyth72 \
         --password "$ilok_pass" \
         --wcguid $wcguid \
         --keyfile /c/Users/keithbloemer/Downloads/keith_aax_cert.p12 \

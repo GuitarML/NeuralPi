@@ -10,6 +10,8 @@ add_subdirectory(modules/RTNeural)
 add_subdirectory(modules)
 include_directories(modules)
 
+juce_set_aax_sdk_path(C:/SDKs/AAX_SDK/)
+
 set(JUCE_FORMATS AU VST3 Standalone)
 
 # Build LV2 only on Linux
