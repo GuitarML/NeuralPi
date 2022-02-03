@@ -10,7 +10,7 @@ add_subdirectory(modules/RTNeural)
 add_subdirectory(modules)
 include_directories(modules)
 
-juce_set_aax_sdk_path(C:/SDKs/AAX_SDK/)
+#juce_set_aax_sdk_path(NONE)
 
 set(JUCE_FORMATS AU VST3 Standalone)
 
