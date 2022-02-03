@@ -18,12 +18,23 @@ if(UNIX AND NOT APPLE)
     list(APPEND JUCE_FORMATS LV2)
 endif()
 
+# Build AAX if SDK target exists
+if(TARGET juce_aax_sdk)
+    message(STATUS "Building AAX plugin format")
+    list(APPEND JUCE_FORMATS AAX)
+endif()
+
 juce_add_plugin(NeuralPi
     COMPANY_NAME GuitarML
     PLUGIN_MANUFACTURER_CODE GtML
     PLUGIN_CODE Npi3 
     FORMATS ${JUCE_FORMATS}
     ProductName "NeuralPi"
+    
+    VST3_CATEGORIES Fx Delay
+    AU_MAIN_TYPE kAudioUnitType_Effect
+    AAX_CATEGORY AAX_ePlugInCategory_Delay
+    
     LV2_URI https://github.com/GuitarML/NeuralPi
     ICON_BIG resources/logo.png
     MICROPHONE_PERMISSION_ENABLED TRUE
