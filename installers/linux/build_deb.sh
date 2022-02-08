@@ -24,16 +24,16 @@ Description: GuitarML Plugin Debian Package\n" > $app_name"/DEBIAN/control"
 # 2. Copy Standalone, VST3, and LV2 plugins to the package directory (assumes project is already built)
 
 mkdir -p $app_name/opt/GuitarML/
-echo "Copying ../../build/"$app_name"_artefacts/Standalone/"$app_name
-cp "../../build/"$app_name"_artefacts/Standalone/"$app_name $app_name"/opt/GuitarML/"
+echo "Copying ../../build/"$app_name"_artefacts/Release/Standalone/"$app_name
+cp "../../build/"$app_name"_artefacts/Release/Standalone/"$app_name $app_name"/opt/GuitarML/"
 
 mkdir -p $app_name/usr/local/lib/vst3/
-echo "Copying ../../build/"$app_name"_artefacts/VST3/"$app_name".vst3"
-cp -r "../../build/"$app_name"_artefacts/VST3/"$app_name".vst3" $app_name"/usr/local/lib/vst3/"
+echo "Copying ../../build/"$app_name"_artefacts/Release/VST3/"$app_name".vst3"
+cp -r "../../build/"$app_name"_artefacts/Release/VST3/"$app_name".vst3" $app_name"/usr/local/lib/vst3/"
 
 mkdir -p $app_name/usr/local/lib/lv2/
-echo "Copying ../../build/"$app_name"_artefacts/LV2/"$app_name".lv2"
-cp -r "../../build/"$app_name"_artefacts/LV2/"$app_name".lv2" $app_name"/usr/local/lib/lv2/"
+echo "Copying ../../build/"$app_name"_artefacts/Release/LV2/"$app_name".lv2"
+cp -r "../../build/"$app_name"_artefacts/Release/LV2/"$app_name".lv2" $app_name"/usr/local/lib/lv2/"
 
 
 # 3. Build the .deb package and rename
