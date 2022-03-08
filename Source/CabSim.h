@@ -41,7 +41,7 @@ public:
         convolution.loadImpulseResponse(irFile,
             juce::dsp::Convolution::Stereo::yes,
             juce::dsp::Convolution::Trim::no,
-            1024);
+            0); // Set to 0 to use the full size of IR with no trimming
     }
 
 private:
