@@ -682,13 +682,15 @@ void NeuralPiAudioProcessorEditor::updateToggleState(juce::Button* button, juce:
 }
 
 void NeuralPiAudioProcessorEditor::loadButtonClicked()
-{
-    FileChooser chooser("Select one or more .json tone files to import",
-        {},
-        "*.json");
-    if (chooser.browseForMultipleFilesToOpen())
+{  
+    myChooser = std::make_unique<FileChooser> ("Select one or more .json tone files to import",
+                                               File::getSpecialLocation (File::userDesktopDirectory),
+                                               "*.json");
+
+    auto folderChooserFlags = FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles | FileBrowserComponent::canSelectMultipleItems;
+
+    myChooser->launchAsync (folderChooserFlags, [this] (const FileChooser& chooser)
     {
-        int import_fail = 1;
         Array<File> files = chooser.getResults();
         for (auto file : files) {
             File fullpath = processor.userAppDataDirectory_tones.getFullPathName() + "/" + file.getFileName();
@@ -713,18 +715,20 @@ void NeuralPiAudioProcessorEditor::loadButtonClicked()
                 std::sort(processor.jsonFiles.begin(), processor.jsonFiles.end());
             }
         }
-    }
+    });
     setParamKnobColor();
 }
 
 void NeuralPiAudioProcessorEditor::loadIRClicked()
 {
-    FileChooser chooser("Select one or more .wav IR files to import",
-        {},
-        "*.wav");
-    if (chooser.browseForMultipleFilesToOpen())
+    myChooser = std::make_unique<FileChooser> ("Select one or more .wav IR files to import",
+                                               File::getSpecialLocation (File::userDesktopDirectory),
+                                               "*.wav");
+
+    auto folderChooserFlags = FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles | FileBrowserComponent::canSelectMultipleItems;
+
+    myChooser->launchAsync (folderChooserFlags, [this] (const FileChooser& chooser)   
     {
-        int import_fail = 1;
         Array<File> files = chooser.getResults();
         for (auto file : files) {
             File fullpath = processor.userAppDataDirectory_irs.getFullPathName() + "/" + file.getFileName();
@@ -749,7 +753,7 @@ void NeuralPiAudioProcessorEditor::loadIRClicked()
                 std::sort(processor.irFiles.begin(), processor.irFiles.end());
             }
         }
-    }
+    });
 }
 
 
