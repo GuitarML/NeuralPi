@@ -9,8 +9,8 @@ target_sources(NeuralPi PRIVATE
 	PluginEditor.h
 	PluginProcessor.cpp
 	PluginProcessor.h
-	RTNeuralLSTM.cpp
-	RTNeuralLSTM.h
+	RTNeuralGRU.cpp
+	RTNeuralGRU.h
 )
 
 #target_precompile_headers(NeuralPi PRIVATE pch.h)

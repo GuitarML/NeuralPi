@@ -128,7 +128,7 @@ void NeuralPiAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
-    LSTM.reset();
+    GRU.reset();
 
     // set up DC blocker
     dcBlocker.coefficients = dsp::IIR::Coefficients<float>::makeHighPass(sampleRate, 35.0f);
@@ -205,7 +205,7 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
         ir_index = getIrIndex(ir);
 
         // Applying gain adjustment for snapshot models
-        if (LSTM.input_size == 1) {
+        if (GRU.input_size == 1) {
             buffer.applyGain(gain * 2.0);
         } 
 
@@ -213,22 +213,22 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
         eq4band.setParameters(bass, mid, treble, presence);// Better to move this somewhere else? Only need to set when value changes
         eq4band.process(buffer.getReadPointer(0), buffer.getWritePointer(0), midiMessages, numSamples, numInputChannels, sampleRate);
 
-        // Apply LSTM model
-        if (model_loaded == 1 && lstm_state == true) {
+        // Apply GRU model
+        if (model_loaded == 1 && gru_state == true) {
             if (current_model_index != model_index) {
                 loadConfig(jsonFiles[model_index]);
                 current_model_index = model_index;
             }
 
-            // Process LSTM based on input_size (snapshot model or conditioned model)
-            if (LSTM.input_size == 1) {
-                LSTM.process(buffer.getReadPointer(0), buffer.getWritePointer(0), numSamples);
+            // Process GRU based on input_size (snapshot model or conditioned model)
+            if (GRU.input_size == 1) {
+                GRU.process(buffer.getReadPointer(0), buffer.getWritePointer(0), numSamples);
             }  
-            else if (LSTM.input_size == 2) {
-                LSTM.process(buffer.getReadPointer(0), gain, buffer.getWritePointer(0), numSamples);
+            else if (GRU.input_size == 2) {
+                GRU.process(buffer.getReadPointer(0), gain, buffer.getWritePointer(0), numSamples);
             }
-            else if (LSTM.input_size == 3) {
-                LSTM.process(buffer.getReadPointer(0), gain, master, buffer.getWritePointer(0), numSamples);
+            else if (GRU.input_size == 3) {
+                GRU.process(buffer.getReadPointer(0), gain, master, buffer.getWritePointer(0), numSamples);
             }
         }
 
@@ -247,7 +247,7 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
         }
 
         //    Master Volume 
-		if (LSTM.input_size == 1 || LSTM.input_size == 2) {
+		if (GRU.input_size == 1 || GRU.input_size == 2) {
 			buffer.applyGain(master * 2.0); // Adding volume range (2x) mainly for clean models
 		}
 
@@ -341,16 +341,16 @@ void NeuralPiAudioProcessor::loadConfig(File configFile)
 
     try {
         // Load the JSON file into the correct model
-        LSTM.load_json(char_filename);
+        GRU.load_json(char_filename);
     
         // Check what the input size is and then update the GUI appropirately
-        if (LSTM.input_size == 1) {
+        if (GRU.input_size == 1) {
             params = 0;
         }
-        else if (LSTM.input_size == 2) {
+        else if (GRU.input_size == 2) {
             params = 1;
         }
-        else if (LSTM.input_size == 3) {
+        else if (GRU.input_size == 3) {
             params = 2;
         }
         

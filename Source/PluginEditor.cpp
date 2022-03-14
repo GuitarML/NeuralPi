@@ -145,10 +145,10 @@ NeuralPiAudioProcessorEditor::NeuralPiAudioProcessorEditor (NeuralPiAudioProcess
     irButton.setToggleState(true, juce::NotificationType::dontSendNotification);
     irButton.onClick = [this] { updateToggleState(&irButton, "IR");   };
 
-    // Toggle LSTM
-    //addAndMakeVisible(lstmButton); // Toggle is for testing purposes
-    lstmButton.setToggleState(true, juce::NotificationType::dontSendNotification);
-    lstmButton.onClick = [this] { updateToggleState(&lstmButton, "LSTM");   };
+    // Toggle GRU
+    //addAndMakeVisible(gruButton); // Toggle is for testing purposes
+    gruButton.setToggleState(true, juce::NotificationType::dontSendNotification);
+    gruButton.onClick = [this] { updateToggleState(&gruButton, "GRU");   };
   
 
     addAndMakeVisible(ampGainKnob);
@@ -605,7 +605,7 @@ void NeuralPiAudioProcessorEditor::resized()
     irSelect.setBounds(11, 42, 270, 25);
     loadIR.setBounds(120, 74, 100, 25);
     irButton.setBounds(248, 42, 257, 25);
-    lstmButton.setBounds(248, 10, 257, 25);
+    gruButton.setBounds(248, 10, 257, 25);
 
     // Amp Widgets
     ampGainKnob.setBounds(10, 120, 75, 95);
@@ -678,7 +678,7 @@ void NeuralPiAudioProcessorEditor::updateToggleState(juce::Button* button, juce:
     if (name == "IR")
         processor.ir_state = button->getToggleState();
     else
-        processor.lstm_state = button->getToggleState();
+        processor.gru_state = button->getToggleState();
 }
 
 void NeuralPiAudioProcessorEditor::loadButtonClicked()

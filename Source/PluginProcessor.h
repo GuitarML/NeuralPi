@@ -9,7 +9,7 @@
 */
 
 #include <nlohmann/json.hpp>
-#include "RTNeuralLSTM.h"
+#include "RTNeuralGRU.h"
 #include "AmpOSCReceiver.h"
 #include "Eq4Band.h"
 #include "CabSim.h"
@@ -119,7 +119,7 @@ public:
     int current_model_index = 0;
     float num_models = 0.0;
     int model_index = 0; // Used in processBlock when converting slider param to model index
-    bool lstm_state = true;
+    bool gru_state = true;
 
     juce::String loaded_ir_name;
     float num_irs = 0.0;
@@ -135,7 +135,7 @@ public:
     // The PluginEditor uses this to determin which knobs to color red
     int params = 0;
 
-    RT_LSTM LSTM;
+    RT_GRU GRU;
 
     juce::dsp::Reverb::Parameters rev_params;
 

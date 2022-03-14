@@ -110,7 +110,7 @@ private:
     TextButton loadButton;
     TextButton loadIR;
     ToggleButton irButton;
-    ToggleButton lstmButton;
+    ToggleButton gruButton;
 
     juce::LookAndFeel_V4 blueLookAndFeel;
     juce::LookAndFeel_V4 redLookAndFeel;
