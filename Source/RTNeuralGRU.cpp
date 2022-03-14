@@ -36,9 +36,6 @@ void RT_GRU::set_weights(T1 model, const char* filename)
     gru.setUVals(transpose(gru_weights_hh));
 
     Vec2d gru_bias_hh;
-    gru_bias_hh[0] = weights_json["/state_dict/rec.bias_ih_l0"_json_pointer];
-    gru_bias_hh[1] = weights_json["/state_dict/rec.bias_hh_l0"_json_pointer];
-
     //std::vector<float> gru_bias_ih = weights_json["/state_dict/rec.bias_ih_l0"_json_pointer];
     //std::vector<float> gru_bias_hh = weights_json["/state_dict/rec.bias_hh_l0"_json_pointer];
     //for (int i = 0; i < 60; ++i)  // TODO verify 60 here for hidden size 20 (i.e. 3 * hidden_size)
