@@ -21,16 +21,16 @@ public:
     
 private:
     RTNeural::ModelT<float, 1, 1,
-        RTNeural::LSTMLayerT<float, 1, 20>,
-        RTNeural::DenseT<float, 20, 1>> model;
+        RTNeural::LSTMLayerT<float, 1, 40>,
+        RTNeural::DenseT<float, 40, 1>> model;
 
     RTNeural::ModelT<float, 2, 1,
-        RTNeural::LSTMLayerT<float, 2, 20>,
-        RTNeural::DenseT<float, 20, 1>> model_cond1;
+        RTNeural::LSTMLayerT<float, 2, 40>,
+        RTNeural::DenseT<float, 40, 1>> model_cond1;
 
     RTNeural::ModelT<float, 3, 1,
-        RTNeural::LSTMLayerT<float, 3, 20>,
-        RTNeural::DenseT<float, 20, 1>> model_cond2;
+        RTNeural::LSTMLayerT<float, 3, 40>,
+        RTNeural::DenseT<float, 40, 1>> model_cond2;
     
     // Pre-Allowcate arrays for feeding the models
     float inArray1[2] = { 0.0, 0.0 };
