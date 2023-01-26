@@ -89,11 +89,34 @@ void RT_LSTM::process(const float* inData, float* outData, int numSamples)
 
 void RT_LSTM::process(const float* inData, float param, float* outData, int numSamples)
 {
+    // Check for parameter changes for smoothing calculations
+    if (param != previousParam1) {
+        steppedValue1 = (param - previousParam1) / numSamples;
+        changedParam1 = true;
+    }
+    else {
+        changedParam1 = false;
+    }
+
     for (int i = 0; i < numSamples; ++i) {
         inArray1[0] = inData[i];
-        inArray1[1] = param;
+
+        // Perform ramped value calculations to smooth out sound
+        if (changedParam1 == true) {
+            inArray1[1] = previousParam1 + (i + 1) * steppedValue1;
+        }
+        else {
+            inArray1[1] = param;
+        }
+
         outData[i] = model_cond1.forward(inArray1) + inData[i];
     }
+    previousParam1 = param;
+    //for (int i = 0; i < numSamples; ++i) {
+    //    inArray1[0] = inData[i];
+    //   inArray1[1] = param;
+    //    outData[i] = model_cond1.forward(inArray1) + inData[i];
+    //}
 }
 
 void RT_LSTM::process(const float* inData, float param1, float param2, float* outData, int numSamples)

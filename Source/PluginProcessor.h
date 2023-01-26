@@ -139,6 +139,8 @@ public:
 
     juce::dsp::Reverb::Parameters rev_params;
 
+    int pauseVolume = 3;
+
 private:
     var dummyVar;
     Eq4Band eq4band; // Amp EQ
@@ -153,6 +155,9 @@ private:
     AudioParameterFloat* irParam;
     AudioParameterFloat* delayParam;
     AudioParameterFloat* reverbParam;
+
+    float previousDriveValue = 0.5;
+    float previousMasterValue = 0.5;
 
     dsp::IIR::Filter<float> dcBlocker;
 

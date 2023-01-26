@@ -18,6 +18,9 @@ public:
     void process(const float* inData, float param1, float param2, float* outData, int numSamples);
 
     int input_size = 1;
+    float previousParam1 = 0.0;
+    float steppedValue1 = 0.0;
+    bool changedParam1 = false;
     
 private:
     RTNeural::ModelT<float, 1, 1,

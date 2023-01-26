@@ -129,7 +129,7 @@ private:
     Label ampNameField{ {}, "NeuralPi" };
 
     Label ipLabel{ {}, "Target IP Address: " };
-    Label ipField{ {}, "127.0.0.1" };
+    Label ipField{ {}, "192.168.1.97" };
 
     Label outPortNumberLabel{ {}, "Outgoing OSC Port: " };
     Label outPortNumberField{ {}, "24024" };

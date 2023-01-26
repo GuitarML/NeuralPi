@@ -54,6 +54,8 @@ NeuralPiAudioProcessor::NeuralPiAudioProcessor()
     addParameter(irParam = new AudioParameterFloat(IR_ID, IR_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.0f));
     addParameter(delayParam = new AudioParameterFloat(DELAY_ID, DELAY_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.0f));
     addParameter(reverbParam = new AudioParameterFloat(REVERB_ID, REVERB_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.0f));
+
+    pauseVolume = 3;
 }
 
 
@@ -206,8 +208,18 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
 
         // Applying gain adjustment for snapshot models
         if (LSTM.input_size == 1) {
-            buffer.applyGain(gain * 2.0);
-        } 
+            // Apply ramped changes for gain smoothing
+            if (gain == previousDriveValue)
+            {
+                buffer.applyGain(gain * 2.5);
+            }
+            else {
+                buffer.applyGainRamp(0, (int)buffer.getNumSamples(), previousDriveValue * 2.5, gain * 2.5);
+                previousDriveValue = gain;
+            }
+        } else {
+            buffer.applyGain(1.5); // Apply default boost to help sound for conditioned models
+        }
 
         // Process EQ
         eq4band.setParameters(bass, mid, treble, presence);// Better to move this somewhere else? Only need to set when value changes
@@ -232,6 +244,10 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
             }
         }
 
+        // process DC blocker
+        auto monoBlock = dsp::AudioBlock<float>(buffer).getSingleChannelBlock(0);
+        dcBlocker.process(dsp::ProcessContextReplacing<float>(monoBlock));
+
         // Process IR
         if (ir_state == true && num_irs > 0) {
             if (current_ir_index != ir_index) {
@@ -246,20 +262,35 @@ void NeuralPiAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
             buffer.applyGain(2.0);
         }
 
-        //    Master Volume 
-		if (LSTM.input_size == 1 || LSTM.input_size == 2) {
-			buffer.applyGain(master * 2.0); // Adding volume range (2x) mainly for clean models
-		}
+        // Master Volume 
+        // Apply ramped changes for gain smoothing
+        if (LSTM.input_size == 1 || LSTM.input_size == 2) {
+            if (master == previousMasterValue)
+            {
+                buffer.applyGain(master);
+            }
+            else {
+                buffer.applyGainRamp(0, (int)buffer.getNumSamples(), previousMasterValue, master);
+                previousMasterValue = master;
+            }
+        }
 
         // Process Delay, and Reverb
         set_delayParams(delay);
         set_reverbParams(reverb);
         fxChain.process(context);
-    }
 
-    // process DC blocker
-    auto monoBlock = dsp::AudioBlock<float>(buffer).getSingleChannelBlock(0);
-    dcBlocker.process(dsp::ProcessContextReplacing<float>(monoBlock));
+        // Smooth pop sound when changing models
+        if (pauseVolume > 0) {
+            if (pauseVolume > 2)
+                buffer.applyGain(0.0);
+            else if (pauseVolume == 2)
+                buffer.applyGainRamp(0, (int)buffer.getNumSamples(), 0, master / 2);
+            else
+                buffer.applyGainRamp(0, (int)buffer.getNumSamples(), master / 2, master);
+            pauseVolume -= 1;
+        }
+    }
     
     for (int ch = 1; ch < buffer.getNumChannels(); ++ch)
         buffer.copyFrom(ch, 0, buffer, 0, 0, buffer.getNumSamples());
@@ -336,6 +367,7 @@ int NeuralPiAudioProcessor::getIrIndex(float ir_param)
 void NeuralPiAudioProcessor::loadConfig(File configFile)
 {
     this->suspendProcessing(true);
+    pauseVolume = 3;
     String path = configFile.getFullPathName();
     char_filename = path.toUTF8();
 
