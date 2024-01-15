@@ -1,56 +1,56 @@
 {
-    "host_config" : {
-        "samplerate" : 44100
+    "host_config": {
+      "samplerate": 44100
     },
-    "tracks" : [
-        {
-            "name" : "main",
-            "mode" : "stereo",
-            "inputs" : [
-                {
-                    "engine_bus" : 0,
-                    "track_bus" : 0
-                }
-            ],
-            "outputs" : [
-                {
-                    "engine_bus" : 0,
-                    "track_bus" : 0
-                }
-            ],
-            "plugins" : [
-				{
-				    "uid"  : "sushi.testing.mono_summing",
-					"name" : "mono_summing",
-					"type" : "internal"
-				},
-                {
-                    "uid"  : "NeuralPi",
-                    "path" : "/home/mind/plugins/NeuralPi.vst3",
-                    "name" : "NeuralPi",
-                    "type" : "vst3x"
-                },
-                {
-                    "uid"  : "mda DubDelay",
-                    "path" : "/home/mind/plugins/mda-vst3/mda.vst3",                    
-                    "name" : "dubdelay",
-                    "type"   : "vst3x"
-                },
-                {
-                    "uid"  : "mda Delay",
-                    "path" : "/home/mind/plugins/mda-vst3/mda.vst3",
-                    "name" : "delay",
-                    "type"   : "vst3x"
-                },
-                {
-                    "uid"  : "mda Ambience",
-                    "path" : "/home/mind/plugins/mda-vst3/mda.vst3",
-                    "name" : "ambience",
-                    "type"   : "vst3x"
-                }
-            ]
-        }
+    "tracks": [
+      {
+        "name": "main",
+        "channels": 2,
+        "inputs": [
+          {
+            "engine_bus": 0,
+            "track_bus": 0
+          }
+        ],
+        "outputs": [
+          {
+            "engine_bus": 0,
+            "track_bus": 0
+          }
+        ],
+        "plugins": [
+          {
+            "uid": "sushi.testing.mono_summing",
+            "name": "mono_summing",
+            "type": "internal"
+          },
+          {
+            "uid": "NeuralPi",
+            "path": "/home/mind/plugins/NeuralPi.vst3",
+            "name": "NeuralPi",
+            "type": "vst3x"
+          },
+          {
+            "uid": "mda DubDelay",
+            "path": "/home/mind/plugins/mda-vst3/mda.vst3",
+            "name": "dubdelay",
+            "type": "vst3x"
+          },
+          {
+            "uid": "mda Delay",
+            "path": "/home/mind/plugins/mda-vst3/mda.vst3",
+            "name": "delay",
+            "type": "vst3x"
+          },
+          {
+            "uid": "mda Ambience",
+            "path": "/home/mind/plugins/mda-vst3/mda.vst3",
+            "name": "ambience",
+            "type": "vst3x"
+          }
+        ]
+      }
     ],
-    "midi" : {
+    "midi": {
     }
-}
+  }
