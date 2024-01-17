@@ -110,6 +110,15 @@ To build the plugin for use on the Raspberry Pi with Elk Audio OS, see the offic
 
 ### Build with Cmake
 
+#### Dependencies
+##### Ubuntu 22.04
+The following packages will need to be installed on Ubuntu in order for build to succeed:
+```bash
+apt install cmake libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxft2-dev
+```
+
+#### Build
+
 ```bash
 # Clone the repository
 $ git clone https://github.com/GuitarML/NeuralPi.git
